@@ -1,22 +1,37 @@
-import React, {useRef} from 'react';
+import React, {useRef, useCallback } from 'react';
 import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
 import {Video} from 'expo-av';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window'); // Get full screen width
 
 const ProfileScreen =({navigation})=>{
     const videoRef = useRef(null);
+    // Pause video when screen loses focus
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                if (videoRef.current) {
+                    videoRef.current.pauseAsync();
+                }
+            };
+        }, [])
+    );
 
     return(
         <View style ={styles.container}>
             {/**VIdeo Player */}
             <Video
             ref={videoRef}
-            source={{ uri: 'https://www.w3schools.com/html/mov_bbb.mp4' }} // Replace with your video URL
+            // source={{ uri: 'https://www.w3schools.com/html/mov_bbb.mp4' }} // Replace with your video URL
+            // source={{ uri: 'https://drive.google.com/uc?export=download&id=1TMbpiD5Xnt5uNMniDq2mxoGfloN79FaV' }} 
+            source={{ uri: 'https://www.dropbox.com/scl/fi/0s3dmrt0tkurvrfxb95j5/test.mp4?rlkey=zqrjej8v5syzyimqbp8m4hyl3&st=rh9iaenf&raw=1' }} 
             style={styles.video}
             useNativeControls
             resizeMode='contain'
+            shouldPlay
             isLooping
+            onError={(error) => console.log('Video Error:', error)}
             />
             
                         {/* Paragraph Below Video */}
