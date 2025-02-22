@@ -1,21 +1,32 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet, Dimensions, ScrollView  } from 'react-native';
+import React ,{useState}from 'react';
+import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
 import VideoPlayer from '../navigation/VideoPlayer';
 import { urlTable } from '../navigation/urlTable';
+import { useFocusEffect } from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('window'); // Get full screen width
 const url = urlTable.find(item => item.type   === 'stress').url;
 const ProfileScreen = ({ navigation }) => {
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true); // State to control video playback
+
+  // Stop video when navigating away
+  useFocusEffect(
+      React.useCallback(() => {
+          setIsVideoPlaying(true); // Play video when screen is focused
+          return () => setIsVideoPlaying(false); // Stop video when screen loses focus
+      }, [])
+  );
 
 
     return (
         
         <View style={styles.container}>
             {/** Video Player */}
-            <VideoPlayer videoUrl={url} />
+            <VideoPlayer videoUrl={url} isPlaying={isVideoPlaying} />
+
+    <ScrollView style={styles.Textcontainer}>
+
 
     {/* Scrollable Content */}
-    <ScrollView style={styles.Textcontainer}>
       {/* Main Heading */}
       <Text style={styles.heading}>Stres Yönetimi</Text>
 
@@ -70,7 +81,6 @@ const ProfileScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff' },
-    video: { width: width, height: height * 0.3, backgroundColor: 'black' },
     Textcontainer:{
             flex: 1,
             backgroundColor: "#fff",

@@ -4,7 +4,7 @@ import { Video, Audio } from 'expo-av';
 
 const { width, height } = Dimensions.get('window');
 
-const VideoPlayer = ({ videoUrl }) => {
+const VideoPlayer = ({ videoUrl, isPlaying }) => {
     const videoRef = useRef(null);
 
     useEffect(() => {
@@ -20,9 +20,14 @@ const VideoPlayer = ({ videoUrl }) => {
                 console.log("Audio Mode Error:", error);
             }
         };
-
         setupAudio();
     }, []);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.setStatusAsync({ shouldPlay: isPlaying });
+        }
+    }, [isPlaying]);
 
     return (
         <View>
@@ -32,7 +37,7 @@ const VideoPlayer = ({ videoUrl }) => {
                 style={{ width: width, height: height * 0.3, backgroundColor: 'black' }}
                 useNativeControls
                 resizeMode='contain'
-                shouldPlay
+                shouldPlay={isPlaying}
                 isLooping
                 onError={(error) => console.log('Video Error:', error)}
             />
