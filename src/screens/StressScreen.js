@@ -1,12 +1,11 @@
 import React ,{useState}from 'react';
-import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
+import { View, Button, StyleSheet  } from 'react-native';
 import VideoPlayer from '../navigation/VideoPlayer';
-import { urlTable } from '../navigation/urlTable';
 import { useFocusEffect } from '@react-navigation/native';
 
 import StressInfo from '../utils/StressInfo';
+const title = 'stress';
 
-const url = urlTable.find(item => item.type   === 'stress').url;
 
 const StressScreen = ({ navigation }) => {
     const [isVideoPlaying, setIsVideoPlaying] = useState(true); // State to control video playback
@@ -24,7 +23,7 @@ const StressScreen = ({ navigation }) => {
           
           <View style={styles.container}>
               {/** Video Player */}
-              <VideoPlayer videoUrl={url} isPlaying={isVideoPlaying} />
+              <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
   
           <StressInfo/>
   

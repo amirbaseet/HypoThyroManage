@@ -1,11 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Dimensions } from 'react-native';
 import { Video, Audio } from 'expo-av';
-
+import { urlTable } from '../navigation/urlTable';
 const { width, height } = Dimensions.get('window');
+export const goHome =() => navigation.navigate('Home');
 
 const VideoPlayer = ({ videoUrl, isPlaying }) => {
     const videoRef = useRef(null);
+    const url = urlTable.find(item => item.type   === videoUrl).url;
 
     useEffect(() => {
         const setupAudio = async () => {
@@ -33,7 +35,7 @@ const VideoPlayer = ({ videoUrl, isPlaying }) => {
         <View>
             <Video
                 ref={videoRef}
-                source={{ uri: videoUrl }}
+                source={{ uri: url }}
                 style={{ width: width, height: height * 0.3, backgroundColor: 'black' }}
                 useNativeControls
                 resizeMode='contain'

@@ -1,10 +1,9 @@
 import React ,{useState}from 'react';
 import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
 import VideoPlayer from '../navigation/VideoPlayer';
-import { urlTable } from '../navigation/urlTable';
 import { useFocusEffect } from '@react-navigation/native';
+const title = 'stress';
 
-const url = urlTable.find(item => item.type   === 'stress').url;
 const ProfileScreen = ({ navigation }) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(true); // State to control video playback
 
@@ -21,7 +20,7 @@ const ProfileScreen = ({ navigation }) => {
         
         <View style={styles.container}>
             {/** Video Player */}
-            <VideoPlayer videoUrl={url} isPlaying={isVideoPlaying} />
+            <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
 
     <ScrollView style={styles.Textcontainer}>
 

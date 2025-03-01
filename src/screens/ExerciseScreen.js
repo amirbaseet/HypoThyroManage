@@ -1,15 +1,14 @@
 import React ,{useState}from 'react';
 import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
-import VideoPlayer from '../navigation/VideoPlayer';
+import VideoPlayer,{goHome} from '../navigation/VideoPlayer';
 import { urlTable } from '../navigation/urlTable';
 import { useFocusEffect } from '@react-navigation/native';
 import ExcersiseInfo from '../utils/ExcersiseInfo';
 
-const url = urlTable.find(item => item.type   === 'Exercise').url;
 
 const ExerciseScreen = ({navigation}) => {
     const [isVideoPlaying, setIsVideoPlaying] = useState(true); // State to control video playback
-
+    const title = 'Exercise';
     // Stop video when navigating away
     useFocusEffect(
         React.useCallback(() => {
@@ -23,9 +22,9 @@ const ExerciseScreen = ({navigation}) => {
           
           <View style={styles.container}>
               {/** Video Player */}
-              <VideoPlayer videoUrl={url} isPlaying={isVideoPlaying} />
+              <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
               <ExcersiseInfo/>
-           <Button title='Go To Home' onPress={() => navigation.navigate('Home')} />
+           <Button title='Go To Home' onPress={goHome} />
   
           </View>
       )

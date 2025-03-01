@@ -1,14 +1,14 @@
 import React ,{useState}from 'react';
-import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
+import { View, Button, StyleSheet  } from 'react-native';
 import VideoPlayer from '../navigation/VideoPlayer';
-import { urlTable } from '../navigation/urlTable';
 import { useFocusEffect } from '@react-navigation/native';
 import NutritionInfo from '../utils/NutritionInfo';
+
+
+const title = 'Nutrition';
 const NutritionScreen = ({ navigation }) => {
 
-const url = urlTable.find(item => item.type   === 'Nutrition').url;
       const [isVideoPlaying, setIsVideoPlaying] = useState(true); // State to control video playback
-    
       // Stop video when navigating away
       useFocusEffect(
           React.useCallback(() => {
@@ -19,7 +19,7 @@ const url = urlTable.find(item => item.type   === 'Nutrition').url;
     
     return (
         <View style={styles.container}>
-                      <VideoPlayer videoUrl={url} isPlaying={isVideoPlaying} />
+                      <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
 
         <NutritionInfo/>
             

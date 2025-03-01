@@ -1,10 +1,11 @@
 import React ,{useState}from 'react';
-import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
+import { View, Button, StyleSheet  } from 'react-native';
 import VideoPlayer from '../navigation/VideoPlayer';
-import { urlTable } from '../navigation/urlTable';
 import { useFocusEffect } from '@react-navigation/native';
 import DermaInfo from '../utils/DermaInfo';
-const url = urlTable.find(item => item.type   === 'Dermatological').url;
+
+
+const title = 'Dermatological';
 
 const DermatologicalScreen = ({navigation}) => {
     const [isVideoPlaying, setIsVideoPlaying] = useState(true); // State to control video playback
@@ -22,7 +23,7 @@ const DermatologicalScreen = ({navigation}) => {
           
           <View style={styles.container}>
               {/** Video Player */}
-              <VideoPlayer videoUrl={url} isPlaying={isVideoPlaying} />
+              <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
               <DermaInfo/>
            <Button title='Go To Home' onPress={() => navigation.navigate('Home')} />
   
