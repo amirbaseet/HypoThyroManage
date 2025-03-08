@@ -1,6 +1,6 @@
 import React ,{useState}from 'react';
 import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
-import VideoPlayer from '../navigation/VideoPlayer';
+import VideoPlayer from '../components/VideoPlayer';
 import { useFocusEffect } from '@react-navigation/native';
 const title = 'stress';
 

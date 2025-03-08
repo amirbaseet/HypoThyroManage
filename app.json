@@ -15,17 +15,48 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["audio"]
-      }
+        "UIBackgroundModes": [
+          "audio",
+          "fetch"
+        ],
+        "UIUserNotificationSettings": {
+          "types": [
+            "alert",
+            "badge",
+            "sound"
+          ]
+        }
+      },
+      "usesPermissions": [
+        "USER_FACING_NOTIFICATIONS",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "VIBRATE",
+        "WAKE_LOCK",
+        "ACCESS_FINE_LOCATION",
+        "VIBRATE",
+        "WAKE_LOCK"
+      ],
+      "package": "com.amrobaseet.myapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "mode": "production"        
+        }
+      ]
+    ]
   }
 }

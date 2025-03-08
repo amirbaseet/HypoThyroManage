@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation }) => {
 
                     {/* Password Input */}
                     <View style={styles.inputContainer}>
-                        <Ionicons name='ios-lock-closed-outline' size={20} color='#666' style={styles.icon} />
+                        <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
                         <TextInput
                             placeholder='Password'
                             style={styles.input}
