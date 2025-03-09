@@ -1,45 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import LoginScreen from "./src/screens/LoginScreen";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
-import { initializeDatabase, insertMedication,resetDatabase,deleteAllData, fetchMedications, fetchMedicationLogs } from "./src/database/database";
+import { AuthContext, AuthProvider } from "./src/context/AuthContext";
+
+const Stack = createStackNavigator();
+
+const AppNavigator = () => {
+    const { user } = useContext(AuthContext);
+
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {user ? (
+                <Stack.Screen name="Home" component={DrawerNavigator} />
+            ) : (
+                <Stack.Screen name="Login" component={LoginScreen} />
+            )}
+        </Stack.Navigator>
+    );
+};
 
 export default function App() {
-  
-  useEffect(() => {
-    async function testDatabaseReset() {
-      await initializeDatabase();
-
-      console.log("🛑 Deleting all data...");
-      await deleteAllData(); // OR use resetDatabase()
-      await resetDatabase(); // OR use resetDatabase()
-
-      // Fetch medications to confirm deletion
-      const meds = await fetchMedications();
-      console.log("📌 Medications after deletion:", meds);
-    }
-
-    async function testDatabase() {
-      await initializeDatabase();
-
-      // Insert a test medication
-      // await insertMedication("Aspirin", "1 pill", "Daily", ["08:00"], "2025-03-08", null);
-
-      // Fetch and log medications
-
-      const meds = await fetchMedications();
-      console.log("📌 Medications in DB:", meds);
-
-      // Fetch and log medication logs
-   
-      // const logs = await fetchMedicationLogs();
-      // console.log("📌 Medication Logs in DB:", logs);
-    }
-    // testDatabaseReset();
-    testDatabase();
-  }, []);
-  return (
-    <NavigationContainer>
-      <DrawerNavigator />
-    </NavigationContainer>
-  );
+    return (
+        <AuthProvider>
+            <NavigationContainer>
+                <AppNavigator />
+            </NavigationContainer>
+        </AuthProvider>
+    );
 }
