@@ -1,7 +1,6 @@
 import React ,{useState}from 'react';
 import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
 import VideoPlayer,{goHome} from '../components/VideoPlayer';
-import { urlTable } from '../navigation/urlTable';
 import { useFocusEffect } from '@react-navigation/native';
 import ExcersiseInfo from '../utils/ExcersiseInfo';
 
@@ -24,7 +23,7 @@ const ExerciseScreen = ({navigation}) => {
               {/** Video Player */}
               <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
               <ExcersiseInfo/>
-           <Button title='Go To Home' onPress={goHome} />
+           <Button title='Go To Home'  onPress={() => navigation.navigate('Home')} />
   
           </View>
       )
