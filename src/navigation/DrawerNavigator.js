@@ -22,8 +22,11 @@ const Drawer = createDrawerNavigator();
 
 // Drawer Navigation Setup
 const DrawerNavigator = () => {
-    const { logout } = useContext(AuthContext);
+    const {  logout } = useContext(AuthContext);
 
+    // ✅ Correctly access the username
+
+    // Console log user state
     return (
         <Drawer.Navigator screenOptions={({ navigation }) => ({
             headerRight: () => (

@@ -5,8 +5,8 @@ import { initializeDatabase,resetDatabase,deleteAllData, fetchMedications } from
 import { useNavigation } from "@react-navigation/native";
 
 const HomeScreen = () => {
-  const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
+  const {user,logout} = useContext(AuthContext);
 
   const handleLogout = async () => {
       await logout();  // Ensure state is reset first
@@ -21,7 +21,6 @@ const HomeScreen = () => {
 
   useEffect(() => {
     async function testDatabaseReset() {
-      await initializeDatabase();
 
       console.log("🛑 Deleting all data...");
       await deleteAllData(); // OR use resetDatabase()
@@ -33,27 +32,34 @@ const HomeScreen = () => {
     }
 
     async function testDatabase() {
-      await initializeDatabase();
 
       // Insert a test medication
       // await insertMedication("Aspirin", "1 pill", "Daily", ["08:00"], "2025-03-08", null);
 
       // Fetch and log medications
 
-      const meds = await fetchMedications();
-      console.log("📌 Medications in DB:", meds);
+      // const meds = await fetchMedications();
+      // console.log("📌 Medications in DB:", meds);
 
       // Fetch and log medication logs
    
       // const logs = await fetchMedicationLogs();
       // console.log("📌 Medication Logs in DB:", logs);
     }
-    // testDatabaseReset();
-    testDatabase();
-  }, []);
+   async function InitialiseDb(){
+    await initializeDatabase();
+  }
+  InitialiseDb();
+    console.log("AuthContext User:", user);
+
+  }, [user]);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      
+        <Text>{user?.username ? `Welcome, ${user.username}! 👋` : "Welcome, Guest!"}</Text>
+        
+
     <Button title="Logout" onPress={handleLogout} />
 </View>
 );
