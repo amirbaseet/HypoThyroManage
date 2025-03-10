@@ -1,6 +1,6 @@
 import React ,{useState}from 'react';
-import { View, Text, Button, StyleSheet, ScrollView  } from 'react-native';
-import VideoPlayer,{goHome} from '../components/VideoPlayer';
+import { View,  Button, StyleSheet  } from 'react-native';
+import VideoPlayer from '../components/VideoPlayer';
 import { useFocusEffect } from '@react-navigation/native';
 import ExcersiseInfo from '../utils/ExcersiseInfo';
 

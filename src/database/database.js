@@ -16,23 +16,23 @@ export async function initializeDatabase() {
         await db.execAsync("PRAGMA foreign_keys = ON;");
 
         await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS medications (
+                CREATE TABLE IF NOT EXISTS medications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 name TEXT NOT NULL, 
                 dosage TEXT NOT NULL, 
-                frequency TEXT NOT NULL, 
+                frequency TEXT CHECK (frequency IN ('daily', 'weekly', 'monthly')) NOT NULL, 
                 time_of_day TEXT, 
-                start_date TEXT NOT NULL, 
-                end_date TEXT
+                start_date TEXT NOT NULL CHECK (LENGTH(start_date) = 10), 
+                end_date TEXT CHECK (LENGTH(end_date) = 10)
             );
         `);
 
         await db.execAsync(`
             CREATE TABLE IF NOT EXISTS medication_logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                medication_id INTEGER, 
-                timestamp TEXT NOT NULL, 
-                status TEXT NOT NULL, 
+   id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                medication_id INTEGER NOT NULL, 
+                timestamp TEXT NOT NULL CHECK (LENGTH(timestamp) = 19), 
+                status TEXT NOT NULL DEFAULT 'pending', 
                 FOREIGN KEY (medication_id) REFERENCES medications(id)
             );
         `);
@@ -42,6 +42,10 @@ export async function initializeDatabase() {
         console.error("❌ Database initialization error:", err);
     }
 }
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];  // Extract YYYY-MM-DD
+};
 
 // Insert New Medication
 export async function insertMedication(name, dosage, frequency, time_of_day, start_date, end_date) {
@@ -50,7 +54,7 @@ export async function insertMedication(name, dosage, frequency, time_of_day, sta
         await db.withTransactionAsync(async () => {
             const query = `INSERT INTO medications (name, dosage, frequency, time_of_day, start_date, end_date)
                            VALUES (?, ?, ?, ?, ?, ?)`;
-            await db.runAsync(query, [name, dosage, frequency, JSON.stringify(time_of_day), start_date, end_date]);
+            await db.runAsync(query, [name, dosage, frequency, JSON.stringify(time_of_day), formatDate(start_date), formatDate(end_date)]);
         });
         console.log("✅ Medication inserted successfully.");
     } catch (error) {
@@ -123,7 +127,8 @@ export async function deleteAllData() {
       // Delete all records (soft reset)
       await db.execAsync("DELETE FROM medication_logs;");
       await db.execAsync("DELETE FROM medications;");
-      
+      await db.execAsync("VACUUM;");  // Reset database file size
+
       console.log("🗑️ All data deleted from the database.");
   } catch (error) {
       console.error("❌ Error deleting all data:", error);
