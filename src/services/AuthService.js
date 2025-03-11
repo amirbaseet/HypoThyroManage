@@ -1,8 +1,6 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import { removePushTokenSubscription } from "expo-notifications";
-import { de } from "react-native-paper-dates";
 const ip = "10.7.84.67";
 const API_URL = `http://${ip}:3001/api/auth`;
 
@@ -12,7 +10,9 @@ export const loginUser = async (email,password) =>{
         const token = res.data.token;
         await AsyncStorage.setItem("token",token);
         const decoded = jwtDecode(token);
-        return {token ,username:decoded.username||"Unknown"};
+        const user = { id: decoded.id, username: decoded.username, email:decoded.email, role: decoded.role}
+
+        return { token, ...user};
     }catch(error){
         return { error: error.response?.data?.message || "Login failed" };
     }

@@ -20,8 +20,15 @@ const LoginScreen = ({ navigation }) => {
         } else {
             Alert.alert("Success", "Login successful");
     
-            // Update global auth state with username included
-            setUser({ token: res.token, username: res.username });
+            setUser({
+            token: res.token,
+            user: {
+                id: res.id,
+                username: res.username,
+                email: res.email,
+                role: res.role
+            }
+        });
         }
         };
 
