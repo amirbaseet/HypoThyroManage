@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
                                 role: decoded.role || "User"
                             }
                         });
-                                            }
+                         }
                 }
             } catch (error) {
                 console.error("Error loading token:", error);
