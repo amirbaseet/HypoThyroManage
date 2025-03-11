@@ -51,13 +51,14 @@ const HomeScreen = () => {
   }
   InitialiseDb();
     console.log("AuthContext User:", user);
+    console.log("AuthContext User:", user);
 
   }, [user]);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       
-        <Text>{user?.username ? `Welcome, ${user.username}! 👋` : "Welcome, Guest!"}</Text>
+        <Text>{user?.user?.username ? `Welcome, ${user.user.username}! 👋` : "Welcome, Guest!"}</Text>
         
 
     <Button title="Logout" onPress={handleLogout} />
