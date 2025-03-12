@@ -1,9 +1,10 @@
 import React,{useContext,useEffect} from "react";
 import {View ,Text, Button} from 'react-native';
 import { AuthContext } from "../context/AuthContext";
-import { initializeDatabase,resetDatabase,deleteAllData, fetchMedications } from "../database/database";
+import { initializeDatabase } from "../database/database";
 import { useNavigation } from "@react-navigation/native";
-
+import { deleteAllData, resetDatabase } from "../database/DropDB";
+import { getLocalUsers } from "../database/UsersCrud";
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {user,logout} = useContext(AuthContext);
@@ -26,40 +27,40 @@ const HomeScreen = () => {
       await deleteAllData(); // OR use resetDatabase()
       await resetDatabase(); // OR use resetDatabase()
 
-      // Fetch medications to confirm deletion
-      const meds = await fetchMedications();
-      console.log("📌 Medications after deletion:", meds);
     }
 
-    async function testDatabase() {
-
-      // Insert a test medication
-      // await insertMedication("Aspirin", "1 pill", "Daily", ["08:00"], "2025-03-08", null);
-
-      // Fetch and log medications
-
-      // const meds = await fetchMedications();
-      // console.log("📌 Medications in DB:", meds);
-
-      // Fetch and log medication logs
-   
-      // const logs = await fetchMedicationLogs();
-      // console.log("📌 Medication Logs in DB:", logs);
+    async function deleteDatabase() {
+      await resetDatabase();
     }
    async function InitialiseDb(){
-    await initializeDatabase();
+    // await initializeDatabase();
+  //   const mockUser = {
+  //     id: "124",
+  //     username: "testuser",
+  //     email: "testuser5@example.com",
+  //     role: "User"
+  // };
+  //  await saveUserToLocalDB(mockUser);
+    await getLocalUsers();
+    // const existingUser = await getUserById("123");
+    // console.log("exist ? = ",existingUser);
+
   }
+
+
+  // testDatabaseReset();
   InitialiseDb();
-    console.log("AuthContext User:", user);
-    console.log("AuthContext User:", user);
+
+    // console.log("AuthContext User:", user);
+    // console.log("AuthContext User:", user);
 
   }, [user]);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      
+
         <Text>{user?.user?.username ? `Welcome, ${user.user.username}! 👋` : "Welcome, Guest!"}</Text>
-        
+
 
     <Button title="Logout" onPress={handleLogout} />
 </View>

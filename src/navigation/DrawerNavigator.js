@@ -10,8 +10,6 @@ import StressScreen from '../screens/StressScreen';
 import DermatologicalScreen from '../screens/DermatologicalScreen';
 import BrainScreen from '../screens/BrainScreen';
 // import RegisterScreen from '../screens/RegisterScreen';
-// import LoginScreen from '../screens/LoginScreen';
-// import MedicationLogsScreen from '../screens/MedicationLogsScreen';
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -21,13 +19,13 @@ const Drawer = createDrawerNavigator();
 
 // Drawer Navigation Setup
 const DrawerNavigator = () => {
-    const {  logout } = useContext(AuthContext);
+    const { logout } = useContext(AuthContext);
 
     // ✅ Correctly access the username
 
     // Console log user state
     return (
-        <Drawer.Navigator screenOptions={({ navigation }) => ({
+        <Drawer.Navigator screenOptions={() => ({
             headerRight: () => (
                 <TouchableOpacity onPress={logout} style={{ marginRight: 15 }}>
                     <Text style={{ color: "red", fontSize: 16 }}>Logout</Text>

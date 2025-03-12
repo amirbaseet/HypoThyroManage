@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { saveUserToLocalDB } from "../database/UsersCrud";
+const fileName = `IN AuthContext`;
 
 export const AuthContext = createContext();
 
@@ -12,11 +14,11 @@ export const AuthProvider = ({ children }) => {
         const loadUser = async () => {
             try {
                 const token = await AsyncStorage.getItem("token");
-                console.log("Token Retrieved:", token);
+                // console.log("Token Retrieved:", token);
 
                 if (token) {
                     const decoded = jwtDecode(token);
-                    console.log("Decoded JWT:", decoded);
+                    // console.log("Decoded JWT:", decoded);
 
                     const currentTime = Date.now() / 1000;
                     if (decoded.exp && decoded.exp < currentTime) {
@@ -34,9 +36,13 @@ export const AuthProvider = ({ children }) => {
                             }
                         });
                          }
+                            console.log("Saving user to local DB...");
+                            await saveUserToLocalDB(user.user);
+
+
                 }
             } catch (error) {
-                console.error("Error loading token:", error);
+                console.error(`${fileName} Error loading token:`, error);
             } finally {
                 setLoading(false); // ⬅️ Stop loading after processing
             }
