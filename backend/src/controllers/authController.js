@@ -4,8 +4,9 @@ const User = require("../models/userModels");
 
 const register = async (req, res) => {
    try {
-       const { email,username, password, role } = req.body;
-        //checking if the email is exist
+       const { email, username, password, dateOfBirth, gender, role } = req.body;
+
+       //checking if the email is exist
 
         const existUser = await User.findOne({email});
         if(existUser){
@@ -15,7 +16,7 @@ const register = async (req, res) => {
        const hashedPass = await bcrypt.hash(password, 10);
 
        // Create a new user
-       const newUser = new User({ email,username, password: hashedPass, role });
+       const newUser = new User({ email,username, password: hashedPass, dateOfBirth, gender, role });
 
        // Save the user to the database
        await newUser.save();
@@ -47,7 +48,7 @@ const login = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user._id, email:user.email , username: user.username,role: user.role },
+            { id: user._id, email: user.email, username: user.username, dateOfBirth: user.dateOfBirth, gender: user.gender ,role: user.role },
             process.env.JWT_SEC, 
             { expiresIn: "1h" }
         );
@@ -58,5 +59,4 @@ const login = async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 };
-
 module.exports = { register, login };
