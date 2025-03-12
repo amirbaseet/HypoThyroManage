@@ -9,7 +9,7 @@ router.post('/submit-report', async (req, res)=>{
         const { userId, symptoms } = req.body;
         const { weekStart, weekEnd } = getCurrentWeek();
 
-        const report = new weeklyReport({ userId, weekStart, weekEnd, symptoms});
+        const report = new WeeklyReport({ userId, weekStart, weekEnd, symptoms});
         await report.save();
         res.status(201).json({ message: "Weekly report submitted successfully!" });
     }catch(error){
