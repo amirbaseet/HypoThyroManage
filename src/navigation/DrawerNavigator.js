@@ -9,6 +9,7 @@ import ExerciseScreen from '../screens/ExerciseScreen';
 import StressScreen from '../screens/StressScreen';
 import DermatologicalScreen from '../screens/DermatologicalScreen';
 import BrainScreen from '../screens/BrainScreen';
+import ReportScreen from "../screens/ReportScreen";
 // import RegisterScreen from '../screens/RegisterScreen';
 
 import { AuthContext } from "../context/AuthContext";
@@ -35,6 +36,7 @@ const DrawerNavigator = () => {
     >
             <Drawer.Screen name="Home" component={HomeScreen} />
             <Drawer.Screen name="Profile" component={ProfileScreen} />
+            <Drawer.Screen name="Report" component={ReportScreen} />
             <Drawer.Screen name="Nutrition" component={NutritionScreen} />
             <Drawer.Screen name="Exercise" component={ExerciseScreen} />
             <Drawer.Screen name="Stress" component={StressScreen} />
