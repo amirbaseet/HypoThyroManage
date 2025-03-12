@@ -13,7 +13,7 @@ export const getLocalUsers = async () => {
             return [];
         }
 
-        console.log("📋 Users Retrieved:", rows[1]);
+        console.log("📋 Users Retrieved:", rows);
         return rows;  // ✅ Correctly return users
     } catch (error) {
         console.error(`❌ ${fileName} Error fetching local users:`, error);
@@ -25,6 +25,8 @@ export async function saveUserToLocalDB(user) {
     try {
 
         console.log(`🔍 Checking if user (${user.email}) exists...`);
+        // console.log(`await db.runAsync(insertQuery, [${user.id}, ${user.username}, ${user.email}, ${user.role}]);`)
+
         const existingUser = await db.getFirstAsync(`SELECT id FROM users WHERE email = ?`, [user.email]);
         console.log("exist?=",existingUser);
         if (!existingUser) {

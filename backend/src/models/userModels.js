@@ -15,6 +15,18 @@ const userSchema = new mongoose.Schema({
         unique:false,
         trim: true, // Removes leading and trailing spaces
     },
+    dateOfBirth: {
+         type: Date,
+         validate: {
+            validator: function (value) {
+                return value < new Date(); // Ensures date is not in the future
+            },
+            message: "Date of Birth cannot be in the future."},
+          required: true 
+        },
+    gender: { 
+        type: String,
+         enum: ["Male", "Female"] },
     password:{
      type:String,
      required:true

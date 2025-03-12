@@ -19,16 +19,13 @@ const LoginScreen = ({ navigation }) => {
             Alert.alert("Error", res.error);
         } else {
             Alert.alert("Success", "Login successful");
+            // ✅ Save user & token to AsyncStorage
+            await AsyncStorage.setItem("token", res.token);
+            await AsyncStorage.setItem("user", JSON.stringify(res.user));
+
+            // ✅ Set user in context
+            setUser(res.user);
     
-            setUser({
-            token: res.token,
-            user: {
-                id: res.id,
-                username: res.username,
-                email: res.email,
-                role: res.role
-            }
-        });
         }
         };
 

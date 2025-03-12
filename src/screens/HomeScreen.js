@@ -34,14 +34,7 @@ const HomeScreen = () => {
     }
    async function InitialiseDb(){
     // await initializeDatabase();
-  //   const mockUser = {
-  //     id: "124",
-  //     username: "testuser",
-  //     email: "testuser5@example.com",
-  //     role: "User"
-  // };
-  //  await saveUserToLocalDB(mockUser);
-    await getLocalUsers();
+    // await getLocalUsers()
     // const existingUser = await getUserById("123");
     // console.log("exist ? = ",existingUser);
 
@@ -59,7 +52,7 @@ const HomeScreen = () => {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-        <Text>{user?.user?.username ? `Welcome, ${user.user.username}! 👋` : "Welcome, Guest!"}</Text>
+        <Text>{user?.username ? `Welcome, ${user.username}! 👋` : "Welcome, Guest!"}</Text>
 
 
     <Button title="Logout" onPress={handleLogout} />
