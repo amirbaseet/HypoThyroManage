@@ -14,7 +14,7 @@ const weeklyReportSchema = new mongoose.Schema({
 });
 
 // Ensure each user can only have ONE report per week
-weeklyReportSchema.index({ userId: 1, weekStart: 1 }, { unique: true });
+// weeklyReportSchema.index({ userId: 1, weekStart: 1 }, { unique: true });
 
 
 
