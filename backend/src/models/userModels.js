@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
         },
     gender: { 
         type: String,
-         enum: ["Male", "Female"] },
+         enum: ["male", "female"] },
     password:{
      type:String,
      required:true
@@ -34,9 +34,12 @@ const userSchema = new mongoose.Schema({
     role:{
         type:String,
         required:true,
-        enum:["admin","doc","user"],
+        enum:["admin","doctor","patient"],default: 'patient',
     },
-    
+    doctorId:{
+        type: mongoose.Schema.Types.ObjectId,
+         ref: 'User',
+         default: null }, // Patient's assigned doctor
 },
 {
     timestamps: true,

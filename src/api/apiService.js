@@ -28,6 +28,15 @@ api.interceptors.request.use(
 
 
 
+export const getDoctorPatientsReports = async (doctorId) => {
+    try {
+        const response = await api.get(`/reports/doctor/${doctorId}`);
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error fetching doctor reports:", error.response?.data || error);
+        return { patients: [], reports: [] };
+    }
+};
 
 // ✅ Get Symptoms
 export const getSymptoms = async () => {
