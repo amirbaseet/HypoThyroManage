@@ -77,14 +77,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#FAF9F6',
     },
     header: {
         fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
-        color: '#333',
+        color: '#444444',
     },
     row: {
         justifyContent: 'space-between', // Ensures equal spacing
@@ -96,18 +96,20 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 5,
         alignItems: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: '#EAE7DC',
         borderWidth: 2,
-        borderColor: '#007BFF',
+        borderColor: '#C6A477',
+        justifyContent:'center',
     },
     selectedSymptom: {
-        backgroundColor: '#007BFF',
-        borderColor: '#0056B3',
+        backgroundColor: '#B5E7A0',
+        borderColor: '#8AAD60',
     },
     symptomText: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: '600',
-        color: '#007BFF',
+        textAlign:'center',
+        color: '#444444',
     },
     buttonContainer: {
         marginTop: 20,
