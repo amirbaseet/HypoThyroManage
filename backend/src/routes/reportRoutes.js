@@ -1,7 +1,7 @@
 const express = require('express');
 const {getCurrentWeek} = require('../utils/weekUtils');
 const WeeklyReport = require('../models/weeklyReport');
-
+const User = require('../models/userModels');
 const router = express.Router();
 
 router.post('/submit-report', async (req, res)=>{
@@ -50,6 +50,56 @@ router.get('/latest-report/:userId', async (req, res) => {
         res.json(latestReport);
     } catch (error) {
         console.error("❌ Error fetching latest report:", error.message);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+// ✅ GET all reports for patients assigned to a specific doctor
+router.get('/doctor/:doctorId', async (req, res) => {
+    try {
+        const doctorId = req.params.doctorId;
+
+        // Find all patients assigned to the doctor
+        const patients = await User.find({ doctorId }).select('_id username email');
+
+        if (!patients.length) {
+            return res.status(404).json({ message: "No patients found for this doctor." });
+        }
+
+        // Get all reports for those patients
+        const patientIds = patients.map(patient => patient._id);
+        const reports = await WeeklyReport.find({ userId: { $in: patientIds } })
+            .populate('userId', 'username') // Fetch patient name
+            .populate('symptoms.symptomId', 'name') // Fetch symptom names
+            .sort({ weekStart: -1 });
+
+        res.json({ patients, reports });
+    } catch (error) {
+        console.error("❌ Error fetching reports for doctor:", error.message);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+// ✅ GET all reports for patients assigned to a specific doctor
+router.get('/doctor/:doctorId', async (req, res) => {
+    try {
+        const doctorId = req.params.doctorId;
+
+        // Find all patients assigned to the doctor
+        const patients = await User.find({ doctorId }).select('_id username email');
+
+        if (!patients.length) {
+            return res.status(404).json({ message: "No patients found for this doctor." });
+        }
+
+        // Get all reports for those patients
+        const patientIds = patients.map(patient => patient._id);
+        const reports = await WeeklyReport.find({ userId: { $in: patientIds } })
+            .populate('userId', 'username') // Fetch patient name
+            .populate('symptoms.symptomId', 'name') // Fetch symptom names
+            .sort({ weekStart: -1 });
+
+        res.json({ patients, reports });
+    } catch (error) {
+        console.error("❌ Error fetching reports for doctor:", error.message);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 });

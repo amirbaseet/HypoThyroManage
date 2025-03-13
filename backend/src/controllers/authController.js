@@ -4,26 +4,50 @@ const User = require("../models/userModels");
 
 const register = async (req, res) => {
    try {
-       const { email, username, password, dateOfBirth, gender, role } = req.body;
+    
+       const { email, username, password, dateOfBirth, gender, role, adminKey } = req.body;
 
+       //Prevent normal Users from Creating an admin
+       if (role === "admin") {
+        if (!adminKey || adminKey !== process.env.ADMIN_SECRET) {
+            return res.status(403).json({ message: "Unauthorized to create an admin account" });
+        }
+    }
+   
        //checking if the email is exist
-
         const existUser = await User.findOne({email});
         if(existUser){
             return res.status(400).json({message:"Email is already taken"});
         }
+
+        if(!["admin","doctor","patient"].includes(role)){
+            return res.status(400).json({ message: "Invalid role. Must be 'admin', 'doctor', or 'patient'." });
+        }
+
+        let doctorId = null;
+
+        //Auto-assign a doctor if the user is a patient
+        if(role === "patient"){
+            const doctor = await User.findOne({role: "doctor"})//Find any doctor
+            .sort({patientCount: 1});// get the doctor with the fewest patients
+      
+            doctorId = doctor._id;
+            await User.findByIdAndUpdate(doctorId, { $inc: {patientCount: 1}});
+        }
+
+
        // Hash password
        const hashedPass = await bcrypt.hash(password, 10);
 
        // Create a new user
-       const newUser = new User({ email,username, password: hashedPass, dateOfBirth, gender, role });
+       const newUser = new User({ email,username, password: hashedPass, dateOfBirth, gender, role, doctorId });
 
        // Save the user to the database
        await newUser.save();
 
        res.status(201).json({ message: `User registered with username ${username}` });
    } catch (err) {
-       console.error(err);
+       console.error(" Error registering user:",err);
        res.status(500).json({ message: "Something went wrong" });
    }
 };

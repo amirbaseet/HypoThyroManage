@@ -22,7 +22,7 @@ const ReportScreen = () => {
     };
 
     const handleSubmit = async () => {
-        const userId = "67d13beb81395bb96cd8420b"; // Replace with actual user ID
+        const userId = "67d29c9b57c4998b565e0ad0"; // Replace with actual user ID
 
         const symptomsArray = Object.entries(selectedSymptoms).map(([symptomId, hasSymptom]) => ({
             symptomId,
@@ -38,6 +38,7 @@ const ReportScreen = () => {
 
         if (response.message) {
             Alert.alert("Success", "Weekly report submitted!");
+            setSelectedSymptoms({});//reset the SelectedSymptoms
         } else {
             Alert.alert("Error", response.error || "Submission failed");
         }
