@@ -30,6 +30,8 @@ export const AuthProvider = ({ children }) => {
 
                         // console.log(`Saving user to local DB...`);
                         // await saveUserToLocalDB(userData.user);
+
+                        
                     }
                 }
             }  catch (error) {
@@ -46,6 +48,8 @@ export const AuthProvider = ({ children }) => {
         const response = await loginUser(email, password);
         if (response.token) {
             setUser(response.user);
+            await AsyncStorage.setItem("token", response.token);
+            await AsyncStorage.setItem("user", JSON.stringify(response.user));
         }
         return response;
     };
@@ -54,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         setUser(null); // Reset user first to prevent UI flicker
         await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("user");
     };
 
     if (loading) {

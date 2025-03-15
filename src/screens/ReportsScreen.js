@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { getUserReports } from '../api/apiService';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 const ReportsScreen = () => {
+    const { user } = useContext(AuthContext);
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
-    const userId = "67d29c9b57c4998b565e0ad0"; // Replace with actual user ID
+    
+
+        const userId = user?.id; // 🔹 Get user ID dynamically
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -22,7 +26,7 @@ const ReportsScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Weekly Reports</Text>
+            <Text style={styles.header}>Weekly Reports </Text>
             <FlatList
                 data={reports}
                 keyExtractor={(item) => item._id}
