@@ -13,6 +13,8 @@ import ReportScreen from "../screens/ReportScreen";
 import ReportsScreen from "../screens/ReportsScreen";
 import DoctorDashboardScreen from "../screens/DoctorDashboardScreen";
 // import RegisterScreen from '../screens/RegisterScreen';
+import PatientChatScreen from "../screens/PatientChatScreen ";
+import DoctorChatScreen from "../screens/DoctorChatScreen";
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -37,15 +39,17 @@ const DrawerNavigator = () => {
         })}
     >
             <Drawer.Screen name="Home" component={HomeScreen} />
-            <Drawer.Screen name="Profile" component={ProfileScreen} />
+            {/* <Drawer.Screen name="Profile" component={ProfileScreen} /> */}
             <Drawer.Screen name="Report" component={ReportScreen} />
+            <Drawer.Screen name="PatientChat" component={PatientChatScreen} />
             <Drawer.Screen name="DoctorDashboard" component={DoctorDashboardScreen} />
+            <Drawer.Screen name="DoctorChat" component={DoctorChatScreen} />
             <Drawer.Screen name="Reports" component={ReportsScreen} />
-            <Drawer.Screen name="Nutrition" component={NutritionScreen} />
+            {/* <Drawer.Screen name="Nutrition" component={NutritionScreen} />
             <Drawer.Screen name="Exercise" component={ExerciseScreen} />
             <Drawer.Screen name="Stress" component={StressScreen} />
             <Drawer.Screen name="Dermatological" component={DermatologicalScreen} />
-            <Drawer.Screen name="Brain" component={BrainScreen} />
+            <Drawer.Screen name="Brain" component={BrainScreen} /> */}
         </Drawer.Navigator>
     );
 };

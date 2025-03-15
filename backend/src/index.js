@@ -1,40 +1,44 @@
-const express = require('express');
+const express = require("express");
 const dbConnect = require("./config/dbConnect");
-const Symptom = require('./models/Symptom'); // Import the Symptom model
+const dotenv = require("dotenv");
+const cors = require("cors");
 
-require(`dotenv`).config();
-const cors = require('cors');
+const { server, app } = require("./socket"); // Import server and app from socket.js
+const Symptom = require("./models/Symptom");
+const Message = require("./models/Message");
 
-const app = express();
-const port = process.env.PORT  || 3001;
-//MiddleWare 
+dotenv.config();
+const port = process.env.PORT || 3001;
+
+// Middleware
 app.use(express.json());
-app.use(cors()); 
-//Routes
-//import Routes
+app.use(cors());
+
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const symptomRoutes = require("./routes/symptomRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
-//use Routes
-app.use("/api/auth",authRoutes);
-app.use("/api/users",userRoutes);
-app.use("/api/symptoms",symptomRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/symptoms", symptomRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/messages", messageRoutes);
 
+// Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.status || 500).json({ message: err.message || "Internal Server Error" });
 });
 
-app.get('/',(req,res)=>{
-    res.send({status:"STARTED"});
-})
+// Connect to Database
 dbConnect();
 
-const insertSymptoms = async () =>{
-    try{
+// Insert Default Symptoms if Not Present
+const insertSymptoms = async () => {
+    try {
         const symptoms = [
             "Kabızlık", "Halsizlik", "Yorgunluk", "Kilo alma",
             "Cilt kuruluğu", "Saç dökülmesi", "Üşüme", "Hareketlerde yavaşlama",
@@ -44,7 +48,7 @@ const insertSymptoms = async () =>{
             "Konsantrasyon/odaklanmada zorlanma", "Adet düzensizliği",
             "Hareket halindeyken nefes darlığı", "Ödem/şişlik"
         ];
-        // Check if symptoms already exist
+
         const existingSymptoms = await Symptom.countDocuments();
         if (existingSymptoms === 0) {
             await Symptom.insertMany(symptoms.map(name => ({ name })));
@@ -55,12 +59,12 @@ const insertSymptoms = async () =>{
     } catch (error) {
         console.error("❌ Error inserting symptoms:", error);
     }
+};
 
-}
-// Call function once when the server starts
+// Run the function once when the server starts
 insertSymptoms();
 
-
-app.listen(port,()=>{
-    console.log(`Server is runing on port ${port}`);
+// Start Server
+server.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
 });

@@ -1,18 +1,11 @@
 const express = require("express");
+const {getAllSymptoms, createSymptom} = require("../controllers/symptomController");
 const router = express.Router();
-const Symptom  = require("../models/Symptom");
 
 // Get all symptoms
-router.get("/", async (req, res) => {
-    const symptoms = await Symptom.find();
-    res.json(symptoms);
-});
+router.get("/", getAllSymptoms);
 
 // Create a new symptom
-router.post("/",async (req,res) =>{
-    const newSymptom = new Symptom(req.body);
-    await newSymptom.save();
-    res.status(201).json(newSymptom);
-})
+router.post("/", createSymptom);
 
 module.exports = router;

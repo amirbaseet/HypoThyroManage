@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext  } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button, Alert, StyleSheet } from 'react-native';
 import { getSymptoms, submitWeeklyReport } from '../api/apiService';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 const ReportScreen = () => {
+    const { user } = useContext(AuthContext);
     const [symptoms, setSymptoms] = useState([]);
     const [selectedSymptoms, setSelectedSymptoms] = useState({});
 
@@ -22,8 +24,8 @@ const ReportScreen = () => {
     };
 
     const handleSubmit = async () => {
-        const userId = "67d29c9b57c4998b565e0ad0"; // Replace with actual user ID
 
+        const userId = user?.id; // 🔹 Get user ID dynamically
         const symptomsArray = Object.entries(selectedSymptoms).map(([symptomId, hasSymptom]) => ({
             symptomId,
             hasSymptom
@@ -46,7 +48,7 @@ const ReportScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Select Symptoms</Text>
+            <Text style={styles.header}>Select Symptoms </Text>
 
             {/* Grid Layout with 2 columns */}
             <FlatList

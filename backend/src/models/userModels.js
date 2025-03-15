@@ -39,8 +39,15 @@ const userSchema = new mongoose.Schema({
     doctorId:{
         type: mongoose.Schema.Types.ObjectId,
          ref: 'User',
-         default: null }, // Patient's assigned doctor
-},
+         default: null
+         }, // Patient's assigned doctor
+    publicKey:{// Store public key for asymmetric encryption
+        type: String
+    },
+    privateKey:{// Store Private key for Asymmetric encryption
+        type: String
+    },
+        },
 {
     timestamps: true,
 }
