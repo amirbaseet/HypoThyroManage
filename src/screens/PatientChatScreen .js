@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, Text as RNText } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { sendMessageAPI, getChatHistoryAPI } from "../api/apiService";
@@ -11,42 +11,46 @@ const PatientChatScreen = () => {
     const [loading, setLoading] = useState(true);
     const doctorId = user?.doctorId;
     const userId = user?.id;
+    const flatListRef = useRef();
 
-
-
-    const fetchChatHistory = async () => {
-        try {
-            const res = await getChatHistoryAPI(userId, doctorId);
-            setMessages(res);
-        } catch (error) {
-            console.error("❌ Error fetching messages:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
+    // ✅ Set User ID when connecting (No auth required)
+    useEffect(() => {
+        socket.emit("setUserId", userId);
+        console.log("🟢 Sent userId to server:", userId);
+    }, []);
 
     useEffect(() => {
         if (!doctorId) {
             setLoading(false);
             return;
         }
-    
-    
+
+        const fetchChatHistory = async () => {
+            try {
+                const res = await getChatHistoryAPI(userId, doctorId);
+                setMessages(res);
+            } catch (error) {
+                console.error("❌ Error fetching messages:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchChatHistory();
-    
-        // ✅ Listen for new messages
-        socket.on("receiveMessage", (data) => {
-            console.log("📩 New message received in frontend:", data);
-            setMessages((prevMessages) => [...prevMessages, data]);
+
+        // ✅ Listen for messages
+        socket.off("receiveMessage").on("receiveMessage", (data) => {
+            console.log("📩 New message received:", data);
+            if (data.sender === doctorId || data.receiver === doctorId) {
+                setMessages((prevMessages) => [...prevMessages, data]);
+            }
         });
-    
+
         return () => {
-            socket.off("receiveMessage"); // Cleanup listener on unmount
+            socket.off("receiveMessage"); // Cleanup
         };
     }, [doctorId]);
-    
+
     const sendMessage = async () => {
         if (!doctorId || !message.trim()) {
             alert("Cannot send an empty message or no assigned doctor.");
@@ -55,21 +59,16 @@ const PatientChatScreen = () => {
 
         const newMessage = { sender: userId, receiver: doctorId, message };
 
-        // ✅ Emit the message to the socket server
-        socket.emit("sendMessage", newMessage);
-        console.log("📩 Sent message:", newMessage);
+        socket.emit("sendMessage", newMessage, (ack) => {
+            console.log("📩 Sent message:", newMessage);
+            console.log("✅ Acknowledgment:", ack);
+        });
 
-        // ✅ Call API to store message
-        await sendMessageAPI(userId, doctorId, message);
-
-        // ✅ Update UI instantly
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-        setMessage(""); 
-    };
 
-    if (loading) {
-        return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
-    }
+        await sendMessageAPI(userId, doctorId, message);
+        setMessage("");
+    };
 
     return (
         <View style={styles.container}>
@@ -78,29 +77,20 @@ const PatientChatScreen = () => {
             {doctorId ? (
                 <>
                     <FlatList
+                        ref={flatListRef}
                         data={messages}
                         keyExtractor={(item, index) => index.toString()}
+                        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                         renderItem={({ item }) => (
                             <View style={item.sender === userId ? styles.patientMessage : styles.doctorMessage}>
                                 <RNText style={styles.messageText}>{item.message}</RNText>
                             </View>
                         )}
-                        extraData={messages} // ✅ Ensures FlatList updates
                     />
-                    <TextInput
-                        value={message}
-                        onChangeText={setMessage}
-                        style={styles.input}
-                        placeholder="Type a message..."
-                    />
+                    <TextInput value={message} onChangeText={setMessage} style={styles.input} placeholder="Type a message..." />
                     <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
                         <RNText style={styles.sendButtonText}>Send</RNText>
                     </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.sendButton} onPress={fetchChatHistory}>
-    <RNText style={styles.sendButtonText}>Force Refresh</RNText>
-</TouchableOpacity>
-
                 </>
             ) : (
                 <RNText style={styles.noDoctorText}>You have no assigned doctor.</RNText>
@@ -108,7 +98,6 @@ const PatientChatScreen = () => {
         </View>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: "#FAF9F6" },
