@@ -1,46 +1,77 @@
 const { Server } = require("socket.io");
 const http = require("http");
 const express = require("express");
-const User = require("./models/userModels");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
-    cors: { origin: [process.env.CLIENT_URL] },
+    cors: { origin: process.env.CLIENT_URL }, // Allow requests from frontend
 });
 
-// ✅ Skip authentication for testing
-io.on("connection", async (socket) => {
-    console.log(`🔌 New connection: ${socket.id}`);
+// Store online users with socket IDs
+const users = new Map();
 
-    // ✅ For testing, assign a user ID based on client input
-    socket.on("setUserId", (userId) => {
-        socket.userId = userId;
-        console.log(`🟢 User ${userId} connected!`);
-    });
+// 🔑 Middleware: Authenticate WebSocket connection using JWT
+io.use((socket, next) => {
+    try {
+        console.log("first")
+        let token = socket.handshake.auth?.token;
+        console.log("🔑 Received Token in WebSocket:", token);
 
-    socket.on("sendMessage", async (data, callback) => {
-        try {
-            const { sender, receiver, message } = data;
-            if (!sender || !receiver || !message.trim()) {
-                return callback({ status: "error", error: "Invalid message data" });
+        if (!token) {
+            return next(new Error("Authentication error: No token provided"));
+        }
+
+        // ✅ Ensure token is correctly handled
+        if (token.startsWith("Bearer ")) {
+            token = token.split(" ")[1];  // Remove "Bearer" if included
+        }
+
+        jwt.verify(token, process.env.JWT_SEC, (err, decoded) => {
+            if (err) {
+                console.error("❌ Token verification failed:", err.message);
+                return next(new Error("Authentication error: Invalid token"));
             }
 
-            // ✅ Skip user validation for testing
-            console.log(`📩 Message from ${sender} to ${receiver}: ${message}`);
+            socket.userId = decoded.id;
+            console.log(`🟢 User ${socket.userId} authenticated`);
+            next();
+        });
 
-            io.emit("receiveMessage", { sender, receiver, message });
+    } catch (error) {
+        next(new Error("Authentication error: Token verification failed"));
+    }
+});
 
+io.on("connection", (socket) => {
+    console.log(`🔌 New connection: ${socket.id} (User: ${socket.userId})`);
+
+    // ✅ Store connected user's socket ID
+    users.set(socket.userId, socket.id);
+
+    socket.on("sendMessage", ({ sender, receiver, message }, callback) => {
+        if (!sender || !receiver || !message.trim()) {
+            return callback({ status: "error", error: "Invalid message data" });
+        }
+
+        const receiverSocketId = users.get(receiver);
+
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("receiveMessage", { sender, message });
             callback({ status: "success" });
-        } catch (error) {
-            console.error("❌ Error sending message:", error);
-            callback({ status: "error", error: "Server error" });
+        } else {
+            callback({ status: "error", error: "User offline" });
         }
     });
 
     socket.on("disconnect", () => {
-        console.log(`🔴 User disconnected: ${socket.id}`);
+        console.log(`🔴 User disconnected: ${socket.userId} (Socket: ${socket.id})`);
+        users.delete(socket.userId);
     });
 });
+
 
 module.exports = { io, app, server };
