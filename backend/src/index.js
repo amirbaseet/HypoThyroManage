@@ -20,12 +20,14 @@ const userRoutes = require("./routes/userRoutes");
 const symptomRoutes = require("./routes/symptomRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const pushNotificationRoutes = require("./routes/pushNotificationRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/symptoms", symptomRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/notifications", pushNotificationRoutes);  
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
