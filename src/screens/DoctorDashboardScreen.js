@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
+import { View, FlatList, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { getDoctorPatientsReports } from "../api/apiService";
-import { getPrivateKey } from "../utils/secureStorage";
 
 
 const DoctorDashboard = () => {
