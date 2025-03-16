@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, Text as RNText, KeyboardAvoidingView, Platform } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { sendMessageAPI, getChatHistoryAPI } from "../api/apiService";
-import { getSocket } from "../api/socket";
+import { getSocket } from "../api/socket"; // ✅ Ensure we use getSocket()
 
 const PatientChatScreen = () => {
     const { user } = useContext(AuthContext);
@@ -13,6 +13,7 @@ const PatientChatScreen = () => {
     const userId = user?.id;
     const flatListRef = useRef();
 
+    // ✅ Fetch chat history when a doctor is assigned
     useEffect(() => {
         const fetchChatHistory = async () => {
             if (!doctorId) return;
@@ -29,55 +30,69 @@ const PatientChatScreen = () => {
         fetchChatHistory();
     }, [doctorId]);
 
+    // ✅ Listen for incoming real-time messages and update state
     useEffect(() => {
-        let socket;
+        if (!doctorId) return;
 
         const setupSocket = async () => {
-            socket = await getSocket();
+            const socket = await getSocket();
             if (!socket) {
                 console.error("❌ Socket not available.");
                 return;
             }
 
+            // ✅ Remove old listener before adding a new one
+            socket.off("receiveMessage"); 
+
             const handleReceiveMessage = (data) => {
                 console.log("📩 New message received:", data);
-            
-                // Ensure the message belongs to the current chat
+                if (data.sender === doctorId || data.receiver === doctorId) {
                     setMessages((prevMessages) => [...prevMessages, data]);
                     flatListRef.current?.scrollToEnd({ animated: true });
+                }
             };
-            
+
             socket.on("receiveMessage", handleReceiveMessage);
+
+            return () => {
+                socket.off("receiveMessage", handleReceiveMessage); // ✅ Cleanup listener
+            };
         };
 
         setupSocket();
+    }, [doctorId]);
 
-        return () => {
-            if (socket) {
-                socket.off("receiveMessage");
-            }
-        };
-    }, [doctorId, userId]);
-
+    // ✅ Handle sending messages
     const sendMessage = async () => {
-        if (!doctorId || !message.trim()) return;
+        if (!doctorId || !message.trim()) {
+            alert("Cannot send an empty message or no assigned doctor.");
+            return;
+        }
 
         const newMessage = { sender: userId, receiver: doctorId, message };
         const socket = await getSocket();
+        if (!socket) {
+            console.error("❌ Cannot send message, socket is unavailable.");
+            return;
+        }
 
+        // Emit message via WebSocket
         socket.emit("sendMessage", newMessage, (ack) => {
-            console.log("✅ Message sent acknowledgment:", ack);
+            console.log("📩 Sent message:", newMessage);
+            console.log("✅ Acknowledgment:", ack);
         });
 
+        // Update UI instantly
         setMessages((prevMessages) => [...prevMessages, newMessage]);
 
+        // Persist message to backend
         try {
             await sendMessageAPI(userId, doctorId, message);
         } catch (error) {
             console.error("❌ Error sending message:", error);
         }
 
-        setMessage("");
+        setMessage(""); // Clear input field
     };
 
     if (loading) {
@@ -99,9 +114,11 @@ const PatientChatScreen = () => {
                                 <RNText style={styles.messageText}>{item.message}</RNText>
                             </View>
                         )}
+                        contentContainerStyle={{ paddingBottom: 10 }}
                         onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                     />
-
+                    
+                    {/* Message Input Field */}
                     <View style={styles.inputContainer}>
                         <TextInput
                             value={message}
