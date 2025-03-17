@@ -54,9 +54,15 @@
       [
         "expo-notifications",
         {
-          "mode": "production"        
+          "mode": "production"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "db21a572-dd39-4230-86c2-82f5a36b75fb"
+      }
+    },
+    "owner": "amrobaseet"
   }
 }
