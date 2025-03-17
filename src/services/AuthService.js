@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import api,{ updatePushToken } from "../api/apiService";
+import api,{ updatePushToken, removePushToken } from "../api/apiService";
 // import { saveUserToLocalDB } from "../database/UsersCrud";
 import * as Notifications from "expo-notifications";
 
@@ -45,6 +45,18 @@ export const loginUser = async (email, password) => {
 };
 export const logoutUser = async()=>{
     console.log(`${fileName} Logging out...`);
+    try {
+        const userData = await AsyncStorage.getItem("user");
+        if (userData) {
+            const { id: userId } = JSON.parse(userData);
+
+            // ✅ Notify backend to remove push token
+            await removePushToken(userId);
+        }
+    } catch (error) {
+        console.error("❌ Error removing push token:", error);
+    }
+
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("user"); // 🔹 Also remove user data
 };

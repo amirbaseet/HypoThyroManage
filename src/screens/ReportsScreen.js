@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { getUserReports } from '../api/apiService';
+import { getUserReports } from '../services/patientService';
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 const ReportsScreen = () => {

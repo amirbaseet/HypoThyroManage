@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { saveUserToLocalDB } from "../database/UsersCrud";
+// import { saveUserToLocalDB } from "../database/UsersCrud";
 import { loginUser, logoutUser } from "../services/AuthService";
 
 const fileName = `IN AuthContext`;
@@ -56,9 +56,8 @@ export const AuthProvider = ({ children }) => {
 
     // Logout function: Remove token and reset user state
     const logout = async () => {
+        await logoutUser();
         setUser(null); // Reset user first to prevent UI flicker
-        await AsyncStorage.removeItem("token");
-        await AsyncStorage.removeItem("user");
     };
 
     if (loading) {

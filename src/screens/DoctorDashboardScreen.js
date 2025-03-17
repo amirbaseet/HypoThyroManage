@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { View, FlatList, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { getDoctorPatientsReports } from "../api/apiService";
+import { getDoctorPatientsReports } from "../services/doctorService";
 
 
 const DoctorDashboard = () => {
