@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import api from "../api/apiService";
+import api,{ updatePushToken } from "../api/apiService";
 // import { saveUserToLocalDB } from "../database/UsersCrud";
 import * as Notifications from "expo-notifications";
 
@@ -22,24 +22,20 @@ export const loginUser = async (email, password) => {
             role: decoded.role || "User",
         };
 
+        // 🔹 Store both token & user details in AsyncStorage
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+
         // 🔹 Fetch Expo Push Token with Error Handling
         let pushToken = null;
         try {
             const { data } = await Notifications.getExpoPushTokenAsync();
             pushToken = data;
             console.log("Expo Push Token:", pushToken);
-
-            // 🔹 Send Push Token to Backend
-            if (pushToken) {
-                await api.post(`/auth/update-push-token`, { userId: user.id, pushToken });
-            }
-        } catch (pushError) {
+            await updatePushToken( user.id, pushToken);
+                    } catch (pushError) {
             console.error("Error fetching Expo push token:", pushError.message);
         }
-
-        // 🔹 Store both token & user details in AsyncStorage
-        await AsyncStorage.setItem("token", token);
-        await AsyncStorage.setItem("user", JSON.stringify(user));
 
         return { token, user };
     } catch (error) {
