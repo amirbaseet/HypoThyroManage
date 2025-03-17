@@ -1,10 +1,10 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModels");
-const NodeRSA = require("node-rsa");
+// const NodeRSA = require("node-rsa");
 const { generateRSAKeys } = require("../utils/encryptionUtils");
 
-
+const { sendPushNotification  } = require("../utils/notificationService");
 
 const register = async (req, res) => {
    try {
@@ -83,7 +83,8 @@ const login = async (req, res) => {
             process.env.JWT_SEC, 
             { expiresIn: "1h" }
         );
-
+        // 🔹 Send login notification
+        await sendPushNotification(user._id, "Welcome Back!", `Hello ${user.username}, you are now logged in!`);
         res.status(200).json({ token });
 
     } catch (err) {
@@ -91,4 +92,21 @@ const login = async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 };
-module.exports = { register, login };
+
+const updatePushToken  = async (req, res) =>{
+   
+    try{
+
+        const { userId, pushToken} =req.body;
+
+        if(!userId || !pushToken){
+            return res.status(400).json({ message: "User ID and Push Token are required" });
+        } 
+        await User.findByIdAndUpdate(userId, { pushToken });
+        res.status(200).json({ message: "Push token updated successfully" });
+    }catch(error){
+        console.error("Error updating push token:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+module.exports = { register, login, updatePushToken };

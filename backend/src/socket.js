@@ -2,6 +2,8 @@ const { Server } = require("socket.io");
 const http = require("http");
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const {sendPushNotification} = require("./utils/pushNotifications")
+
 require("dotenv").config();
 
 const app = express();
@@ -46,13 +48,14 @@ io.use((socket, next) => {
     }
 });
 
+
 io.on("connection", (socket) => {
     console.log(`🔌 New connection: ${socket.id} (User: ${socket.userId})`);
 
     // ✅ Store connected user's socket ID
     users.set(socket.userId, socket.id);
 
-    socket.on("sendMessage", ({ sender, receiver, message }, callback) => {
+    socket.on("sendMessage", async ({ sender, receiver, message }, callback) => {
         if (!sender || !receiver || !message.trim()) {
             return callback({ status: "error", error: "Invalid message data" });
         }
@@ -60,11 +63,26 @@ io.on("connection", (socket) => {
         const receiverSocketId = users.get(receiver);
 
         if (receiverSocketId) {
+            // ✅ Send message via WebSocket if the user is online
             io.to(receiverSocketId).emit("receiveMessage", { sender, message });
-            callback({ status: "success" });
         } else {
-            callback({ status: "error", error: "User offline" });
+            // ✅ If user is offline, fetch their Expo push token and send a notification
+            try {
+                const receiverUser = await User.findById(receiver);
+
+                if (receiverUser?.expoPushToken) {
+                    await sendPushNotification(
+                        receiverUser.expoPushToken,
+                        "New Message",
+                        `You have a new message from ${sender}`
+                    );
+                }
+            } catch (error) {
+                console.error("❌ Error sending push notification:", error);
+            }
         }
+
+        callback({ status: "success" });
     });
 
     socket.on("disconnect", () => {
@@ -72,6 +90,5 @@ io.on("connection", (socket) => {
         users.delete(socket.userId);
     });
 });
-
 
 module.exports = { io, app, server };
