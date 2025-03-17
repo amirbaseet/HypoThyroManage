@@ -4,8 +4,8 @@ import { AuthContext } from "../context/AuthContext";
 import { initializeDatabase } from "../database/database";
 import { useNavigation } from "@react-navigation/native";
 import { deleteAllData, resetDatabase } from "../database/DropDB";
-import { getLocalUsers } from "../database/UsersCrud";
-import { getSymptoms } from "../api/apiService";
+// import { getLocalUsers } from "../database/UsersCrud";
+import { getSymptoms } from "../services/symptomsService";
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {user,logout} = useContext(AuthContext);

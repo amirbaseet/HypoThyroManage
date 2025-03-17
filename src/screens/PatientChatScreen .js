@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, Text as RNText, KeyboardAvoidingView, Platform } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { sendMessageAPI, getChatHistoryAPI } from "../api/apiService";
+import { sendMessageAPI, getChatHistoryAPI } from "../services/chatService";
 import { getSocket } from "../api/socket"; // ✅ Ensure we use getSocket()
 
 const PatientChatScreen = () => {

@@ -109,4 +109,23 @@ const updatePushToken  = async (req, res) =>{
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
-module.exports = { register, login, updatePushToken };
+
+const removePushToken = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        // ✅ Remove the push token from the database
+        await User.findByIdAndUpdate(userId, { $unset: { pushToken: 1 } });
+
+        return res.status(200).json({ message: "Push token removed successfully" });
+    } catch (error) {
+        console.error("❌ Error removing push token:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+module.exports = { register, login, updatePushToken, removePushToken };
