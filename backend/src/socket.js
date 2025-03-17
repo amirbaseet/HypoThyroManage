@@ -21,7 +21,7 @@ io.use((socket, next) => {
     try {
         console.log("first")
         let token = socket.handshake.auth?.token;
-        console.log("🔑 Received Token in WebSocket:", token);
+        // console.log("🔑 Received Token in WebSocket:", token);
 
         if (!token) {
             return next(new Error("Authentication error: No token provided"));

@@ -54,8 +54,8 @@ exports.getChatHistory = async (req, res) => {
             return res.status(400).json({ message: "One or both users not found" });
         }
 
-        console.log(`🔹 User1 Private Key: ${userOne.privateKey ? "Exists" : "Missing"}`);
-        console.log(`🔹 User2 Private Key: ${userTwo.privateKey ? "Exists" : "Missing"}`);
+        // console.log(`🔹 User1 Private Key: ${userOne.privateKey ? "Exists" : "Missing"}`);
+        // console.log(`🔹 User2 Private Key: ${userTwo.privateKey ? "Exists" : "Missing"}`);
 
         // ✅ Fetch messages
         const messages = await Message.find({
@@ -73,11 +73,11 @@ exports.getChatHistory = async (req, res) => {
                     throw new Error("Recipient private key missing");
                 }
 
-                console.log(`🔹 Using Private Key of User: ${recipient._id} for decryption`);
+                // console.log(`🔹 Using Private Key of User: ${recipient._id} for decryption`);
 
                 // ✅ Decrypt AES key
                 const aesKey = decryptAESKeyWithRSA(msg.aesKey, recipient.privateKey);
-                console.log(`✅ Decrypted AES Key: ${aesKey}`);
+                // console.log(`✅ Decrypted AES Key: ${aesKey}`);
 
                 // ✅ Decrypt message
                 return {
