@@ -1,6 +1,10 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModels");
+// const NodeRSA = require("node-rsa");
+const { generateRSAKeys } = require("../utils/encryptionUtils");
+
+const { sendPushNotification  } = require("../utils/notificationService");
 
 const register = async (req, res) => {
    try {
@@ -39,14 +43,17 @@ const register = async (req, res) => {
        // Hash password
        const hashedPass = await bcrypt.hash(password, 10);
 
-       // Create a new user
-       const newUser = new User({ email,username, password: hashedPass, dateOfBirth, gender, role, doctorId });
+       
+       const { publicKey, privateKey } = generateRSAKeys();
 
+        // Create a new user
+        const newUser = new User({ email,username, password: hashedPass, dateOfBirth, gender, role, doctorId, publicKey, privateKey  });
+        // console.log("privateKey",privateKey)
        // Save the user to the database
        await newUser.save();
-
-       res.status(201).json({ message: `User registered with username ${username}` });
-   } catch (err) {
+        // console.log("NewUser", newUser)
+       res.status(201).json({ message: `User registered as ${role}`});
+    } catch (err) {
        console.error(" Error registering user:",err);
        res.status(500).json({ message: "Something went wrong" });
    }
@@ -72,15 +79,34 @@ const login = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user._id, email: user.email, username: user.username, dateOfBirth: user.dateOfBirth, gender: user.gender ,role: user.role },
+            { id: user._id, email: user.email, username: user.username,doctorId: user.doctorId, dateOfBirth: user.dateOfBirth, gender: user.gender ,role: user.role },
             process.env.JWT_SEC, 
             { expiresIn: "1h" }
         );
-
+        // 🔹 Send login notification
+        await sendPushNotification(user._id, "Welcome Back!", `Hello ${user.username}, you are now logged in!`);
         res.status(200).json({ token });
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Something went wrong" });
     }
 };
-module.exports = { register, login };
+
+const updatePushToken  = async (req, res) =>{
+   
+    try{
+
+        const { userId, pushToken} =req.body;
+
+        if(!userId || !pushToken){
+            return res.status(400).json({ message: "User ID and Push Token are required" });
+        } 
+        await User.findByIdAndUpdate(userId, { pushToken });
+        res.status(200).json({ message: "Push token updated successfully" });
+    }catch(error){
+        console.error("Error updating push token:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+module.exports = { register, login, updatePushToken };
