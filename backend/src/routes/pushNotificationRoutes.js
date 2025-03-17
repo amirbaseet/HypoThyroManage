@@ -1,15 +1,17 @@
 const express = require("express");
 const { Expo } = require("expo-server-sdk");
-const User = require("../models/userModels");
 const router = express.Router();
 const expo = new Expo();
-const { sendNotificationToAllUsers } = require("../utils/notificationService");
+const notificationController = require("../controllers/notificationController");
+const verifyToken = require("../middlewares/authMiddleware")
+const authorizeRoles = require("../middlewares/roleMiddleware")
 
 
 // Simulating user push tokens (Replace with actual database logic)
 const userTokens = {
     "1": "ExponentPushToken[uL-N7yA7-cRx0NVLr6pLji]",  // Example user ID and token
     "2": "ExponentPushToken[2-3VMKFIAiJ9OnthuY4FQV]",  // Example user ID and token
+    "3": "ExponentPushToken[UsYdgFB8Y5v5AArRcWTn9k]",  // Example user ID and token
 };
 
 router.post("/send", async (req, res) => {
@@ -48,25 +50,7 @@ router.post("/send", async (req, res) => {
     }
 });
 // ✅ Admin sends notifications to all users
-router.post("/send-to-all", async (req, res) => {
-    try {
-        const { adminId, title, message } = req.body;
-
-        // ✅ Check if the admin exists
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({ message: "Unauthorized: Only admins can send notifications." });
-        }
-
-        // ✅ Send notifications
-        await sendNotificationToAllUsers(title, message);
-
-        res.status(200).json({ message: "Notifications sent successfully to all users." });
-    } catch (error) {
-        console.error("❌ Error sending notification to all users:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-});
+router.post("/send-to-all",verifyToken,authorizeRoles("admin"), notificationController.sendNotificationToAll);
 
 
 
