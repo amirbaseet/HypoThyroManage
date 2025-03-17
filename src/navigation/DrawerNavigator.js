@@ -25,7 +25,7 @@ const Drawer = createDrawerNavigator();
 
 // Drawer Navigation Setup
 const DrawerNavigator = () => {
-    const { logout } = useContext(AuthContext);
+    const { user,logout } = useContext(AuthContext);
 
     // ✅ Correctly access the username
 
@@ -39,19 +39,34 @@ const DrawerNavigator = () => {
             ),
         })}
     >
+
             <Drawer.Screen name="Home" component={HomeScreen} />
             {/* <Drawer.Screen name="Profile" component={ProfileScreen} /> */}
-            <Drawer.Screen name="Report" component={ReportScreen} />
+
+            {user?.role === "admin" && (
             <Drawer.Screen name="AdminDashboard" component={AdminDashboardScreen} />
-            <Drawer.Screen name="PatientChat" component={PatientChatScreen} />
-            <Drawer.Screen name="DoctorDashboard" component={DoctorDashboardScreen} />
-            <Drawer.Screen name="DoctorChat" component={DoctorChatScreen} />
+            )}
+            {user?.role === "doctor"&&(
+            <>
+            <Drawer.Screen name="Chat" component={DoctorChatScreen} />
+            <Drawer.Screen name="Dashboard" component={DoctorDashboardScreen} />
+             </>
+               )}
+            {user?.role === "patient"&&(
+            <>
+            <Drawer.Screen name="Report" component={ReportScreen} />
             <Drawer.Screen name="Reports" component={ReportsScreen} />
-            {/* <Drawer.Screen name="Nutrition" component={NutritionScreen} />
+            <Drawer.Screen name="Chat" component={PatientChatScreen} />
+            <Drawer.Screen name="Nutrition" component={NutritionScreen} />
             <Drawer.Screen name="Exercise" component={ExerciseScreen} />
             <Drawer.Screen name="Stress" component={StressScreen} />
             <Drawer.Screen name="Dermatological" component={DermatologicalScreen} />
-            <Drawer.Screen name="Brain" component={BrainScreen} /> */}
+            <Drawer.Screen name="Brain" component={BrainScreen} /> 
+
+            </>
+        )}
+
+        
         </Drawer.Navigator>
     );
 };
