@@ -2,10 +2,10 @@ const { Server } = require("socket.io");
 const http = require("http");
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const {sendPushNotification} = require("./utils/pushNotifications")
-
+// const {sendPushNotification} = require("./utils/pushNotifications")
+const {sendPushNotificationByToken} = require("../src/utils/notificationService")
 require("dotenv").config();
-
+const User = require("../src/models/userModels");
 const app = express();
 const server = http.createServer(app);
 
@@ -69,14 +69,23 @@ io.on("connection", (socket) => {
             // ✅ If user is offline, fetch their Expo push token and send a notification
             try {
                 const receiverUser = await User.findById(receiver);
+                const senderUser = await User.findById(sender);
 
-                if (receiverUser?.expoPushToken) {
-                    await sendPushNotification(
-                        receiverUser.expoPushToken,
+                if (receiverUser?.pushToken) {
+                    let notificationMessage = "";
+
+                    if (receiverUser.role === "doctor") {
+                        notificationMessage = `You have received a message from ${senderUser.username}`;
+                    } else if (receiverUser.role === "patient") {
+                        notificationMessage = `You have received a message from your doctor`;
+                    }
+    
+                    await sendPushNotificationByToken(
+                        receiverUser.pushToken,
                         "New Message",
-                        `You have a new message from ${sender}`
+                        notificationMessage
                     );
-                }
+                    }
             } catch (error) {
                 console.error("❌ Error sending push notification:", error);
             }

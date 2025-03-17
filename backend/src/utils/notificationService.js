@@ -41,7 +41,7 @@ exports.sendPushNotification = async (userId, title, message) => {
 };
 exports.sendNotificationToAllUsers = async (title, message) =>{
     try {
-        const users = await User.find({ pushToken: { $ne: null } }); // Get all users with a push token
+        const users = await User.find({ role: "patient", pushToken: { $ne: null } });
 
         if (users.length === 0) {
             console.log("No users found with push tokens.");
@@ -64,5 +64,32 @@ exports.sendNotificationToAllUsers = async (title, message) =>{
         console.log(`✅ Notification sent to ${users.length} users.`);
     } catch (error) {
         console.error("❌ Error sending notifications to all users:", error);
+    }
+};
+exports.sendPushNotificationByToken = async (pushToken, title, message) => {
+    try {
+        if (!Expo.isExpoPushToken(pushToken)) {
+            console.log("Invalid Expo Push Token.");
+            return;
+        }
+
+        const messages = [
+            {
+                to: pushToken,
+                sound: "default",
+                title: title,
+                body: message,
+            },
+        ];
+
+        let chunks = expo.chunkPushNotifications(messages);
+
+        for (let chunk of chunks) {
+            await expo.sendPushNotificationsAsync(chunk);
+        }
+
+        console.log(`✅ Push notification sent: ${title} - ${message}`);
+    } catch (error) {
+        console.error("❌ Error sending push notification:", error);
     }
 };

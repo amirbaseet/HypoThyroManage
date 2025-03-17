@@ -15,6 +15,7 @@ import DoctorDashboardScreen from "../screens/DoctorDashboardScreen";
 // import RegisterScreen from '../screens/RegisterScreen';
 import PatientChatScreen from "../screens/PatientChatScreen ";
 import DoctorChatScreen from "../screens/DoctorChatScreen";
+import AdminDashboardScreen from "../screens/AdminDashboardScreen";
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -41,6 +42,7 @@ const DrawerNavigator = () => {
             <Drawer.Screen name="Home" component={HomeScreen} />
             {/* <Drawer.Screen name="Profile" component={ProfileScreen} /> */}
             <Drawer.Screen name="Report" component={ReportScreen} />
+            <Drawer.Screen name="AdminDashboard" component={AdminDashboardScreen} />
             <Drawer.Screen name="PatientChat" component={PatientChatScreen} />
             <Drawer.Screen name="DoctorDashboard" component={DoctorDashboardScreen} />
             <Drawer.Screen name="DoctorChat" component={DoctorChatScreen} />
