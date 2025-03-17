@@ -26,7 +26,20 @@ api.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+export const updatePushToken = async (userId, pushToken) => {
+    try{
+        if(!pushToken){
+            console.log("❌ Error: Push token is Missing");
+            return { error: "Push token is required" };
+        }
 
+        const response = await api.post(`/auth/update-push-token`, { userId, pushToken });
+        return response.data;
+    }catch(error){
+        console.error("❌ Error updating push token:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Failed to update push token" };
+    }
+};
 
 
 export const getDoctorPatientsReports = async (doctorId) => {
@@ -71,7 +84,7 @@ export const submitWeeklyReport = async (userId, symptoms) => {
         }
 
         // Send POST request to backend
-        const response = await axios.post(`${API_URL}/reports/submit-report`, { userId, symptoms });
+        const response = await api.post(`/reports/submit-report`, { userId, symptoms });
         return response.data;
     } catch (error) {
         console.error("❌ Error submitting weekly report:", error.response?.data || error);

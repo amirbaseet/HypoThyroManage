@@ -34,7 +34,6 @@ const AdminDashboard = () => {
             }
 
             const response = await api.post("/notifications/send-to-all", {
-                adminId: admin.id,
                 title,
                 message,
             });
