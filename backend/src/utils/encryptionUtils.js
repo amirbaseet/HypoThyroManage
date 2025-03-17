@@ -49,7 +49,7 @@ exports.encryptAESKeyWithRSA = (aesKey, publicKey) => {
 //  Decrypt AES Key using RSA (Ensure OAEP Padding)
 exports.decryptAESKeyWithRSA = (encryptedAESKey, privateKey) => {
     try {
-        console.log("🔹 Decrypting AES Key with RSA...");
+        // console.log("🔹 Decrypting AES Key with RSA...");
         const key = new NodeRSA(privateKey, "private");
         key.setOptions({ encryptionScheme: "pkcs1_oaep" }); // ✅ Ensure OAEP padding
         return key.decrypt(encryptedAESKey, "utf8");

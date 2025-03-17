@@ -23,7 +23,7 @@ const verifyToken = (req, res, next) => {
 
             // Attach the decoded token data to req.user
             req.user = decoded;
-            console.log("The decoded user is :", req.user)
+            // console.log("The decoded user is :", req.user)
             next(); // Proceed to the next middleware or route
         });
 
