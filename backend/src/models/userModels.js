@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema({
     privateKey:{// Store Private key for Asymmetric encryption
         type: String
     },
+    pushToken: {
+         type: String,
+          default: null
+         }, // 🔹 Store Expo Push Token
         },
 {
     timestamps: true,

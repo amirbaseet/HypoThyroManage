@@ -16,6 +16,8 @@ router.get("/manager",verifyToken,authorizeRoles("admin","manager"),(req,res)=>{
 router.get("/user",verifyToken,authorizeRoles("admin","manager","user"),(req,res)=>{ 
     res.json({message:"Welcome user"});
 });
+
+
 // ✅ Get public key of a user by ID
 router.get("/publicKey/:userId", verifyToken, async (req, res) => { 
     try {

@@ -1,43 +1,74 @@
 const express = require("express");
-const fetch = require("node-fetch");
-const dotenv = require("dotenv");
-
-dotenv.config();
-
+const { Expo } = require("expo-server-sdk");
+const User = require("../models/userModels");
 const router = express.Router();
+const expo = new Expo();
+const { sendNotificationToAllUsers } = require("../utils/notificationService");
+
+
+// Simulating user push tokens (Replace with actual database logic)
+const userTokens = {
+    "1": "ExponentPushToken[uL-N7yA7-cRx0NVLr6pLji]",  // Example user ID and token
+    "2": "ExponentPushToken[2-3VMKFIAiJ9OnthuY4FQV]",  // Example user ID and token
+};
 
 router.post("/send", async (req, res) => {
-    try {
-        const { expoPushToken, messageTitle, messageBody } = req.body;
+    const { userId, title, message } = req.body;
 
-        if (!expoPushToken) {
-            return res.status(400).json({ error: "Expo Push Token is required" });
+    // Get the user's push token from the simulated database
+    const pushToken = userTokens[userId];
+
+    if (!pushToken) {
+        return res.status(404).json({ error: "User push token not found" });
+    }
+
+    if (!Expo.isExpoPushToken(pushToken)) {
+        return res.status(400).json({ error: "Invalid Expo push token" });
+    }
+
+    let messages = [{
+        to: pushToken,
+        sound: "default",
+        title: title,
+        body: message,
+    }];
+
+    try {
+        let chunks = expo.chunkPushNotifications(messages);
+        let tickets = [];
+
+        for (let chunk of chunks) {
+            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            tickets.push(...ticketChunk);
         }
 
-        const message = {
-            to: expoPushToken,
-            sound: "default",
-            title: messageTitle,
-            body: messageBody,
-            data: { someData: "goes here" },
-        };
-
-        const response = await fetch("https://exp.host/--/api/v2/push/send", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Accept-encoding": "gzip, deflate",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(message),
-        });
-
-        const data = await response.json();
-        return res.status(200).json({ success: true, response: data });
+        return res.status(200).json({ message: "Notification sent!", tickets });
     } catch (error) {
-        console.error("❌ Error sending push notification:", error);
-        return res.status(500).json({ error: "Failed to send push notification" });
+        return res.status(500).json({ error: "Failed to send notification", details: error });
     }
 });
+// ✅ Admin sends notifications to all users
+router.post("/send-to-all", async (req, res) => {
+    try {
+        const { adminId, title, message } = req.body;
+
+        // ✅ Check if the admin exists
+        const admin = await User.findById(adminId);
+        if (!admin || admin.role !== "admin") {
+            return res.status(403).json({ message: "Unauthorized: Only admins can send notifications." });
+        }
+
+        // ✅ Send notifications
+        await sendNotificationToAllUsers(title, message);
+
+        res.status(200).json({ message: "Notifications sent successfully to all users." });
+    } catch (error) {
+        console.error("❌ Error sending notification to all users:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+
+
 
 module.exports = router;
