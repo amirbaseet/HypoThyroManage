@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useContext  } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button, Alert, StyleSheet } from 'react-native';
-import { getSymptoms} from '../services/symptomsService';
-import {  submitWeeklyReport } from '../services/patientService';
+import { getSymptoms } from '../services/symptomsService';
+import { submitWeeklyReport, getLatestWeeklyReport } from '../services/patientService'; // Import API
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 const ReportScreen = () => {
@@ -10,12 +10,32 @@ const ReportScreen = () => {
     const [selectedSymptoms, setSelectedSymptoms] = useState({});
 
     useEffect(() => {
-        const fetchSymptoms = async () => {
-            const data = await getSymptoms();
-            setSymptoms(data);
+        const fetchData = async () => {
+            try {
+                const [symptomsData, latestReport] = await Promise.all([
+                    getSymptoms(),
+                    getLatestWeeklyReport(user?.id) // Fetch latest report
+                ]);
+
+                setSymptoms(symptomsData);
+
+                if (latestReport?.symptoms) {
+                    // Convert latest report symptoms to selectedSymptoms state
+                    const preSelected = {};
+                    latestReport.symptoms.forEach(({ symptomId, hasSymptom }) => {
+                        preSelected[symptomId._id] = hasSymptom;
+                    });
+
+                    setSelectedSymptoms(preSelected);
+                }
+            } catch (error) {
+                // console.error("Error fetching symptoms or latest report:", error);
+                console.log("Patient has no reports ", error)
+            }
         };
-        fetchSymptoms();
-    }, []);
+
+        fetchData();
+    }, [user?.id]);
 
     const toggleSymptom = (symptomId) => {
         setSelectedSymptoms(prev => ({
@@ -25,8 +45,7 @@ const ReportScreen = () => {
     };
 
     const handleSubmit = async () => {
-
-        const userId = user?.id; // 🔹 Get user ID dynamically
+        const userId = user?.id;
         const symptomsArray = Object.entries(selectedSymptoms).map(([symptomId, hasSymptom]) => ({
             symptomId,
             hasSymptom
@@ -41,7 +60,7 @@ const ReportScreen = () => {
 
         if (response.message) {
             Alert.alert("Success", "Weekly report submitted!");
-            setSelectedSymptoms({});//reset the SelectedSymptoms
+            // setSelectedSymptoms({}); // Reset selection after submission
         } else {
             Alert.alert("Error", response.error || "Submission failed");
         }
@@ -49,14 +68,14 @@ const ReportScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Select Symptoms </Text>
+            <Text style={styles.header}>Select Symptoms</Text>
 
             {/* Grid Layout with 2 columns */}
             <FlatList
                 data={symptoms}
                 keyExtractor={(item) => item._id}
-                numColumns={2} // ✅ Display 2 symptoms per row
-                columnWrapperStyle={styles.row} // ✅ Ensures even spacing
+                numColumns={2}
+                columnWrapperStyle={styles.row}
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         style={[
@@ -91,7 +110,7 @@ const styles = StyleSheet.create({
         color: '#444444',
     },
     row: {
-        justifyContent: 'space-between', // Ensures equal spacing
+        justifyContent: 'space-between',
         marginBottom: 10,
     },
     symptomButton: {
@@ -103,7 +122,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#EAE7DC',
         borderWidth: 2,
         borderColor: '#C6A477',
-        justifyContent:'center',
+        justifyContent: 'center',
     },
     selectedSymptom: {
         backgroundColor: '#B5E7A0',
@@ -112,7 +131,7 @@ const styles = StyleSheet.create({
     symptomText: {
         fontSize: 15,
         fontWeight: '600',
-        textAlign:'center',
+        textAlign: 'center',
         color: '#444444',
     },
     buttonContainer: {

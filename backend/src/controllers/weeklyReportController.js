@@ -87,3 +87,29 @@ exports.getReportsByDoctor = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+exports.submitOrUpdateReport = async ( req, res ) =>{
+    try{
+        const { userId , symptoms } = req.body; 
+        const { weekStart, weekEnd } = getCurrentWeek();
+
+        const filteredSymptoms = symptoms.filter(symptom => symptom.hasSymptom)
+        //check if the user already has a report for the current week
+        let report = await WeeklyReport.findOne({ userId, weekStart });
+        
+        if(report){
+            //update existing report
+            report.symptoms = filteredSymptoms;
+            await report.save();
+            return res.status(200).json({ message:"Weekly report updated successfully", report});
+        }
+        // If no report exists, create a new one
+        report = new WeeklyReport({ userId, weekStart, weekEnd, symptoms: filteredSymptoms});
+        await report.save();
+
+        res.status(201).json({ message: "Weekly report created successfully!", report });
+    }catch(error){
+        console.error("❌ Error submitting/updating report:", error.message);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+}
