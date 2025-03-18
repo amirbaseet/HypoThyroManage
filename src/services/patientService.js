@@ -9,7 +9,7 @@ export const submitWeeklyReport = async (userId, symptoms) => {
         }
 
         // Send POST request to backend
-        const response = await api.post(`/reports/submit-report`, { userId, symptoms });
+        const response = await api.patch(`/reports/submit-report`, { userId, symptoms });
         return response.data;
     } catch (error) {
         console.error("❌ Error submitting weekly report:", error.response?.data || error);
@@ -39,3 +39,12 @@ export const getLatestReport = async (userId) => {
     }
 };
 
+export const getLatestWeeklyReport = async (userId) => {
+    try {
+        const response = await api.get(`/reports/latest-report/${userId}`);
+        return response.data; // Return only the data
+    } catch (error) {
+        console.error("Error fetching latest report:", error.response?.data || error.message);
+        return null;
+    }
+};

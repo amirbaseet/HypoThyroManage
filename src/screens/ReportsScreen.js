@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useCallback , useState, useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { getUserReports } from '../services/patientService';
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { useFocusEffect } from '@react-navigation/native'; // ✅ Import useFocusEffect
 
 const ReportsScreen = () => {
     const { user } = useContext(AuthContext);
@@ -11,14 +12,23 @@ const ReportsScreen = () => {
 
         const userId = user?.id; // 🔹 Get user ID dynamically
 
-    useEffect(() => {
-        const fetchReports = async () => {
-            const data = await getUserReports(userId);
-            setReports(data);
-            setLoading(false);
-        };
-        fetchReports();
-    }, []);
+    // ✅ Fetch reports whenever screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            const fetchReports = async () => {
+                setLoading(true); // Show loader while fetching
+                try {
+                    const data = await getUserReports(userId);
+                    setReports(data);
+                } catch (error) {
+                    console.error("Error fetching reports:", error);
+                }
+                setLoading(false);
+            };
+
+            fetchReports();
+        }, [userId])
+    );
 
     if (loading) {
         return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
