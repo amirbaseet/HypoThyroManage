@@ -5,6 +5,7 @@ const messageSchema = new mongoose.Schema({
     receiverId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
     encryptedMessage: { type: String, required: true }, //  Store encrypted messages
     aesKey: { type: String, required: true }, // Store encrypted AES key
+    read: { type: Boolean, default: false },
     timestamp: { type: Date, default: Date.now },
 });
 

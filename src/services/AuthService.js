@@ -54,9 +54,9 @@ export const logoutUser = async()=>{
             await removePushToken(userId);
         }
     } catch (error) {
-        console.error("❌ Error removing push token:", error);
+        console.error(`❌in ${fileName} Error removing push token:`, error);
     }
 
     await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("user"); // 🔹 Also remove user data
+    await AsyncStorage.removeItem("user"); // 🔹 Also remove user datas
 };

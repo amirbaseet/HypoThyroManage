@@ -48,5 +48,4 @@ const connectSocket = async () => {
 const getSocket = async () => {
     return socket || connectSocket();
 };
-
 export { getSocket };

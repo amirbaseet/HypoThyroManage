@@ -16,6 +16,8 @@ import DoctorDashboardScreen from "../screens/DoctorDashboardScreen";
 import PatientChatScreen from "../screens/PatientChatScreen ";
 import DoctorChatScreen from "../screens/DoctorChatScreen";
 import AdminDashboardScreen from "../screens/AdminDashboardScreen";
+import DoctorChatListScreen from "../screens/DoctorChatListScreen";
+import DoctorChatStack from "./DoctorChatStack";  // Import the chat stack
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -23,13 +25,9 @@ const Drawer = createDrawerNavigator();
 
 // LogoutScreen Component: Handles User Logout
 
-// Drawer Navigation Setup
 const DrawerNavigator = () => {
-    const { user,logout } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
 
-    // ✅ Correctly access the username
-
-    // Console log user state
     return (
         <Drawer.Navigator screenOptions={() => ({
             headerRight: () => (
@@ -37,36 +35,33 @@ const DrawerNavigator = () => {
                     <Text style={{ color: "red", fontSize: 16 }}>Logout</Text>
                 </TouchableOpacity>
             ),
-        })}
-    >
+        })}>
 
             <Drawer.Screen name="Home" component={HomeScreen} />
-            {/* <Drawer.Screen name="Profile" component={ProfileScreen} /> */}
 
             {user?.role === "admin" && (
-            <Drawer.Screen name="AdminDashboard" component={AdminDashboardScreen} />
+                <Drawer.Screen name="AdminDashboard" component={AdminDashboardScreen} />
             )}
-            {user?.role === "doctor"&&(
-            <>
-            <Drawer.Screen name="Chat" component={DoctorChatScreen} />
-            <Drawer.Screen name="Dashboard" component={DoctorDashboardScreen} />
-             </>
-               )}
-            {user?.role === "patient"&&(
-            <>
-            <Drawer.Screen name="Report" component={ReportScreen} />
-            <Drawer.Screen name="Reports" component={ReportsScreen} />
-            <Drawer.Screen name="Chat" component={PatientChatScreen} />
-            <Drawer.Screen name="Nutrition" component={NutritionScreen} />
-            <Drawer.Screen name="Exercise" component={ExerciseScreen} />
-            <Drawer.Screen name="Stress" component={StressScreen} />
-            <Drawer.Screen name="Dermatological" component={DermatologicalScreen} />
-            <Drawer.Screen name="Brain" component={BrainScreen} /> 
 
-            </>
-        )}
+            {user?.role === "doctor" && (
+                <>
+                    <Drawer.Screen name="Chat" component={DoctorChatStack} /> 
+                    <Drawer.Screen name="Dashboard" component={DoctorDashboardScreen} />
+                </>
+            )}
 
-        
+            {user?.role === "patient" && (
+                <>
+                    <Drawer.Screen name="Report" component={ReportScreen} />
+                    <Drawer.Screen name="Reports" component={ReportsScreen} />
+                    <Drawer.Screen name="Chat" component={PatientChatScreen} />
+                    <Drawer.Screen name="Nutrition" component={NutritionScreen} />
+                    <Drawer.Screen name="Exercise" component={ExerciseScreen} />
+                    <Drawer.Screen name="Stress" component={StressScreen} />
+                    <Drawer.Screen name="Dermatological" component={DermatologicalScreen} />
+                    <Drawer.Screen name="Brain" component={BrainScreen} />
+                </>
+            )}
         </Drawer.Navigator>
     );
 };
