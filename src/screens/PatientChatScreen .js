@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useCallback  } from "react";
 import { 
     View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
     StyleSheet, Text as RNText, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { sendMessageAPI, getChatHistoryAPI } from "../services/chatService";
+import { sendMessageAPI, getChatHistoryAPI,markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket"; 
+import { useFocusEffect } from "@react-navigation/native"; // ✅ Import useFocusEffect
 
 const PatientChatScreen = () => {
     const { user } = useContext(AuthContext);
@@ -15,56 +16,71 @@ const PatientChatScreen = () => {
     const doctorId = user?.doctorId;
     const userId = user?.id;
     const flatListRef = useRef();
-    
+    const fetchChatHistory = async () => {
+        if (!doctorId) return;
+        try {
+            const res = await getChatHistoryAPI(userId, doctorId);
+            setMessages(res);
+        } catch (error) {
+            console.error("❌ Error fetching messages:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchChatHistory = async () => {
-            if (!doctorId) return;
-            try {
-                const res = await getChatHistoryAPI(userId, doctorId);
-                setMessages(res);
-            } catch (error) {
-                console.error("❌ Error fetching messages:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
 
         fetchChatHistory();
     }, [doctorId]);
 
-    useEffect(() => {
-        if (!doctorId) return;
-
-        const setupSocket = async () => {
-            const socket = await getSocket();
-            if (!socket) {
-                console.error("❌ Socket not available.");
-                return;
-            }
-
-            socket.off("receiveMessage"); 
-
-            const handleReceiveMessage = (data) => {
-                console.log("📩 New message received:", data);
-                if (data.sender === doctorId || data.receiver === doctorId) {
-                    setMessages((prevMessages) => [...prevMessages, data]);
-                    flatListRef.current?.scrollToEnd({ animated: true });
+    useFocusEffect(
+        useCallback(() => {
+            if (!doctorId || !userId) return;
+            fetchChatHistory();
+            let socket; 
+            let isMounted = true; // ✅ Track screen focus
+    
+            const setupSocket = async () => {
+                socket = await getSocket();
+                console.log("✅ Socket connected for patient.")
+                if (!socket) {
+                    console.error("❌ Socket not available.");
+                    return;
+                }
+    
+                socket.off("receiveMessage"); 
+    
+                const handleReceiveMessage = async (data) => {
+                    if (!isMounted) return; // ✅ Prevent marking as read when screen is not active
+    
+                    console.log("📩 New message received:", data);
+                    if (data.sender === doctorId || data.receiver === doctorId) {
+                        setMessages((prevMessages) => [...prevMessages, data]);
+                        flatListRef.current?.scrollToEnd({ animated: true });
+    
+                        // ✅ Mark messages as read only if screen is focused
+                        await markMessagesAsReadAPI(doctorId, userId);
+                    }
+                };
+    
+                socket.on("receiveMessage", handleReceiveMessage);
+            };
+    
+            setupSocket();
+    
+            return () => {
+                console.log("🔌 Cleanup:  Disconnecting socket for patient...");
+                isMounted = false; // ✅ Stop read API when screen is left
+                if (socket) {
+                    socket.off("receiveMessage");
                 }
             };
-
-            socket.on("receiveMessage", handleReceiveMessage);
-
-            return () => {
-                socket.off("receiveMessage", handleReceiveMessage);
-            };
-        };
-
-        setupSocket();
-    }, [doctorId]);
+        }, [doctorId, userId])
+    );
+    
 
     const sendMessage = async () => {
         if (!doctorId || !message.trim()) {
-            alert("Cannot send an empty message or no assigned doctor.");
             return;
         }
 

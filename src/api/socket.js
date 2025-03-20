@@ -14,7 +14,7 @@ const connectSocket = async () => {
 
     try {
         const token = await AsyncStorage.getItem("token");
-        console.log("🔑 Retrieved Token:", token);
+        // console.log("🔑 Retrieved Token:", token);
 
         if (!token) {
             console.error("❌ No token found. WebSocket connection not established.");
@@ -48,5 +48,4 @@ const connectSocket = async () => {
 const getSocket = async () => {
     return socket || connectSocket();
 };
-
 export { getSocket };

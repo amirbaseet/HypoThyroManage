@@ -81,7 +81,7 @@ const login = async (req, res) => {
         const token = jwt.sign(
             { id: user._id, email: user.email, username: user.username,doctorId: user.doctorId, dateOfBirth: user.dateOfBirth, gender: user.gender ,role: user.role },
             process.env.JWT_SEC, 
-            { expiresIn: "1h" }
+            { expiresIn: "1d" }
         );
         // 🔹 Send login notification
         await sendPushNotification(user._id, "Welcome Back!", `Hello ${user.username}, you are now logged in!`);

@@ -1,85 +1,96 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useCallback } from "react";
 import { 
     View, Text, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
-    StyleSheet, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView
+    StyleSheet, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { sendMessageAPI, getChatHistoryAPI } from "../services/chatService";
-import { getDoctorPatientsReports } from "../services/doctorService";
+import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket";
+import { useFocusEffect } from "@react-navigation/native";
 
-const DoctorChatScreen = () => {
+const DoctorChatScreen = ({ route }) => {
     const { user } = useContext(AuthContext);
-    const [patients, setPatients] = useState([]);
     const [messages, setMessages] = useState([]);
-    const [selectedPatient, setSelectedPatient] = useState(null);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
     const flatListRef = useRef();
     const doctorId = user?.id;
+    let socket = null;
+    // 🔥 Get Patient ID & Name from route params
+    const { patientId, patientName } = route.params || {};
 
-    useEffect(() => {
-        const fetchPatients = async () => {
-            try {
-                const data = await getDoctorPatientsReports(doctorId);
-                setPatients(data.patients);
-            } catch (error) {
-                console.error("❌ Error fetching patients:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    // ✅ Set selected patient when navigating to this screen
+    useFocusEffect(
+        useCallback(() => {
+            if (!patientId) return;
 
-        fetchPatients();
-    }, [doctorId]);
-
-    useEffect(() => {
-        if (!selectedPatient) return;
-
-        const setupSocket = async () => {
-            const socket = await getSocket();
-            if (!socket) {
-                console.error("❌ Socket not available.");
-                return;
-            }
-
-            socket.off("receiveMessage");
-
-            const handleReceiveMessage = (data) => {
-                console.log("📩 New message received:", data);
-                if ((data.sender === selectedPatient || data.receiver === selectedPatient)) {
-                    setMessages((prevMessages) => [...prevMessages, data]);
-                    flatListRef.current?.scrollToEnd({ animated: true });
+            const fetchChatHistory = async () => {
+                try {
+                    setLoading(true);
+                    const res = await getChatHistoryAPI(doctorId, patientId);
+                    setMessages(res);
+                } catch (error) {
+                    console.error("❌ Error fetching messages:", error);
+                } finally {
+                    setLoading(false);
                 }
             };
 
-            socket.on("receiveMessage", handleReceiveMessage);
+            fetchChatHistory();
+        }, [patientId])
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            let socket;
+
+            const setupSocket = async () => {
+                socket = await getSocket();
+                if (!socket) {
+                    console.error("❌ Socket not available.");
+                    return;
+                }
+
+                socket.off("receiveMessage");
+
+                const handleReceiveMessage = async (data) => {
+                    console.log("📩 New message received:", data);
+
+                    if (data.sender === patientId || data.receiver === patientId) {
+                        setMessages((prevMessages) => [...prevMessages, data]);
+                        flatListRef.current?.scrollToEnd({ animated: true });
+
+                        // ✅ Mark messages as read when received
+                        await markMessagesAsReadAPI(patientId, doctorId);
+                    }
+                };
+
+                socket.on("receiveMessage", handleReceiveMessage);
+
+                console.log("✅ Socket connected for doctor.");
+
+                return () => {
+                    console.log("🔌 Disconnecting socket on unfocus...");
+                    socket.off("receiveMessage", handleReceiveMessage);
+                    socket.disconnect();
+                };
+            };
+
+            setupSocket();
 
             return () => {
-                socket.off("receiveMessage", handleReceiveMessage);
+                if (socket) {
+                    console.log("🔌 Cleanup: Disconnecting socket...");
+                    socket.disconnect();
+                }
             };
-        };
-
-        setupSocket();
-    }, [selectedPatient]);
-
-    const fetchChatHistory = async (patientId) => {
-        try {
-            setSelectedPatient(patientId);
-            setLoading(true);
-            const res = await getChatHistoryAPI(doctorId, patientId);
-            setMessages(res);
-        } catch (error) {
-            console.error("❌ Error fetching messages:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+        }, [patientId])
+    );
 
     const sendMessage = async () => {
-        if (!selectedPatient || !message.trim()) return;
+        if (!patientId || !message.trim()) return;
 
-        const newMessage = { sender: doctorId, receiver: selectedPatient, message };
+        const newMessage = { sender: doctorId, receiver: patientId, message };
         const socket = await getSocket();
         if (!socket) {
             console.error("❌ Cannot send message, socket is unavailable.");
@@ -94,14 +105,13 @@ const DoctorChatScreen = () => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
 
         try {
-            await sendMessageAPI(doctorId, selectedPatient, message);
+            await sendMessageAPI(doctorId, patientId, message);
         } catch (error) {
             console.error("❌ Error sending message:", error);
         }
 
         setMessage("");
     };
-
     if (loading) {
         return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
     }
@@ -111,55 +121,36 @@ const DoctorChatScreen = () => {
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"} 
                 style={styles.container}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70} 
+                keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90} 
             >
-                <Text style={styles.header}>Doctor Chat</Text>
+                <Text style={styles.header}>{patientName}'s Chat</Text>
 
-                <Text style={styles.subHeader}>Select a Patient:</Text>
                 <FlatList
-                    data={patients}
-                    keyExtractor={(item) => item._id}
-                    horizontal
+                    ref={flatListRef}
+                    data={messages}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={[styles.patientButton, selectedPatient === item._id && styles.selectedPatient]}
-                            onPress={() => fetchChatHistory(item._id)}
-                        >
-                            <Text style={styles.patientText}>{item.username}</Text>
-                        </TouchableOpacity>
+                        <View style={item.sender === doctorId ? styles.doctorMessage : styles.patientMessage}>
+                            <Text style={styles.messageText}>{item.message}</Text>
+                        </View>
                     )}
+                    contentContainerStyle={{ paddingBottom: 20 }}
+                    onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                 />
 
-                {selectedPatient && (
-                    <>
-                        <FlatList
-                            ref={flatListRef}
-                            data={messages}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) => (
-                                <View style={item.sender === doctorId ? styles.doctorMessage : styles.patientMessage}>
-                                    <Text style={styles.messageText}>{item.message}</Text>
-                                </View>
-                            )}
-                            contentContainerStyle={{ paddingBottom: 20 }}
-                            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                        />
-                        
-                        <View style={styles.inputWrapper}>
-                            <TextInput
-                                value={message}
-                                onChangeText={setMessage}
-                                style={styles.input}
-                                placeholder="Type a message..."
-                                placeholderTextColor="#777"
-                                onFocus={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                            />
-                            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-                                <Text style={styles.sendButtonText}>Send</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                )}
+                <View style={styles.inputWrapper}>
+                    <TextInput
+                        value={message}
+                        onChangeText={setMessage}
+                        style={styles.input}
+                        placeholder="Type a message..."
+                        placeholderTextColor="#777"
+                        onFocus={() => flatListRef.current?.scrollToEnd({ animated: true })}
+                    />
+                    <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+                        <Text style={styles.sendButtonText}>Send</Text>
+                    </TouchableOpacity>
+                </View>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );
@@ -168,10 +159,6 @@ const DoctorChatScreen = () => {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: "#FAF9F6" },
     header: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 20, color: "#444444" },
-    subHeader: { fontSize: 18, fontWeight: "bold", marginTop: 15, color: "#444444" },
-    patientButton: { padding: 12, borderRadius: 10, backgroundColor: "#EAE7DC", borderWidth: 2, borderColor: "#C6A477", marginRight: 10 },
-    selectedPatient: { backgroundColor: "#B5E7A0", borderColor: "#8AAD60" },
-    patientText: { fontSize: 15, fontWeight: "600", color: "#444444" },
 
     doctorMessage: { 
         alignSelf: "flex-end",

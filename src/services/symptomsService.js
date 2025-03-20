@@ -1,4 +1,5 @@
 import api from "../api/apiService";
+const fileName = `IN symptomService`;
 
 // ✅ Get Symptoms
 export const getSymptoms = async () => {
@@ -6,7 +7,7 @@ export const getSymptoms = async () => {
         const response = await api.get(`/symptoms`);
         return response.data;
     } catch (error) {
-        console.error("❌ Error fetching symptoms:", error);
+        console.error(fileName,"❌ Error fetching symptoms:", error);
         return [];
     }
 };
