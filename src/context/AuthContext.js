@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { saveUserToLocalDB } from "../database/UsersCrud";
 import { loginUser, logoutUser } from "../services/AuthService";
+import { getSocket } from "../api/socket";
 
 const fileName = `IN AuthContext`;
 
@@ -56,6 +57,12 @@ export const AuthProvider = ({ children }) => {
 
     // Logout function: Remove token and reset user state
     const logout = async () => {
+        const socket = await getSocket(); // ✅ Get the existing WebSocket instance
+        if (socket) {
+            socket.disconnect(); // ✅ Properly disconnect WebSocket
+            console.log("🔴 WebSocket disconnected on logout");
+        }
+
         await logoutUser();
         setUser(null); // Reset user first to prevent UI flicker
     };
