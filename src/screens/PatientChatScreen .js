@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useCallback  } from "react";
 import { 
     View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
     StyleSheet, Text as RNText, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { sendMessageAPI, getChatHistoryAPI } from "../services/chatService";
+import { sendMessageAPI, getChatHistoryAPI,markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket"; 
+import { useFocusEffect } from "@react-navigation/native";
 
 const PatientChatScreen = () => {
     const { user } = useContext(AuthContext);
@@ -16,22 +17,31 @@ const PatientChatScreen = () => {
     const userId = user?.id;
     const flatListRef = useRef();
     
-    useEffect(() => {
-        const fetchChatHistory = async () => {
-            if (!doctorId) return;
-            try {
-                const res = await getChatHistoryAPI(userId, doctorId);
-                setMessages(res);
-            } catch (error) {
-                console.error("❌ Error fetching messages:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchChatHistory();
-    }, [doctorId]);
-
+    useFocusEffect(
+        useCallback(() => {
+            const fetchChatHistory = async () => {
+                if (!doctorId) return;
+                setLoading(true);
+                try {
+                    const res = await getChatHistoryAPI(userId, doctorId);
+                    setMessages(res);
+                    flatListRef.current?.scrollToEnd({ animated: true }); // ✅ Ensure it scrolls to the latest message
+                } catch (error) {
+                    console.error("❌ Error fetching messages:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+    
+            fetchChatHistory();
+    
+            return () => {
+                setMessages([]); // ✅ Reset messages when leaving the screen to ensure fresh data on re-entry
+                console.log("leaving")
+            };
+        }, [doctorId])
+    );
+        
     useEffect(() => {
         if (!doctorId) return;
 
@@ -44,11 +54,15 @@ const PatientChatScreen = () => {
 
             socket.off("receiveMessage"); 
 
-            const handleReceiveMessage = (data) => {
+            const handleReceiveMessage = async (data) => {
                 console.log("📩 New message received:", data);
                 if (data.sender === doctorId || data.receiver === doctorId) {
                     setMessages((prevMessages) => [...prevMessages, data]);
                     flatListRef.current?.scrollToEnd({ animated: true });
+              console.log("setting read")
+                  // ✅ Mark messages as read when received
+                  await markMessagesAsReadAPI(doctorId, userId);
+              
                 }
             };
 

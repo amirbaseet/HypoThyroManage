@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const {sendPushNotificationByToken} = require("../src/utils/notificationService")
 require("dotenv").config();
 const User = require("../src/models/userModels");
+const Message  = require("./models/Message");
 const app = express();
 const server = http.createServer(app);
 
@@ -19,7 +20,6 @@ const users = new Map();
 // 🔑 Middleware: Authenticate WebSocket connection using JWT
 io.use((socket, next) => {
     try {
-        console.log("first")
         let token = socket.handshake.auth?.token;
         // console.log("🔑 Received Token in WebSocket:", token);
 
@@ -93,11 +93,35 @@ io.on("connection", (socket) => {
 
         callback({ status: "success" });
     });
-
+    /**
+     * ✅ Mark Messages as Read and Notify Sender
+     */
+    socket.on("markAsRead", async ({ senderId, receiverId }) => {
+        try {
+            // ✅ Mark messages as read in DB
+            await Message.updateMany(
+                { senderId, receiverId, read: false },
+                { $set: { read: true } }
+            );
+    
+            console.log(`✅ Messages marked as read: ${senderId} → ${receiverId}`);
+    
+            // ✅ Notify sender (doctor) that their message was read
+            const senderSocketId = users.get(senderId);
+            if (senderSocketId) {
+                io.to(senderSocketId).emit("messagesRead", { senderId, receiverId });
+            }
+        } catch (error) {
+            console.error("❌ Error marking messages as read:", error);
+        }
+    });
+        /**
+     * ✅ Handle User Disconnect
+     */
     socket.on("disconnect", () => {
         console.log(`🔴 User disconnected: ${socket.userId} (Socket: ${socket.id})`);
         users.delete(socket.userId);
     });
-});
+    });
 
 module.exports = { io, app, server };
