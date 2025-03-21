@@ -1,5 +1,4 @@
 import api from "../api/apiService";
-const fileName = `IN chatService`;
 
 const fileName = `IN chatService`;
 
@@ -12,7 +11,6 @@ export const sendMessageAPI = async (senderId, receiverId, message) => {
         return res.data;
     } catch (error) {
         console.error("❌ Error sending message:", error);
-        console.error("❌ Error sending message:", error);
     }
 };
 
@@ -22,7 +20,6 @@ export const getChatHistoryAPI = async (user1, user2) => {
         const res = await api.post("/messages/chatHistory", { user1, user2 });
         return res.data;
     } catch (error) {
-        console.error(fileName,"Error fetching chat history:", error);
         console.error(fileName,"Error fetching chat history:", error);
         return [];
     }
