@@ -1,12 +1,14 @@
 import React, { useState, useContext, useRef, useCallback, useEffect } from "react";
 import { 
-    View, Text, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
-    StyleSheet, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, AppState 
+    Text as RNText,  ActivityIndicator, StyleSheet, KeyboardAvoidingView,
+     Platform, Keyboard, TouchableWithoutFeedback, AppState 
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import ChatInput from "../components/ChatInput";
+import ChatList from "../components/ChatList";
 
 const DoctorChatScreen = ({ route }) => {
     const { user } = useContext(AuthContext);
@@ -122,39 +124,20 @@ const DoctorChatScreen = ({ route }) => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView 
-                behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.container}
                 keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90}
             >
-                <Text style={styles.header}>{patientName}'s Chat</Text>
+                <RNText style={styles.header}>{patientName}'s Chat</RNText>
 
-                <FlatList
-                    ref={flatListRef}
-                    data={messages}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => (
-                        <View style={item.sender === doctorId ? styles.doctorMessage : styles.patientMessage}>
-                            <Text style={styles.messageText}>{item.message}</Text>
-                        </View>
-                    )}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                    onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+                <ChatList messages={messages} userId={doctorId} flatListRef={flatListRef} />
+
+                <ChatInput
+                    message={message}
+                    onChangeText={setMessage}
+                    onSend={sendMessage}
                 />
-
-                <View style={styles.inputWrapper}>
-                    <TextInput
-                        value={message}
-                        onChangeText={setMessage}
-                        style={styles.input}
-                        placeholder="Type a message..."
-                        placeholderTextColor="#777"
-                        onFocus={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                    />
-                    <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-                        <Text style={styles.sendButtonText}>Send</Text>
-                    </TouchableOpacity>
-                </View>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );
@@ -163,50 +146,6 @@ const DoctorChatScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: "#FAF9F6" },
     header: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 20, color: "#444444" },
-    doctorMessage: { 
-        alignSelf: "flex-end",
-        backgroundColor: "#B5E7A0",
-        padding: 10,
-        marginVertical: 5,
-        borderRadius: 10,
-        maxWidth: "75%",
-        borderWidth: 2,
-        borderColor: "#8AAD60",
-    },
-    patientMessage: { 
-        alignSelf: "flex-start",
-        backgroundColor: "#EAE7DC",
-        padding: 10,
-        marginVertical: 5,
-        borderRadius: 10,
-        maxWidth: "75%",
-        borderWidth: 2,
-        borderColor: "#C6A477",
-    },
-    messageText: { fontSize: 16, color: "#444444" },
-    inputWrapper: { 
-        flexDirection: "row", 
-        alignItems: "center", 
-        marginBottom: Platform.OS === "ios" ? 20 : 10 
-    },
-    input: { 
-        flex: 1,
-        height: 45, 
-        borderWidth: 2, 
-        padding: 10, 
-        borderRadius: 10, 
-        borderColor: "#C6A477", 
-        backgroundColor: "#FFF" 
-    },
-    sendButton: { 
-        backgroundColor: "#C6A477",
-        paddingVertical: 10, 
-        paddingHorizontal: 20, 
-        borderRadius: 10, 
-        marginLeft: 10 
-    },
-    sendButtonText: { color: "#FFF", fontWeight: "bold" },
     loading: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
-
 export default DoctorChatScreen;

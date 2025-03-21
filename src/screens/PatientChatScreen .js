@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { 
-    View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
-    StyleSheet, Text as RNText, KeyboardAvoidingView, Platform, Keyboard, 
+     ActivityIndicator,StyleSheet, Text as RNText,
+      KeyboardAvoidingView, Platform, Keyboard, 
     TouchableWithoutFeedback, AppState 
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket"; 
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import ChatList from "../components/ChatList";
+import ChatInput from "../components/ChatInput";
 
 const PatientChatScreen = () => {
     const { user } = useContext(AuthContext);
@@ -129,8 +131,8 @@ const PatientChatScreen = () => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView 
-                behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.container}
                 keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70}
             >
@@ -138,32 +140,8 @@ const PatientChatScreen = () => {
 
                 {doctorId ? (
                     <>
-                        <FlatList
-                            ref={flatListRef}
-                            data={messages}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) => (
-                                <View style={item.sender === userId ? styles.patientMessage : styles.doctorMessage}>
-                                    <RNText style={styles.messageText}>{item.message}</RNText>
-                                </View>
-                            )}
-                            contentContainerStyle={{ paddingBottom: 20 }}
-                            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                        />
-
-                        <View style={styles.inputWrapper}>
-                            <TextInput
-                                value={message}
-                                onChangeText={setMessage}
-                                style={styles.input}
-                                placeholder="Type a message..."
-                                placeholderTextColor="#777"
-                                onFocus={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                            />
-                            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-                                <RNText style={styles.sendButtonText}>Send</RNText>
-                            </TouchableOpacity>
-                        </View>
+                        <ChatList messages={messages} userId={userId} flatListRef={flatListRef} />
+                        <ChatInput message={message} onChangeText={setMessage} onSend={sendMessage} />
                     </>
                 ) : (
                     <RNText style={styles.noDoctorText}>You have no assigned doctor.</RNText>
@@ -176,51 +154,9 @@ const PatientChatScreen = () => {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: "#FAF9F6" },
     header: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 20, color: "#444444" },
-    doctorMessage: { 
-        alignSelf: "flex-start",
-        backgroundColor: "#EAE7DC",
-        padding: 10,
-        marginVertical: 5,
-        borderRadius: 10,
-        maxWidth: "75%",
-        borderWidth: 2,
-        borderColor: "#C6A477",
-    },
-    patientMessage: { 
-        alignSelf: "flex-end",
-        backgroundColor: "#B5E7A0",
-        padding: 10,
-        marginVertical: 5,
-        borderRadius: 10,
-        maxWidth: "75%",
-        borderWidth: 2,
-        borderColor: "#8AAD60",
-    },
-    messageText: { fontSize: 16, color: "#444444" },
-    inputWrapper: { 
-        flexDirection: "row", 
-        alignItems: "center", 
-        marginBottom: Platform.OS === "ios" ? 20 : 10 
-    },
-    input: { 
-        flex: 1,
-        height: 45, 
-        borderWidth: 2, 
-        padding: 10, 
-        borderRadius: 10, 
-        borderColor: "#C6A477", 
-        backgroundColor: "#FFF" 
-    },
-    sendButton: { 
-        backgroundColor: "#C6A477",
-        paddingVertical: 10, 
-        paddingHorizontal: 20, 
-        borderRadius: 10, 
-        marginLeft: 10 
-    },
-    sendButtonText: { color: "#FFF", fontWeight: "bold" },
     loading: { flex: 1, justifyContent: "center", alignItems: "center" },
     noDoctorText: { textAlign: "center", fontSize: 16, color: "#888", marginTop: 20 },
 });
+
 
 export default PatientChatScreen;

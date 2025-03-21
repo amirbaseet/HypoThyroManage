@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 const MessageBubble = ({ message, isSender }) => {
     return (
@@ -10,7 +10,7 @@ const MessageBubble = ({ message, isSender }) => {
 };
 
 const styles = StyleSheet.create({
-    doctorMessage: { 
+    doctorMessage: {
         alignSelf: "flex-start",
         backgroundColor: "#EAE7DC",
         padding: 10,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#C6A477",
     },
-    patientMessage: { 
+    patientMessage: {
         alignSelf: "flex-end",
         backgroundColor: "#B5E7A0",
         padding: 10,
@@ -30,7 +30,10 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#8AAD60",
     },
-    messageText: { fontSize: 16, color: "#444444" },
+    messageText: {
+        fontSize: 16,
+        color: "#444444",
+    },
 });
 
 export default MessageBubble;
