@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext, useRef, useCallback  } from "react";
+import React, { useState, useEffect, useContext, useRef, useCallback  } from "react";
 import { 
     View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
     StyleSheet, Text as RNText, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
+import { sendMessageAPI, getChatHistoryAPI,markMessagesAsReadAPI } from "../services/chatService";
 import { sendMessageAPI, getChatHistoryAPI,markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket"; 
 import { useFocusEffect } from "@react-navigation/native"; // ✅ Import useFocusEffect
