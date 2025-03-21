@@ -36,7 +36,7 @@ exports.decryptMessageAES = (encryptedMessage, aesKey) => {
 //  Encrypt AES Key using RSA (Ensure OAEP Padding)
 exports.encryptAESKeyWithRSA = (aesKey, publicKey) => {
     try {
-        console.log("🔹 Encrypting AES Key with RSA...");
+        // console.log("🔹 Encrypting AES Key with RSA...");
         const key = new NodeRSA(publicKey, "public");
         key.setOptions({ encryptionScheme: "pkcs1_oaep" }); // ✅ Ensure OAEP padding
         return key.encrypt(aesKey, "base64");

@@ -1,12 +1,12 @@
-import React, { useState, useContext, useRef, useCallback } from "react";
+import React, { useState, useContext, useRef, useCallback, useEffect } from "react";
 import { 
     View, Text, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
-    StyleSheet, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback
+    StyleSheet, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, AppState 
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 const DoctorChatScreen = ({ route }) => {
     const { user } = useContext(AuthContext);
@@ -14,78 +14,82 @@ const DoctorChatScreen = ({ route }) => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
     const flatListRef = useRef();
+    const socketRef = useRef(null);
     const doctorId = user?.id;
-    let socket = null;
-    // 🔥 Get Patient ID & Name from route params
+
+    const isFocused = useIsFocused();
+    const appState = useRef(AppState.currentState);
+    const [isAppActive, setIsAppActive] = useState(true);
+
     const { patientId, patientName } = route.params || {};
 
-    // ✅ Set selected patient when navigating to this screen
+    const refreshChat = async () => {
+        if (!patientId || !doctorId) return;
+        try {
+            setLoading(true);
+            const res = await getChatHistoryAPI(doctorId, patientId);
+            setMessages(res);
+        } catch (error) {
+            console.error("❌ Error fetching messages:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const setupSocket = async () => {
+        const socket = await getSocket();
+        if (!socket) {
+            console.error("❌ Socket not available.");
+            return;
+        }
+
+        socketRef.current = socket;
+        socket.off("receiveMessage");
+
+        socket.on("receiveMessage", async (data) => {
+            if (data.sender === patientId || data.receiver === patientId) {
+                setMessages((prevMessages) => [...prevMessages, data]);
+                flatListRef.current?.scrollToEnd({ animated: true });
+
+                if (isFocused && isAppActive) {
+                    await markMessagesAsReadAPI(patientId, doctorId);
+                }
+            }
+        });
+
+        console.log("✅ Socket set up for doctor.");
+    };
+
     useFocusEffect(
         useCallback(() => {
-            if (!patientId) return;
-
-            const fetchChatHistory = async () => {
-                try {
-                    setLoading(true);
-                    const res = await getChatHistoryAPI(doctorId, patientId);
-                    setMessages(res);
-                } catch (error) {
-                    console.error("❌ Error fetching messages:", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            fetchChatHistory();
-        }, [patientId])
-    );
-
-    useFocusEffect(
-        useCallback(() => {
-            let socket;
-
-            const setupSocket = async () => {
-                socket = await getSocket();
-                if (!socket) {
-                    console.error("❌ Socket not available.");
-                    return;
-                }
-
-                socket.off("receiveMessage");
-
-                const handleReceiveMessage = async (data) => {
-                    console.log("📩 New message received:", data);
-
-                    if (data.sender === patientId || data.receiver === patientId) {
-                        setMessages((prevMessages) => [...prevMessages, data]);
-                        flatListRef.current?.scrollToEnd({ animated: true });
-
-                        // ✅ Mark messages as read when received
-                        await markMessagesAsReadAPI(patientId, doctorId);
-                    }
-                };
-
-                socket.on("receiveMessage", handleReceiveMessage);
-
-                console.log("✅ Socket connected for doctor.");
-
-                return () => {
-                    console.log("🔌 Disconnecting socket on unfocus...");
-                    socket.off("receiveMessage", handleReceiveMessage);
-                    socket.disconnect();
-                };
-            };
-
+            refreshChat();
             setupSocket();
 
             return () => {
-                if (socket) {
-                    console.log("🔌 Cleanup: Disconnecting socket...");
-                    socket.disconnect();
+                if (socketRef.current) {
+                    socketRef.current.off("receiveMessage");
+                    console.log("🧹 Cleaned up socket on blur");
                 }
             };
-        }, [patientId])
+        }, [patientId, isFocused])
     );
+
+    useEffect(() => {
+        const handleAppStateChange = async (nextAppState) => {
+            const isNowActive = nextAppState === "active";
+            setIsAppActive(isNowActive);
+            appState.current = nextAppState;
+
+            if (isNowActive && isFocused) {
+                console.log("🔄 App resumed — refreshing and reconnecting...");
+                await refreshChat();
+                await setupSocket(); // Rebind socket on resume
+            }
+        };
+
+        const subscription = AppState.addEventListener("change", handleAppStateChange);
+        return () => subscription.remove();
+    }, [isFocused, patientId, doctorId]);
 
     const sendMessage = async () => {
         if (!patientId || !message.trim()) return;
@@ -98,7 +102,6 @@ const DoctorChatScreen = ({ route }) => {
         }
 
         socket.emit("sendMessage", newMessage, (ack) => {
-            console.log("📩 Sent message:", newMessage);
             console.log("✅ Acknowledgment:", ack);
         });
 
@@ -112,6 +115,7 @@ const DoctorChatScreen = ({ route }) => {
 
         setMessage("");
     };
+
     if (loading) {
         return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
     }
@@ -121,7 +125,7 @@ const DoctorChatScreen = ({ route }) => {
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"} 
                 style={styles.container}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90} 
+                keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90}
             >
                 <Text style={styles.header}>{patientName}'s Chat</Text>
 
@@ -159,7 +163,6 @@ const DoctorChatScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: "#FAF9F6" },
     header: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 20, color: "#444444" },
-
     doctorMessage: { 
         alignSelf: "flex-end",
         backgroundColor: "#B5E7A0",
@@ -181,7 +184,6 @@ const styles = StyleSheet.create({
         borderColor: "#C6A477",
     },
     messageText: { fontSize: 16, color: "#444444" },
-
     inputWrapper: { 
         flexDirection: "row", 
         alignItems: "center", 
@@ -204,7 +206,6 @@ const styles = StyleSheet.create({
         marginLeft: 10 
     },
     sendButtonText: { color: "#FFF", fontWeight: "bold" },
-
     loading: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
 

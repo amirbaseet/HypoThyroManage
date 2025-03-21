@@ -1,23 +1,29 @@
-import React, { useState, useEffect, useContext, useRef, useCallback  } from "react";
+import React, { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { 
     View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
-    StyleSheet, Text as RNText, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView
+    StyleSheet, Text as RNText, KeyboardAvoidingView, Platform, Keyboard, 
+    TouchableWithoutFeedback, AppState 
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { sendMessageAPI, getChatHistoryAPI,markMessagesAsReadAPI } from "../services/chatService";
+import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket"; 
-import { useFocusEffect } from "@react-navigation/native"; // ✅ Import useFocusEffect
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 const PatientChatScreen = () => {
     const { user } = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
+    const flatListRef = useRef();
     const doctorId = user?.doctorId;
     const userId = user?.id;
-    const flatListRef = useRef();
-    const fetchChatHistory = async () => {
-        if (!doctorId) return;
+    const appState = useRef(AppState.currentState);
+    const [isAppActive, setIsAppActive] = useState(true);
+    const isFocused = useIsFocused();
+
+    const refreshChat = async () => {
+        if (!doctorId || !userId) return;
+        setLoading(true);
         try {
             const res = await getChatHistoryAPI(userId, doctorId);
             setMessages(res);
@@ -28,61 +34,72 @@ const PatientChatScreen = () => {
         }
     };
 
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
+            refreshChat();
+        }, [doctorId, userId])
+    );
 
-        fetchChatHistory();
-    }, [doctorId]);
+    useEffect(() => {
+        const handleAppStateChange = (nextAppState) => {
+            setIsAppActive(nextAppState === "active");
+            appState.current = nextAppState;
+
+            if (nextAppState === "active") {
+                refreshChat();
+            }
+        };
+
+        const subscription = AppState.addEventListener("change", handleAppStateChange);
+        return () => subscription.remove();
+    }, [doctorId, userId]);
 
     useFocusEffect(
         useCallback(() => {
             if (!doctorId || !userId) return;
-            fetchChatHistory();
-            let socket; 
-            let isMounted = true; // ✅ Track screen focus
     
+            let socket;
+            let isMounted = true;
+
             const setupSocket = async () => {
                 socket = await getSocket();
-                console.log("✅ Socket connected for patient.")
                 if (!socket) {
                     console.error("❌ Socket not available.");
                     return;
                 }
-    
-                socket.off("receiveMessage"); 
-    
+
+                socket.off("receiveMessage");
+
                 const handleReceiveMessage = async (data) => {
-                    if (!isMounted) return; // ✅ Prevent marking as read when screen is not active
-    
-                    console.log("📩 New message received:", data);
+                    if (!isMounted) return;
+
                     if (data.sender === doctorId || data.receiver === doctorId) {
                         setMessages((prevMessages) => [...prevMessages, data]);
                         flatListRef.current?.scrollToEnd({ animated: true });
-    
-                        // ✅ Mark messages as read only if screen is focused
-                        await markMessagesAsReadAPI(doctorId, userId);
+
+                        // ✅ Only mark as read if screen is focused & app is active
+                        if (isFocused && isAppActive) {
+                            await markMessagesAsReadAPI(doctorId, userId);
+                        }
                     }
                 };
-    
+
                 socket.on("receiveMessage", handleReceiveMessage);
             };
-    
+
             setupSocket();
-    
+
             return () => {
-                console.log("🔌 Cleanup:  Disconnecting socket for patient...");
-                isMounted = false; // ✅ Stop read API when screen is left
+                isMounted = false;
                 if (socket) {
                     socket.off("receiveMessage");
                 }
             };
-        }, [doctorId, userId])
+        }, [doctorId, userId, isFocused, isAppActive])
     );
-    
 
     const sendMessage = async () => {
-        if (!doctorId || !message.trim()) {
-            return;
-        }
+        if (!doctorId || !message.trim()) return;
 
         const newMessage = { sender: userId, receiver: doctorId, message };
         const socket = await getSocket();
@@ -92,7 +109,6 @@ const PatientChatScreen = () => {
         }
 
         socket.emit("sendMessage", newMessage, (ack) => {
-            console.log("📩 Sent message:", newMessage);
             console.log("✅ Acknowledgment:", ack);
         });
 
@@ -116,7 +132,7 @@ const PatientChatScreen = () => {
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"} 
                 style={styles.container}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90} // ✅ Adjust for iOS/Android
+                keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70}
             >
                 <RNText style={styles.header}>Chat with Your Doctor</RNText>
 
@@ -134,8 +150,7 @@ const PatientChatScreen = () => {
                             contentContainerStyle={{ paddingBottom: 20 }}
                             onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                         />
-                        
-                        {/* ✅ Keyboard-Friendly Input Field */}
+
                         <View style={styles.inputWrapper}>
                             <TextInput
                                 value={message}
@@ -161,8 +176,6 @@ const PatientChatScreen = () => {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: "#FAF9F6" },
     header: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 20, color: "#444444" },
-    
-    // ✅ Message Styles with Theme Colors
     doctorMessage: { 
         alignSelf: "flex-start",
         backgroundColor: "#EAE7DC",
@@ -184,12 +197,10 @@ const styles = StyleSheet.create({
         borderColor: "#8AAD60",
     },
     messageText: { fontSize: 16, color: "#444444" },
-
-    // ✅ Input and Send Button (Keyboard Safe)
     inputWrapper: { 
         flexDirection: "row", 
         alignItems: "center", 
-        marginBottom: Platform.OS === "ios" ? 20 : 10 // ✅ Fix for keyboard hiding input
+        marginBottom: Platform.OS === "ios" ? 20 : 10 
     },
     input: { 
         flex: 1,
@@ -208,8 +219,6 @@ const styles = StyleSheet.create({
         marginLeft: 10 
     },
     sendButtonText: { color: "#FFF", fontWeight: "bold" },
-
-    // ✅ Loading and No Doctor Message
     loading: { flex: 1, justifyContent: "center", alignItems: "center" },
     noDoctorText: { textAlign: "center", fontSize: 16, color: "#888", marginTop: 20 },
 });
