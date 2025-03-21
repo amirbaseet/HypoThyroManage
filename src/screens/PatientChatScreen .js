@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext, useRef, useCallback  } from "react";
-import React, { useState, useEffect, useContext, useRef, useCallback  } from "react";
 import { 
     View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, 
     StyleSheet, Text as RNText, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { sendMessageAPI, getChatHistoryAPI,markMessagesAsReadAPI } from "../services/chatService";
 import { sendMessageAPI, getChatHistoryAPI,markMessagesAsReadAPI } from "../services/chatService";
 import { getSocket } from "../api/socket"; 
 import { useFocusEffect } from "@react-navigation/native"; // ✅ Import useFocusEffect
@@ -118,7 +116,7 @@ const PatientChatScreen = () => {
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"} 
                 style={styles.container}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70} // ✅ Adjust for iOS/Android
+                keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90} // ✅ Adjust for iOS/Android
             >
                 <RNText style={styles.header}>Chat with Your Doctor</RNText>
 
