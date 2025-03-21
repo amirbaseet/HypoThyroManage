@@ -6,8 +6,7 @@ const fileName = `IN chatService`;
 export const sendMessageAPI = async (senderId, receiverId, message) => {
     try {
         const res = await api.post("/messages/send", { senderId, receiverId, message });
-        console.log("✅ Message sent and stored:", res.data);
-        console.log("✅ Message sent and stored:", res.data);
+        // console.log("✅ Message sent and stored:", res.data);
         return res.data;
     } catch (error) {
         console.error("❌ Error sending message:", error);
