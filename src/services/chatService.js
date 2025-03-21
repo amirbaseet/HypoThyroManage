@@ -1,13 +1,17 @@
 import api from "../api/apiService";
 const fileName = `IN chatService`;
 
+const fileName = `IN chatService`;
+
 // Send a message
 export const sendMessageAPI = async (senderId, receiverId, message) => {
     try {
         const res = await api.post("/messages/send", { senderId, receiverId, message });
         console.log("✅ Message sent and stored:", res.data);
+        console.log("✅ Message sent and stored:", res.data);
         return res.data;
     } catch (error) {
+        console.error("❌ Error sending message:", error);
         console.error("❌ Error sending message:", error);
     }
 };
@@ -18,6 +22,7 @@ export const getChatHistoryAPI = async (user1, user2) => {
         const res = await api.post("/messages/chatHistory", { user1, user2 });
         return res.data;
     } catch (error) {
+        console.error(fileName,"Error fetching chat history:", error);
         console.error(fileName,"Error fetching chat history:", error);
         return [];
     }
