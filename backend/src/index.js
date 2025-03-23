@@ -24,6 +24,7 @@ const pushNotificationRoutes = require("./routes/pushNotificationRoutes");
 // Admin & Patient Routes for Symptom Forms
 const adminRoutes = require("./routes/adminRoutes");
 const patientRoutes = require("./routes/patientRoutes");
+const medicineRoutes = require("./routes/medicineRoutes");
 
 
 app.use("/api/auth", authRoutes);
@@ -34,6 +35,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", pushNotificationRoutes);  
 app.use("/api/admin", adminRoutes);
 app.use("/api/patient", patientRoutes);
+app.use("/api/medicine", medicineRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

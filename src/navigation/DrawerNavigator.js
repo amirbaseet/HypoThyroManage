@@ -26,6 +26,12 @@ import SymptomFormScreen from "../screens/SymptomFormScreen";  // Import the cha
 import DoctorSubmissionsScreen from "../screens/DoctorSubmissionsScreen";  // Import the chat stack
 // in DrawerNavigator.js
 import PatientStack from "./PatientStack"; // import it
+import TakeMedicineScreen from "../screens/TakeMedicineScreen";
+import ProgressScreen from "../screens/ProgressScreen";
+import DoctorPatientsProgressScreen from "../screens/DoctorPatientsProgressScreen";
+
+
+
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -59,12 +65,15 @@ const DrawerNavigator = () => {
                     <Drawer.Screen name="Chat" component={DoctorChatStack} /> 
                     <Drawer.Screen name="Dashboard" component={DoctorDashboardScreen} />
                     <Drawer.Screen name="DoctorSubmissions" component={DoctorSubmissionsScreen} />
+                    <Drawer.Screen name="DoctorPatientsProgressScreen" component={DoctorPatientsProgressScreen} />
 
                 </>
             )}
 
             {user?.role === "patient" && (
                 <>
+                    <Drawer.Screen name="ProgressScreen" component={ProgressScreen} />
+                    <Drawer.Screen name="TakeMedicineScreen" component={TakeMedicineScreen} />
                     <Drawer.Screen name="AvailableForms" component={AvailableFormsScreen} />
                     <Drawer.Screen name="SubmissionHistory" component={SubmissionHistoryScreen} />
                     <Drawer.Screen name="SymptomForm" component={SymptomFormScreen} 
