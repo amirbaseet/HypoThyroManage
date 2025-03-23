@@ -9,6 +9,7 @@ import { getSocket } from "../api/socket";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import ChatInput from "../components/ChatInput";
 import ChatList from "../components/ChatList";
+import { useTranslation } from "react-i18next"; // ✅ Import i18n
 
 const DoctorChatScreen = ({ route }) => {
     const { user } = useContext(AuthContext);
@@ -18,6 +19,7 @@ const DoctorChatScreen = ({ route }) => {
     const flatListRef = useRef();
     const socketRef = useRef(null);
     const doctorId = user?.id;
+    const { t } = useTranslation();
 
     const isFocused = useIsFocused();
     const appState = useRef(AppState.currentState);
@@ -129,7 +131,8 @@ const DoctorChatScreen = ({ route }) => {
                 style={styles.container}
                 keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90}
             >
-                <RNText style={styles.header}>{patientName}'s Chat</RNText>
+                <RNText style={styles.header}>{t("chat_with_patient", { name: patientName })}</RNText>
+                
 
                 <ChatList messages={messages} userId={doctorId} flatListRef={flatListRef} />
 

@@ -69,6 +69,17 @@
     "yes": "Evet",
     "no": "Hayır",
     "chat_with_doctor": "Doktorunuzla Sohbet Edin",
-    "no_doctor_assigned": "Atanmış bir doktorunuz yok."
+    "no_doctor_assigned": "Atanmış bir doktorunuz yok.",
+    "chat_with_patient": "{{name}} ile Sohbet",
+    "doctor_dashboard_title": "Doktor Hasta Takibi",
+    "select_patient": "Hasta Seçin:",
+    "weekly_symptom_reports": "Haftalık Semptom Raporları:",
+    "medicine_progress": "İlaç Takibi:",
+    "form_submissions": "Form Gönderimleri:",
+    "submitted_on": "Gönderim Tarihi",
+    "taken": "Alındı",
+    "missed": "Kaçırıldı"
+  
+
   }
   
