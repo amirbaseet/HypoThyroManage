@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, FlatList, TouchableOpacity, Button, Alert, StyleSheet } from "react-native";
+import {
+    View,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    Button,
+    Alert,
+    StyleSheet
+} from "react-native";
 import { getSymptoms } from "../services/symptomsService";
 import { getLatestSymptomForm, submitSymptomForm } from "../services/patientService";
 import { AuthContext } from "../context/AuthContext";
@@ -10,6 +18,7 @@ const SymptomFormScreen = ({ route, navigation }) => {
 
     const [symptoms, setSymptoms] = useState([]);
     const [selectedSeverities, setSelectedSeverities] = useState({});
+    const [copingResponses, setCopingResponses] = useState({});
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -47,14 +56,41 @@ const SymptomFormScreen = ({ route, navigation }) => {
         }));
     };
 
+    const toggleNoComplaint = (symptomName) => {
+        setCopingResponses((prev) => ({
+            ...prev,
+            [symptomName]: {
+                ...prev[symptomName],
+                noComplaint: !prev[symptomName]?.noComplaint,
+                copingLevel: null
+            }
+        }));
+    };
+
+    const setCopingLevel = (symptomName, level) => {
+        setCopingResponses((prev) => ({
+            ...prev,
+            [symptomName]: {
+                noComplaint: false,
+                copingLevel: level
+            }
+        }));
+    };
+
     const handleSubmit = async () => {
         const formatted = Object.entries(selectedSeverities).map(([symptomId, severity]) => ({
             symptomId,
             severity
         }));
 
+        const formattedCoping = Object.entries(copingResponses).map(([symptomName, data]) => ({
+            symptomName,
+            copingLevel: data.noComplaint ? null : data.copingLevel,
+            noComplaint: data.noComplaint
+        }));
+
         setLoading(true);
-        const res = await submitSymptomForm(formWindow._id, formatted);
+        const res = await submitSymptomForm(formWindow._id, formatted, formattedCoping);
         setLoading(false);
 
         if (res.error) {
@@ -66,18 +102,16 @@ const SymptomFormScreen = ({ route, navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.header}>{formWindow.title}</Text>
 
-            <FlatList
-                data={symptoms}
-                keyExtractor={(item) => item._id}
-                numColumns={2}
-                columnWrapperStyle={styles.row}
-                renderItem={({ item }) => {
+            <Text style={styles.sectionTitle}>1. Semptom Şiddeti</Text>
+            <View style={styles.symptomGrid}>
+                {symptoms.map((item) => {
                     const severity = selectedSeverities[item._id] ?? 0;
                     return (
                         <TouchableOpacity
+                            key={item._id}
                             style={[
                                 styles.symptomButton,
                                 severity > 0 && styles.selectedSymptom
@@ -85,21 +119,62 @@ const SymptomFormScreen = ({ route, navigation }) => {
                             onPress={() => cycleSeverity(item._id)}
                         >
                             <Text style={styles.symptomText}>{item.name}</Text>
-                            <Text style={styles.severityText}>Severity: {severity}</Text>
+                            <Text style={styles.severityText}>Şiddet: {severity}</Text>
                         </TouchableOpacity>
                     );
-                }}
-            />
+                })}
+            </View>
+
+            <Text style={styles.sectionTitle}>2. Başa Çıkma Değerlendirmesi</Text>
+            {symptoms.map((symptom) => {
+                const coping = copingResponses[symptom.name] || {};
+                return (
+                    <View key={symptom._id} style={styles.copingItem}>
+                        <Text style={styles.copingSymptom}>{symptom.name}</Text>
+
+                        <TouchableOpacity
+                            onPress={() => toggleNoComplaint(symptom.name)}
+                            style={styles.noComplaintBtn}
+                        >
+                            <Text style={{
+                                color: coping.noComplaint ? '#2e7d32' : '#aaa',
+                                fontWeight: '600'
+                            }}>
+                                {coping.noComplaint ? "✔ Şikayetim yok" : "Şikayetim yok seç"}
+                            </Text>
+                        </TouchableOpacity>
+
+                        {!coping.noComplaint && (
+                            <View style={styles.levelButtons}>
+                                {[1, 2, 3, 4, 5].map((level) => (
+                                    <TouchableOpacity
+                                        key={level}
+                                        style={[
+                                            styles.levelBtn,
+                                            coping.copingLevel === level && styles.activeLevelBtn
+                                        ]}
+                                        onPress={() => setCopingLevel(symptom.name, level)}
+                                    >
+                                        <Text style={{
+                                            color: coping.copingLevel === level ? "#fff" : "#444"
+                                        }}>{level}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        )}
+                    </View>
+                );
+            })}
 
             <View style={styles.buttonContainer}>
                 <Button
-                    title={loading ? "Submitting..." : "Submit Form"}
+                    title={loading ? "Gönderiliyor..." : "Formu Gönder"}
                     onPress={handleSubmit}
                     disabled={loading}
                     color="#007BFF"
                 />
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -110,26 +185,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#FAF9F6',
     },
     header: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 15,
         textAlign: 'center',
-        color: '#444444',
+        color: '#2c3e50',
     },
-    row: {
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        marginVertical: 15,
+        color: '#444',
+    },
+    symptomGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
-        marginBottom: 10,
     },
     symptomButton: {
-        flex: 1,
-        padding: 15,
+        width: '48%',
+        padding: 12,
+        marginBottom: 10,
         borderRadius: 10,
-        margin: 5,
-        alignItems: 'center',
         backgroundColor: '#EAE7DC',
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: '#C6A477',
-        justifyContent: 'center',
     },
     selectedSymptom: {
         backgroundColor: '#B5E7A0',
@@ -138,20 +218,51 @@ const styles = StyleSheet.create({
     symptomText: {
         fontSize: 15,
         fontWeight: '600',
+        color: '#333',
         textAlign: 'center',
-        color: '#444444',
     },
     severityText: {
-        marginTop: 8,
         fontSize: 13,
-        color: '#333',
+        marginTop: 6,
+        color: '#555',
+        textAlign: 'center',
+    },
+    copingItem: {
+        marginBottom: 20,
+        paddingVertical: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ddd",
+    },
+    copingSymptom: {
+        fontWeight: '600',
+        fontSize: 15,
+        marginBottom: 5,
+        color: '#222',
+    },
+    noComplaintBtn: {
+        marginBottom: 8,
+    },
+    levelButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    levelBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 5,
+        backgroundColor: "#f5f5f5",
+        marginRight: 5,
+    },
+    activeLevelBtn: {
+        backgroundColor: "#007BFF",
+        borderColor: "#007BFF",
     },
     buttonContainer: {
-        marginTop: 20,
-        padding: 10,
-        alignSelf: 'center',
-        width: '100%',
-    },
+        marginTop: 30,
+        marginBottom: 50,
+    }
 });
 
 export default SymptomFormScreen;

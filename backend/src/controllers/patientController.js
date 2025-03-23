@@ -1,5 +1,7 @@
 const SymptomFormWindow = require('../models/SymptomFormWindow');
 const SymptomFormSubmission = require('../models/SymptomFormSubmission');
+const SymptomCopingSubmission = require("../models/SymptomCopingSubmission");
+
 const User = require("../models/userModels");
 
 // GET active form windows
@@ -30,36 +32,42 @@ exports.getLatestSymptomSubmission = async (req, res) => {
 
 exports.submitSymptomForm = async (req, res) => {
     try {
-        const { formWindowId, symptoms } = req.body;
+        const { formWindowId, symptoms, copingResponses } = req.body;
         const userId = req.user.id;
 
-        // ✅ 1. Check if the form window exists and is active
+        // ✅ Check form window validity
         const formWindow = await SymptomFormWindow.findById(formWindowId);
         if (!formWindow) {
             return res.status(404).json({ error: "Form window not found." });
         }
-
         if (!formWindow.isActive) {
             return res.status(403).json({ error: "This form is no longer active." });
         }
 
-        // ✅ 2. Check if user already submitted
+        // ✅ Symptom severity form submission
         let existing = await SymptomFormSubmission.findOne({ userId, formWindowId });
-
         if (existing) {
             existing.symptoms = symptoms;
             await existing.save();
-            return res.status(200).json({ message: "Form updated successfully." });
+        } else {
+            await SymptomFormSubmission.create({ userId, formWindowId, symptoms });
         }
 
-        // ✅ 3. Submit new form
-        const submission = await SymptomFormSubmission.create({
-            userId,
-            formWindowId,
-            symptoms
-        });
+        // ✅ Hypothyroidism coping scale submission
+        let existingCoping = await SymptomCopingSubmission.findOne({ userId, formWindowId });
+        if (existingCoping) {
+            existingCoping.entries = copingResponses;
+            await existingCoping.save();
+        } else {
+            await SymptomCopingSubmission.create({
+                userId,
+                formWindowId,
+                entries: copingResponses
+            });
+        }
 
-        res.status(201).json({ message: "Form created successfully.", submission });
+        res.status(200).json({ message: "Form and coping responses submitted successfully." });
+
     } catch (err) {
         console.error("❌ Error in submitSymptomForm:", err.message);
         res.status(500).json({ error: err.message });
@@ -69,11 +77,24 @@ exports.submitSymptomForm = async (req, res) => {
 exports.getMySubmissions = async (req, res) => {
     try {
         const userId = req.user.id;
-        const submissions = await SymptomFormSubmission.find({ userId })
-            .populate('formWindowId')
-            .populate('symptoms.symptomId'); // ✅ Ensures symptomId is full object
 
-        res.status(200).json(submissions);
+        const symptomSubmissions = await SymptomFormSubmission.find({ userId })
+            .populate('formWindowId')
+            .populate('symptoms.symptomId');
+
+        const copingSubmissions = await SymptomCopingSubmission.find({ userId })
+            .populate('formWindowId');
+
+        res.status(200).json({ symptomSubmissions, copingSubmissions });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+exports.getCopingSubmissions = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const data = await SymptomCopingSubmission.find({ userId }).populate("formWindowId");
+        res.json(data);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -64,11 +64,12 @@ export const getLatestSymptomForm = async (userId, formWindowId) => {
 };
 
 // ✅ Submit or update the form
-export const submitSymptomForm = async (formWindowId, symptoms) => {
+export const submitSymptomForm = async (formWindowId, symptoms, copingResponses) => {
     try {
         const res = await api.patch(`/patient/form-submissions`, {
             formWindowId,
-            symptoms
+            symptoms,
+            copingResponses
         });
         return res.data;
     } catch (error) {
