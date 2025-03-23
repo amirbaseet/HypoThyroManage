@@ -1,15 +1,26 @@
-import React,{useContext,useEffect, useState} from "react";
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Button,
+  StyleSheet,
+} from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { initializeDatabase } from "../database/database";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, CommonActions } from "@react-navigation/native";
 import { deleteAllData, resetDatabase } from "../database/DropDB";
 // import { getLocalUsers } from "../database/UsersCrud";
 import { getSymptoms } from "../services/symptomsService";
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
+
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {user,logout} = useContext(AuthContext);
   const [symptoms, setSymptoms] = useState([]);
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
       await logout();  // Ensure state is reset first
@@ -67,7 +78,17 @@ fetchSymptoms();
 // );
 return (
   <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 22, fontWeight: 'bold' }}>Symptom List</Text>
+      <View style={styles.languageButtons}>
+        <Button title="Türkçe" onPress={() => i18n.changeLanguage("tr")} />
+        <View style={{ width: 10 }} />
+        <Button title="English" onPress={() => i18n.changeLanguage("en")} />
+      </View>
+      <Text style={styles.header}>
+        {user?.username
+          ? `${t("welcome")}, ${user.username}! 👋`
+          : t("welcome")}
+      </Text>
+
       <FlatList
           data={symptoms}
           keyExtractor={(item) => item._id}
@@ -84,5 +105,25 @@ return (
 );
 
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  languageButtons: {
+    flexDirection: "row",
+    marginBottom: 15,
+  },
+  item: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+});
 
 export default HomeScreen;
