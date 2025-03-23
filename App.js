@@ -14,6 +14,9 @@ import {
     scheduleDailyNotification,
     sendTestNotification,
 } from "./src/utils/pushNotification";
+// ✅ Import i18n and translation provider
+import i18n from "./src/i18n";
+import { I18nextProvider } from "react-i18next";
 
 const Stack = createStackNavigator();
 
@@ -72,10 +75,11 @@ export default function App() {
 
     return (
         <AuthProvider>
-            <NavigationContainer>
-                <AppNavigator />
-
-            </NavigationContainer>
+            <I18nextProvider i18n={i18n}>
+                <NavigationContainer>
+                    <AppNavigator />
+                </NavigationContainer>
+            </I18nextProvider>
         </AuthProvider>
     );
 }

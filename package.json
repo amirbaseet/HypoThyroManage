@@ -37,10 +37,14 @@
     "expo-sqlite": "^15.1.2",
     "expo-status-bar": "~2.0.1",
     "expo-video": "^2.0.5",
+    "i18next": "^24.2.3",
+    "i18next-browser-languagedetector": "^8.0.4",
+    "i18next-http-backend": "^3.0.2",
     "jwt-decode": "^4.0.0",
     "node-rsa": "^1.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-i18next": "^15.4.1",
     "react-native": "0.76.7",
     "react-native-aes-crypto": "^3.2.1",
     "react-native-collapsible": "^1.6.2",
@@ -48,6 +52,7 @@
     "react-native-date-picker": "^5.0.10",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-keychain": "^9.2.3",
+    "react-native-localize": "^3.4.1",
     "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-paper": "^5.13.1",
     "react-native-paper-dates": "^0.22.34",
@@ -64,7 +69,8 @@
     "react-native-websockets": "^1.0.8",
     "socket.io-client": "^4.5.1",
     "tweetnacl": "^1.0.3",
-    "tweetnacl-util": "^0.15.1"
+    "tweetnacl-util": "^0.15.1",
+    "expo-localization": "~16.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

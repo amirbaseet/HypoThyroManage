@@ -56,7 +56,8 @@
         {
           "mode": "production"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "extra": {
       "eas": {
