@@ -26,7 +26,7 @@ import DoctorSubmissionsScreen from "../screens/DoctorSubmissionsScreen";
 import TakeMedicineScreen from "../screens/TakeMedicineScreen";
 import ProgressScreen from "../screens/ProgressScreen";
 import DoctorPatientsProgressScreen from "../screens/DoctorPatientsProgressScreen";
-import PatientTabs from "./PatientTabs";
+import CombinedReportsScreen  from "../screens/CombinedReportsScreen";
 
 import { AuthContext } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -68,13 +68,14 @@ const DrawerNavigator = () => {
 
             {user?.role === "patient" && (
                 <>
-                    <Drawer.Screen name="ProgressScreen" component={ProgressScreen} options={{ title: t('progress') }} />
+                    <Drawer.Screen name="CombinedReportsScreen" component={CombinedReportsScreen } options={{ title: t('reports') }} />
+                    {/* <Drawer.Screen name="ProgressScreen" component={ProgressScreen} options={{ title: t('progress') }} /> */}
                     <Drawer.Screen name="TakeMedicineScreen" component={TakeMedicineScreen} options={{ title: t('take_medicine') }} />
                     <Drawer.Screen name="AvailableForms" component={AvailableFormsScreen} options={{ title: t('available_forms') }} />
-                    <Drawer.Screen name="SubmissionHistory" component={SubmissionHistoryScreen} options={{ title: t('submission_history') }} />
+                    {/* <Drawer.Screen name="SubmissionHistory" component={SubmissionHistoryScreen} options={{ title: t('submission_history') }} /> */}
                     <Drawer.Screen name="SymptomForm" component={SymptomFormScreen} options={{ drawerItemStyle: { display: 'none' } }} />
                     <Drawer.Screen name="Report" component={ReportScreen} options={{ title: t('report') }} />
-                    <Drawer.Screen name="Reports" component={ReportsScreen} options={{ title: t('reports') }} />
+                    {/* <Drawer.Screen name="Reports" component={ReportsScreen} options={{ title: t('reports') }} /> */}
                     <Drawer.Screen name="Chat" component={PatientChatScreen} options={{ title: t('chat') }} />
                     <Drawer.Screen name="Nutrition" component={NutritionScreen} options={{ title: t('nutrition') }} />
                     <Drawer.Screen name="Exercise" component={ExerciseScreen} options={{ title: t('exercise') }} />
