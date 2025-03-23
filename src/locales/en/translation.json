@@ -69,8 +69,18 @@
       "yes": "Yes",
        "no": "No",
        "chat_with_doctor": "Chat with Your Doctor",
-       "no_doctor_assigned": "You have no assigned doctor."
+       "no_doctor_assigned": "You have no assigned doctor.",
+       "chat_with_patient": "{{name}}'s Chat",
+       "doctor_dashboard_title": "Doctor's Patient Progress",
+       "select_patient": "Select a Patient:",
+       "weekly_symptom_reports": "Weekly Symptom Reports:",
+       "medicine_progress": "Medicine Progress:",
+       "form_submissions": "Form Submissions:",
+       "submitted_on": "Submitted on",
+       "taken": "Taken",
+       "missed": "Missed"
      
+
 
         
 

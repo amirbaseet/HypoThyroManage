@@ -14,6 +14,7 @@ import {
     getPatientMedicineProgress,
     getDoctorSymptomSubmissions
 } from "../services/doctorService";
+import { useTranslation } from "react-i18next";
 
 const DoctorDashboardScreen = () => {
     const { user } = useContext(AuthContext);
@@ -23,6 +24,8 @@ const DoctorDashboardScreen = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [progress, setProgress] = useState([]);
     const [loading, setLoading] = useState(true);
+  
+    const { t } = useTranslation();
 
     const doctorId = user?.id;
 
@@ -52,9 +55,9 @@ const DoctorDashboardScreen = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.header}>Doctor's Patient Progress</Text>
+            <Text style={styles.header}>{t("doctor_dashboard_title")}</Text>
 
-            <Text style={styles.subHeader}>Select a Patient:</Text>
+            <Text style={styles.subHeader}>{t("select_patient")}</Text>
             <FlatList
                 data={patients}
                 keyExtractor={(item) => item._id}
@@ -74,13 +77,15 @@ const DoctorDashboardScreen = () => {
 
             {selectedPatient && (
                 <>
-                    <Text style={styles.subHeader}>Weekly Symptom Reports:</Text>
+                    <Text style={styles.subHeader}>{t("weekly_symptom_reports")}</Text>
                     {reports
                         .filter((r) => r.userId._id === selectedPatient)
                         .map((item) => (
                             <View key={item._id} style={styles.reportCard}>
-                                <Text style={styles.week}>Week: {new Date(item.weekStart).toDateString()}</Text>
-                                <Text style={styles.symptomTitle}>Symptoms:</Text>
+                                <Text style={styles.week}>
+                                    {t("week")}: {new Date(item.weekStart).toDateString()}
+                                </Text>
+                                <Text style={styles.symptomTitle}>{t("symptoms")}:</Text>
                                 {item.symptoms.map((s, i) => (
                                     <Text key={i} style={styles.symptom}>
                                         {s.symptomId.name}
@@ -89,37 +94,38 @@ const DoctorDashboardScreen = () => {
                             </View>
                         ))}
 
-                    <Text style={styles.subHeader}>Medicine Progress:</Text>
+                    <Text style={styles.subHeader}>{t("medicine_progress")}</Text>
                     {progress.map((item, i) => (
                         <View key={`${item.date}_${i}`} style={styles.progressItem}>
                             <Text style={styles.progressDate}>
                                 {new Date(item.date).toDateString()}
                             </Text>
                             <Text style={styles.status}>
-                                {item.taken ? "✅ Taken" : "❌ Missed"}
+                                {item.taken ? "✅ " + t("taken") : "❌ " + t("missed")}
                             </Text>
                         </View>
                     ))}
 
-                    <Text style={styles.subHeader}>Form Submissions:</Text>
+                    <Text style={styles.subHeader}>{t("form_submissions")}</Text>
                     {submissions
                         .filter((s) => s.userId._id === selectedPatient)
                         .map((item) => (
                             <View key={item._id} style={styles.reportCard}>
                                 <Text style={styles.week}>
-                                    {item.formWindowId?.title || "Untitled Form"}
+                                    {item.formWindowId?.title || t("untitled_form")}
                                 </Text>
                                 <Text style={styles.subText}>
-                                    Week: {new Date(item.formWindowId?.weekStart).toDateString()} → {new Date(item.formWindowId?.weekEnd).toDateString()}
+                                    {t("week")}: {new Date(item.formWindowId?.weekStart).toDateString()} →{" "}
+                                    {new Date(item.formWindowId?.weekEnd).toDateString()}
                                 </Text>
                                 <Text style={styles.subText}>
-                                    Submitted on: {new Date(item.createdAt).toLocaleDateString()}
+                                    {t("submitted_on")}: {new Date(item.createdAt).toLocaleDateString()}
                                 </Text>
 
-                                <Text style={styles.symptomTitle}>Symptoms:</Text>
+                                <Text style={styles.symptomTitle}>{t("symptoms")}:</Text>
                                 {item.symptoms.map((s, index) => (
                                     <Text key={index} style={styles.symptom}>
-                                        • {s.symptomId.name}: Severity {s.severity}
+                                        • {s.symptomId.name}: {t("severity")} {s.severity}
                                     </Text>
                                 ))}
                             </View>
