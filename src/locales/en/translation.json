@@ -78,7 +78,22 @@
        "form_submissions": "Form Submissions:",
        "submitted_on": "Submitted on",
        "taken": "Taken",
-       "missed": "Missed"
+       "missed": "Missed",
+       "select_report": "Select Report",
+       "weekly_symptoms": "Weekly Symptoms",
+       "weekly_medicine_progress": "Weekly Medicine Progress",
+      "progress_fetch_error": "Failed to fetch progress.",
+      "progress_fetch_fallback": "Something went wrong while loading progress.",
+      "daily_medicine_title": "Daily Medicine Tracker",
+      "medicine_taken_msg": "You already took your medicine today!",
+      "medicine_not_taken": "You haven't taken your medicine today.",
+      "take_medicine_btn": "Take Medicine",
+      "marking_btn": "Marking...",
+      "done": "Done",
+      "mark_success": "You have marked your medicine as taken.",
+      "mark_fail": "Something went wrong."
+    
+
      
 
 

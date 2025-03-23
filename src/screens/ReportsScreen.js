@@ -1,28 +1,22 @@
-import React, { useCallback, useState, useContext } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    StyleSheet,
-    ActivityIndicator
-} from 'react-native';
+import React, { useCallback , useState, useContext } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { getUserReports } from '../services/patientService';
-import { AuthContext } from '../context/AuthContext';
-import { useFocusEffect } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { useFocusEffect } from '@react-navigation/native'; // ✅ Import useFocusEffect
 
 const ReportsScreen = () => {
     const { user } = useContext(AuthContext);
-    const { t } = useTranslation();
-
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
-    const userId = user?.id;
+    
 
+        const userId = user?.id; // 🔹 Get user ID dynamically
+
+    // ✅ Fetch reports whenever screen is focused
     useFocusEffect(
         useCallback(() => {
             const fetchReports = async () => {
-                setLoading(true);
+                setLoading(true); // Show loader while fetching
                 try {
                     const data = await getUserReports(userId);
                     setReports(data);
@@ -37,31 +31,23 @@ const ReportsScreen = () => {
     );
 
     if (loading) {
-        return (
-            <ActivityIndicator
-                size="large"
-                color="#C6A477"
-                style={styles.loading}
-            />
-        );
+        return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>{t('weekly_reports')}</Text>
+            <Text style={styles.header}>Weekly Reports </Text>
             <FlatList
                 data={reports}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
                     <View style={styles.reportCard}>
-                        <Text style={styles.week}>
-                            📅 {t('week')}: {new Date(item.weekStart).toDateString()}
-                        </Text>
-                        <Text style={styles.symptomTitle}>📝 {t('symptoms')}:</Text>
+                        <Text style={styles.week}>📅 Week: {new Date(item.weekStart).toDateString()}</Text>
+                        <Text style={styles.symptomTitle}>📝 Symptoms:</Text>
                         <FlatList
                             data={item.symptoms}
                             keyExtractor={(symptom) => symptom.symptomId._id}
-                            numColumns={2}
+                            numColumns={2} // ✅ Show symptoms in a grid format
                             columnWrapperStyle={styles.row}
                             renderItem={({ item: symptom }) => (
                                 <View
@@ -71,10 +57,7 @@ const ReportsScreen = () => {
                                     ]}
                                 >
                                     <Text style={styles.symptomText}>
-                                        {symptom.symptomId.name}:{" "}
-                                        {symptom.hasSymptom
-                                            ? t("yes")
-                                            : t("no")}
+                                        {symptom.symptomId.name} {symptom.hasSymptom }
                                     </Text>
                                 </View>
                             )}

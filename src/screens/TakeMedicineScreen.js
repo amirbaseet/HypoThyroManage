@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, Alert, ActivityIndicator, StyleSheet } from "react-native";
+import {
+    View,
+    Text,
+    Alert,
+    ActivityIndicator,
+    StyleSheet,
+    TouchableOpacity
+} from "react-native";
 import { markMedicineAsTaken, getWeeklyProgress } from "../services/medicineService";
 import { format } from "date-fns";
 import { AuthContext } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
+import { Ionicons } from "@expo/vector-icons"; // Optional: Expo icons
 
 const TakeMedicineScreen = () => {
     const { user } = useContext(AuthContext);
+    const { t } = useTranslation();
+
     const [todayTaken, setTodayTaken] = useState(false);
     const [loading, setLoading] = useState(false);
     const [checking, setChecking] = useState(true);
@@ -34,7 +45,7 @@ const TakeMedicineScreen = () => {
             setTodayTaken(found);
         } catch (error) {
             console.error("Error checking today's status:", error);
-            Alert.alert("❌ Error", "Failed to fetch today's status.");
+            Alert.alert(t("error"), t("progress_fetch_error"));
         }
         setChecking(false);
     };
@@ -48,37 +59,43 @@ const TakeMedicineScreen = () => {
         try {
             const res = await markMedicineAsTaken();
             if (!res.error) {
-                Alert.alert("✅ Done", "You have marked your medicine as taken.");
+                Alert.alert(t("done"), t("mark_success"));
                 setTodayTaken(true);
             } else {
-                Alert.alert("❌ Error", res.error);
+                Alert.alert(t("error"), res.error);
             }
         } catch (err) {
             console.error("Mark medicine error:", err);
-            Alert.alert("❌ Error", "Something went wrong.");
+            Alert.alert(t("error"), t("mark_fail"));
         }
         setLoading(false);
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>💊 Daily Medicine Tracker</Text>
+            <Text style={styles.header}>💊 {t("daily_medicine_title")}</Text>
 
             {checking ? (
                 <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />
             ) : todayTaken ? (
                 <View style={styles.messageBox}>
-                    <Text style={styles.successMessage}>✅ You already took your medicine today!</Text>
+                    <Ionicons name="checkmark-circle" size={48} color="#4CAF50" />
+                    <Text style={styles.successMessage}>{t("medicine_taken_msg")}</Text>
                 </View>
             ) : (
                 <View style={styles.actionBox}>
-                    <Text style={styles.promptText}>You haven't taken your medicine today.</Text>
-                    <Button
-                        title={loading ? "Marking..." : "Take Medicine"}
+                    <Text style={styles.promptText}>{t("medicine_not_taken")}</Text>
+                    <TouchableOpacity
+                        style={[styles.button, loading && styles.disabledButton]}
                         onPress={handleTakeMedicine}
-                        color="#C6A477"
                         disabled={loading}
-                    />
+                    >
+                        {loading ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            <Text style={styles.buttonText}>{t("take_medicine_btn")}</Text>
+                        )}
+                    </TouchableOpacity>
                 </View>
             )}
         </View>
@@ -88,46 +105,70 @@ const TakeMedicineScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#FAF9F6",
+        backgroundColor: "#fffdf8",
         padding: 20,
         justifyContent: "center",
     },
     header: {
-        fontSize: 22,
-        fontWeight: "bold",
-        marginBottom: 30,
+        fontSize: 26,
+        fontWeight: "700",
+        marginBottom: 40,
         textAlign: "center",
-        color: "#444444",
+        color: "#3E3E3E",
     },
     loading: {
         alignSelf: "center",
     },
     messageBox: {
         alignItems: "center",
-        backgroundColor: "#B5E7A0",
-        padding: 20,
-        borderRadius: 10,
-        borderColor: "#8AAD60",
-        borderWidth: 2,
+        backgroundColor: "#E7F9ED",
+        padding: 30,
+        borderRadius: 20,
+        borderColor: "#A5D6A7",
+        borderWidth: 1.5,
+        elevation: 2,
     },
     successMessage: {
         fontSize: 18,
-        fontWeight: "600",
-        color: "#444",
+        fontWeight: "500",
+        color: "#333",
+        marginTop: 10,
         textAlign: "center",
     },
     actionBox: {
-        padding: 20,
-        backgroundColor: "#FFF7E6",
-        borderRadius: 10,
-        borderColor: "#C6A477",
-        borderWidth: 2,
+        padding: 25,
+        backgroundColor: "#FFF5E6",
+        borderRadius: 20,
+        borderColor: "#FFD59E",
+        borderWidth: 1.5,
+        elevation: 2,
+        alignItems: "center",
     },
     promptText: {
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: 17,
+        marginBottom: 20,
         textAlign: "center",
-        color: "#444444",
+        color: "#555",
+    },
+    button: {
+        backgroundColor: "#C6A477",
+        paddingVertical: 14,
+        paddingHorizontal: 40,
+        borderRadius: 30,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "600",
+    },
+    disabledButton: {
+        opacity: 0.6,
     },
 });
 

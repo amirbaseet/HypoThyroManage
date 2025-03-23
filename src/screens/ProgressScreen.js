@@ -1,15 +1,24 @@
 import React, { useCallback, useState, useContext } from "react";
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from "react-native";
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    ActivityIndicator,
+    Alert
+} from "react-native";
 import { getWeeklyProgress } from "../services/medicineService";
 import { AuthContext } from "../context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { getFormattedDate, getWeekday } from "../utils/date";
+import { useTranslation } from "react-i18next"; // ✅ i18n
 
 const ProgressScreen = () => {
     const { user } = useContext(AuthContext);
+    const { t } = useTranslation();
+
     const [weeks, setWeeks] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const userId = user?.id;
 
     useFocusEffect(
@@ -21,11 +30,11 @@ const ProgressScreen = () => {
                     if (!data.error) {
                         setWeeks(data.weeks);
                     } else {
-                        Alert.alert("Error", data.error || "Failed to fetch progress.");
+                        Alert.alert(t("error"), data.error || t("progress_fetch_error"));
                     }
                 } catch (err) {
                     console.error("Error loading progress:", err);
-                    Alert.alert("Error", "Something went wrong while loading progress.");
+                    Alert.alert(t("error"), t("progress_fetch_fallback"));
                 }
                 setLoading(false);
             };
@@ -40,7 +49,7 @@ const ProgressScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>📈 Weekly Medicine Progress</Text>
+            <Text style={styles.header}>📈 {t("weekly_medicine_progress")}</Text>
 
             <FlatList
                 data={weeks}
@@ -75,7 +84,7 @@ const ProgressScreen = () => {
                         />
 
                         <Text style={styles.summary}>
-                            ✅ {item.logs.filter((l) => l.taken).length} / {item.logs.length} taken
+                            ✅ {item.logs.filter((l) => l.taken).length} / {item.logs.length} {t("taken")}
                         </Text>
                     </View>
                 )}
