@@ -6,22 +6,21 @@ import * as Notifications from "expo-notifications";
 
 const fileName = `IN AuthService`;
 
-export const loginUser = async (email, password) => {
+export const loginUser = async (phoneNumber, password) => {
     try {
-        const res = await api.post(`/auth/login`, { email, password });
+        const res = await api.post(`/auth/login`, { phoneNumber, password });
         const token = res.data.token;
         const decoded = jwtDecode(token);
 
         const user = {
             id: decoded.id,
             username: decoded.username || "Unknown",
-            email: decoded.email || "No email",
-            dateOfBirth: decoded.dateOfBirth || "2000-01-01",
+            phoneNumber: decoded.email || "No phone",
             gender: decoded.gender || "Unknown",
             doctorId: decoded.doctorId || null,
             role: decoded.role || "User",
         };
-
+        console.log(decoded)
         // 🔹 Store both token & user details in AsyncStorage
         await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("user", JSON.stringify(user));

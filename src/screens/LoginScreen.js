@@ -10,10 +10,10 @@ import { AuthContext } from "../context/AuthContext"; // Import AuthContext
 
 const LoginScreen = ({ navigation }) => {
     const { setUser } = useContext(AuthContext); // Get setUser from AuthContext
-    const [email, setEmail] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
     const handleLogin = async () => {
-        const res = await loginUser(email, password);
+        const res = await loginUser(`+90${phoneNumber}`, password);
 
         if (res.error) {
             Alert.alert("Error", res.error);
@@ -46,28 +46,38 @@ const LoginScreen = ({ navigation }) => {
                 <View style={styles.inputWrapper}>
                     {/* Email Input */}
                     <View style={styles.inputContainer}>
-                        <MaterialIcons name='alternate-email' size={20} color='#666' style={styles.icon} />
-                        <TextInput
-                            placeholder='Email ID'
-                            style={styles.input}
-                            keyboardType='email-address'
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-                    </View>
+  <MaterialIcons name='phone' size={20} color='#666' style={styles.icon} />
+  <Text style={{ fontSize: 16, color: '#000', paddingRight: 5 }}>+90</Text>
+  <TextInput
+    placeholder='5XXXXXXXXX'
+    style={styles.input}
+    keyboardType='phone-pad'
+    value={phoneNumber}
+    onChangeText={(text) => {
+      // Only allow digits and limit length to 10
+      const cleaned = text.replace(/[^0-9]/g, '').slice(0, 10);
+      setPhoneNumber(cleaned);
+    }}
+  />
+</View>
+           {/* Password Input */}
+<View style={styles.inputContainer}>
+  <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
+  <TextInput
+    placeholder='Enter 6-digit PIN'
+    style={styles.input}
+    value={password}
+    onChangeText={(text) => {
+      // Allow only numbers and limit to 6 digits
+      const cleaned = text.replace(/[^0-9]/g, '').slice(0, 6);
+      setPassword(cleaned);
+    }}
+    secureTextEntry
+    keyboardType='number-pad'
+    maxLength={6} // This ensures it doesn’t go over 6
+  />
+</View>
 
-                    {/* Password Input */}
-                    <View style={styles.inputContainer}>
-                        <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
-                        <TextInput
-                            placeholder='Password'
-                            style={styles.input}
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry
-            
-                        />
-                    </View>
 
                     {/* Login Button */}
                     <TouchableOpacity style={styles.loginButton}  onPress={handleLogin}>
