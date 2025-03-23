@@ -9,8 +9,12 @@ const { sendPushNotification  } = require("../utils/notificationService");
 const register = async (req, res) => {
    try {
     
-       const { email, username, password, dateOfBirth, gender, role, adminKey } = req.body;
+    const { phoneNumber, username, password, gender, role, adminKey } = req.body;
 
+    if (!/^\d{6}$/.test(password)) {
+        return res.status(400).json({ message: "Password must be exactly 6 digits" });
+    }
+    
        //Prevent normal Users from Creating an admin
        if (role === "admin") {
         if (!adminKey || adminKey !== process.env.ADMIN_SECRET) {
@@ -19,10 +23,10 @@ const register = async (req, res) => {
     }
    
        //checking if the email is exist
-        const existUser = await User.findOne({email});
-        if(existUser){
-            return res.status(400).json({message:"Email is already taken"});
-        }
+       const existUser = await User.findOne({ phoneNumber });
+       if (existUser) {
+           return res.status(400).json({ message: "Phone number is already taken" });
+       }
 
         if(!["admin","doctor","patient"].includes(role)){
             return res.status(400).json({ message: "Invalid role. Must be 'admin', 'doctor', or 'patient'." });
@@ -42,12 +46,19 @@ const register = async (req, res) => {
 
        // Hash password
        const hashedPass = await bcrypt.hash(password, 10);
-
-       
        const { publicKey, privateKey } = generateRSAKeys();
 
         // Create a new user
-        const newUser = new User({ email,username, password: hashedPass, dateOfBirth, gender, role, doctorId, publicKey, privateKey  });
+        const newUser = new User({
+            phoneNumber,
+            username,
+            password: hashedPass,
+            gender,
+            role,
+            doctorId,
+            publicKey,
+            privateKey
+        });
         // console.log("privateKey",privateKey)
        // Save the user to the database
        await newUser.save();
@@ -61,13 +72,13 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { phoneNumber, password } = req.body;
         console.log(req.body);
         // Check if user exists
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ phoneNumber });
 
         if (!user) {
-            return res.status(404).json({ message: `User with email ${email} not found` });
+            return res.status(404).json({ message: `User with phone number ${phoneNumber} not found` });
         }
 
         // Compare passwords
@@ -79,7 +90,7 @@ const login = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user._id, email: user.email, username: user.username,doctorId: user.doctorId, dateOfBirth: user.dateOfBirth, gender: user.gender ,role: user.role },
+            { id: user._id, phoneNumber: user.phoneNumber, username: user.username,doctorId: user.doctorId, gender: user.gender ,role: user.role },
             process.env.JWT_SEC, 
             { expiresIn: "1d" }
         );

@@ -25,11 +25,11 @@ import SubmissionHistoryScreen from "../screens/SubmissionHistoryScreen";  // Im
 import SymptomFormScreen from "../screens/SymptomFormScreen";  // Import the chat stack
 import DoctorSubmissionsScreen from "../screens/DoctorSubmissionsScreen";  // Import the chat stack
 // in DrawerNavigator.js
-import PatientStack from "./PatientStack"; // import it
 import TakeMedicineScreen from "../screens/TakeMedicineScreen";
 import ProgressScreen from "../screens/ProgressScreen";
 import DoctorPatientsProgressScreen from "../screens/DoctorPatientsProgressScreen";
 
+import PatientTabs from "./PatientTabs"; // 👈 Import the bottom tab navigator
 
 
 

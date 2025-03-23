@@ -1,37 +1,27 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    email:{
-        type:String,
+    phoneNumber: {
+        type: String,
         required: true,
-        unique:true,
-        lowercase:true,
-        trim:true,
-        match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"], // Email format validation
+        unique: true,
+        trim: true,
+        match: [/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"], // E.164 format
     },
-    username:{
+        username:{
         type:String,
         required:true,
         unique:false,
         trim: true, // Removes leading and trailing spaces
     },
-    dateOfBirth: {
-         type: Date,
-         validate: {
-            validator: function (value) {
-                return value < new Date(); // Ensures date is not in the future
-            },
-            message: "Date of Birth cannot be in the future."},
-          required: true 
-        },
     gender: { 
         type: String,
          enum: ["male", "female"] },
-    password:{
-     type:String,
-     required:true
-    },
-    role:{
+         password: {
+            type: String,
+            required: true,
+        },
+            role:{
         type:String,
         required:true,
         enum:["admin","doctor","patient"],default: 'patient',
