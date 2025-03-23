@@ -50,3 +50,29 @@ export const getLatestWeeklyReport = async (userId) => {
         return null;
     }
 };
+
+// ✅ Get previous submission (for this form)
+export const getLatestSymptomForm = async (userId, formWindowId) => {
+    try {
+        const res = await api.get(`/patient/form-submissions/latest`, {
+            params: { userId, formWindowId }
+        });
+        return res.data;
+    } catch (error) {
+        return null; // fine if none exists
+    }
+};
+
+// ✅ Submit or update the form
+export const submitSymptomForm = async (formWindowId, symptoms) => {
+    try {
+        const res = await api.patch(`/patient/form-submissions`, {
+            formWindowId,
+            symptoms
+        });
+        return res.data;
+    } catch (error) {
+        console.error("❌ submitSymptomForm error:", error.response?.data || error.message);
+        return { error: error.response?.data?.message || "Submission failed" };
+    }
+};

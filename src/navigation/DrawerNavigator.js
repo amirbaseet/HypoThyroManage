@@ -18,6 +18,14 @@ import DoctorChatScreen from "../screens/DoctorChatScreen";
 import AdminDashboardScreen from "../screens/AdminDashboardScreen";
 import DoctorChatListScreen from "../screens/DoctorChatListScreen";
 import DoctorChatStack from "./DoctorChatStack";  // Import the chat stack
+import AvailableFormsScreen from "../screens/AvailableFormsScreen";  // Import the chat stack
+import CreateFormWindowScreen from "../screens/CreateFormWindowScreen";  // Import the chat stack
+import ManageFormWindowsScreen from "../screens/ManageFormWindowsScreen";  // Import the chat stack
+import SubmissionHistoryScreen from "../screens/SubmissionHistoryScreen";  // Import the chat stack
+import SymptomFormScreen from "../screens/SymptomFormScreen";  // Import the chat stack
+import DoctorSubmissionsScreen from "../screens/DoctorSubmissionsScreen";  // Import the chat stack
+// in DrawerNavigator.js
+import PatientStack from "./PatientStack"; // import it
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -40,18 +48,28 @@ const DrawerNavigator = () => {
             <Drawer.Screen name="Home" component={HomeScreen} />
 
             {user?.role === "admin" && (
-                <Drawer.Screen name="AdminDashboard" component={AdminDashboardScreen} />
+               <><Drawer.Screen name="AdminDashboard" component={AdminDashboardScreen} />
+                <Drawer.Screen name="CreateFormWindow" component={CreateFormWindowScreen} />
+                <Drawer.Screen name="ManageFormWindows" component={ManageFormWindowsScreen} />
+                </> 
             )}
 
             {user?.role === "doctor" && (
                 <>
                     <Drawer.Screen name="Chat" component={DoctorChatStack} /> 
                     <Drawer.Screen name="Dashboard" component={DoctorDashboardScreen} />
+                    <Drawer.Screen name="DoctorSubmissions" component={DoctorSubmissionsScreen} />
+
                 </>
             )}
 
             {user?.role === "patient" && (
                 <>
+                    <Drawer.Screen name="AvailableForms" component={AvailableFormsScreen} />
+                    <Drawer.Screen name="SubmissionHistory" component={SubmissionHistoryScreen} />
+                    <Drawer.Screen name="SymptomForm" component={SymptomFormScreen} 
+                                   options={{ drawerItemStyle: { display: 'none' } }}
+                    />
                     <Drawer.Screen name="Report" component={ReportScreen} />
                     <Drawer.Screen name="Reports" component={ReportsScreen} />
                     <Drawer.Screen name="Chat" component={PatientChatScreen} />

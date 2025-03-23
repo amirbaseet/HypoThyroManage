@@ -20,3 +20,12 @@ export const getDoctorChatListAPI = async () => {
         return [];
     }
 };
+export const getDoctorSymptomSubmissions = async () => {
+    try {
+        const res = await api.get("/patient/doctor/submissions");
+        return res.data;
+    } catch (error) {
+        console.error("❌ Error fetching doctor form submissions:", error.response?.data || error);
+        return { patients: [], submissions: [] };
+    }
+};
