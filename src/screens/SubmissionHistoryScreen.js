@@ -10,9 +10,12 @@ import {
 import api from "../api/apiService";
 import { AuthContext } from "../context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const SubmissionHistoryScreen = () => {
     const { user } = useContext(AuthContext);
+    const { t } = useTranslation();
+
     const [submissions, setSubmissions] = useState({
         symptomSubmissions: [],
         copingSubmissions: []
@@ -48,28 +51,28 @@ const SubmissionHistoryScreen = () => {
     ) {
         return (
             <View style={styles.center}>
-                <Text>No submissions found.</Text>
+                <Text>{t("no_submissions")}</Text>
             </View>
         );
     }
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.header}>Form Submission History</Text>
+            <Text style={styles.header}>{t("submission_history")}</Text>
 
             {submissions.symptomSubmissions?.length > 0 && (
                 <>
-                    <Text style={styles.sectionTitle}>🩺 Semptom Şiddeti</Text>
+                    <Text style={styles.sectionTitle}>🩺 {t("symptom_severity")}</Text>
                     {submissions.symptomSubmissions.map((item) => (
                         <View key={item._id} style={styles.card}>
                             <Text style={styles.title}>
-                                {item.formWindowId?.title || "Untitled Form"}
+                                {item.formWindowId?.title || t("untitled_form")}
                             </Text>
                             <Text style={styles.subText}>
-                                Submitted: {new Date(item.createdAt).toLocaleDateString()}
+                                {t("submitted")}: {new Date(item.createdAt).toLocaleDateString()}
                             </Text>
                             <Text style={styles.subText}>
-                                Week: {new Date(item.formWindowId?.weekStart).toDateString()} →{" "}
+                                {t("week")}: {new Date(item.formWindowId?.weekStart).toDateString()} →{" "}
                                 {new Date(item.formWindowId?.weekEnd).toDateString()}
                             </Text>
 
@@ -92,14 +95,14 @@ const SubmissionHistoryScreen = () => {
 
             {submissions.copingSubmissions?.length > 0 && (
                 <>
-                    <Text style={styles.sectionTitle}>🧠 Başa Çıkma Değerlendirmesi</Text>
+                    <Text style={styles.sectionTitle}>🧠 {t("coping_assessment")}</Text>
                     {submissions.copingSubmissions.map((item) => (
                         <View key={item._id} style={styles.card}>
                             <Text style={styles.title}>
-                                {item.formWindowId?.title || "Untitled Coping Form"}
+                                {item.formWindowId?.title || t("untitled_coping_form")}
                             </Text>
                             <Text style={styles.subText}>
-                                Submitted: {new Date(item.createdAt).toLocaleDateString()}
+                                {t("submitted")}: {new Date(item.createdAt).toLocaleDateString()}
                             </Text>
 
                             <View style={styles.symptomGrid}>
@@ -108,8 +111,8 @@ const SubmissionHistoryScreen = () => {
                                         <Text style={styles.symptomText}>
                                             {entry.symptomName}:{" "}
                                             {entry.noComplaint
-                                                ? "Şikayetim yok"
-                                                : `Seviye ${entry.copingLevel}`}
+                                                ? t("no_complaint")
+                                                : `${t("level")} ${entry.copingLevel}`}
                                         </Text>
                                     </View>
                                 ))}
@@ -121,6 +124,7 @@ const SubmissionHistoryScreen = () => {
         </ScrollView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

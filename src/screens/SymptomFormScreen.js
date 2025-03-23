@@ -11,10 +11,12 @@ import {
 import { getSymptoms } from "../services/symptomsService";
 import { getLatestSymptomForm, submitSymptomForm } from "../services/patientService";
 import { AuthContext } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const SymptomFormScreen = ({ route, navigation }) => {
     const { user } = useContext(AuthContext);
     const { formWindow } = route.params;
+    const { t } = useTranslation();
 
     const [symptoms, setSymptoms] = useState([]);
     const [selectedSeverities, setSelectedSeverities] = useState({});
@@ -45,7 +47,7 @@ const SymptomFormScreen = ({ route, navigation }) => {
             setSelectedSeverities(prefilled);
         } catch (error) {
             console.error("❌ Error fetching data:", error);
-            Alert.alert("Error", "Failed to load form data.");
+            Alert.alert(t("error"), t("form_load_failed"));
         }
     };
 
@@ -94,9 +96,9 @@ const SymptomFormScreen = ({ route, navigation }) => {
         setLoading(false);
 
         if (res.error) {
-            Alert.alert("Error", res.error);
+            Alert.alert(t("error"), res.error);
         } else {
-            Alert.alert("Success", "Form submitted!");
+            Alert.alert(t("success"), t("form_submitted"));
             navigation.goBack();
         }
     };
@@ -105,7 +107,7 @@ const SymptomFormScreen = ({ route, navigation }) => {
         <ScrollView style={styles.container}>
             <Text style={styles.header}>{formWindow.title}</Text>
 
-            <Text style={styles.sectionTitle}>1. Semptom Şiddeti</Text>
+            <Text style={styles.sectionTitle}>1. {t("symptom_severity")}</Text>
             <View style={styles.symptomGrid}>
                 {symptoms.map((item) => {
                     const severity = selectedSeverities[item._id] ?? 0;
@@ -119,13 +121,13 @@ const SymptomFormScreen = ({ route, navigation }) => {
                             onPress={() => cycleSeverity(item._id)}
                         >
                             <Text style={styles.symptomText}>{item.name}</Text>
-                            <Text style={styles.severityText}>Şiddet: {severity}</Text>
+                            <Text style={styles.severityText}>{t("severity")}: {severity}</Text>
                         </TouchableOpacity>
                     );
                 })}
             </View>
 
-            <Text style={styles.sectionTitle}>2. Başa Çıkma Değerlendirmesi</Text>
+            <Text style={styles.sectionTitle}>2. {t("coping_assessment")}</Text>
             {symptoms.map((symptom) => {
                 const coping = copingResponses[symptom.name] || {};
                 return (
@@ -140,7 +142,7 @@ const SymptomFormScreen = ({ route, navigation }) => {
                                 color: coping.noComplaint ? '#2e7d32' : '#aaa',
                                 fontWeight: '600'
                             }}>
-                                {coping.noComplaint ? "✔ Şikayetim yok" : "Şikayetim yok seç"}
+                                {coping.noComplaint ? `✔ ${t("no_complaint")}` : t("mark_no_complaint")}
                             </Text>
                         </TouchableOpacity>
 
@@ -168,7 +170,7 @@ const SymptomFormScreen = ({ route, navigation }) => {
 
             <View style={styles.buttonContainer}>
                 <Button
-                    title={loading ? "Gönderiliyor..." : "Formu Gönder"}
+                    title={loading ? t("submitting") : t("submit_form")}
                     onPress={handleSubmit}
                     disabled={loading}
                     color="#007BFF"
