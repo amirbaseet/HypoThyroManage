@@ -15,7 +15,7 @@ import {
     getDoctorSymptomSubmissions
 } from "../services/doctorService";
 
-const DoctorDashboardScreen = () => {
+const DoctorPatientsProgressScreen = () => {
     const { user } = useContext(AuthContext);
     const [patients, setPatients] = useState([]);
     const [reports, setReports] = useState([]);
@@ -214,4 +214,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default DoctorDashboardScreen;
+export default DoctorPatientsProgressScreen;

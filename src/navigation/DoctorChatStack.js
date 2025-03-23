@@ -9,34 +9,29 @@ const Stack = createStackNavigator();
 
 const DoctorChatStack = ({ navigation }) => {
     return (
-        <Stack.Navigator
-            screenOptions={{
-                headerStyle: { backgroundColor: "#4A90E2" },
-                headerTintColor: "#FFF",
-                headerTitleStyle: { fontSize: 20, fontWeight: "bold" },
-            }}
-        >
-            <Stack.Screen 
-                name="DoctorChatList" 
-                component={DoctorChatListScreen} 
-                options={{
-                    headerLeft: () => (
-                        <TouchableOpacity 
-                            onPress={() => navigation.openDrawer()} 
-                            style={{ marginLeft: 15 }}
-                        >
-                            <Ionicons name="menu" size={28} color="#FFF" />
-                        </TouchableOpacity>
-                    ),
-                }} 
-            />
-            <Stack.Screen 
-                name="DoctorChatScreen" 
-                component={DoctorChatScreen} 
-                options={({ route }) => ({ title: route.params.patientName })}
-            />
-        </Stack.Navigator>
-    );
+        <Stack.Navigator>
+        <Stack.Screen 
+          name="ChatList" 
+          component={DoctorChatListScreen}
+          options={({ navigation }) => ({
+            headerLeft: () => (
+              <TouchableOpacity 
+                onPress={() => navigation.openDrawer()} 
+                style={{ marginLeft: 15 }}
+              >
+                <Ionicons name="menu" size={28} color="#FFF" />
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        
+        <Stack.Screen 
+          name="DoctorChatScreen" 
+          component={DoctorChatScreen} 
+          options={({ route }) => ({ title: route.params.patientName })}
+        />
+      </Stack.Navigator>
+      );
 };
 
 export default DoctorChatStack;
