@@ -1,11 +1,22 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button, Alert, StyleSheet } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    TouchableOpacity,
+    Button,
+    Alert,
+    StyleSheet
+} from 'react-native';
 import { getSymptoms } from '../services/symptomsService';
-import { submitWeeklyReport, getLatestWeeklyReport } from '../services/patientService'; // Import API
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { submitWeeklyReport, getLatestWeeklyReport } from '../services/patientService';
+import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const ReportScreen = () => {
     const { user } = useContext(AuthContext);
+    const { t } = useTranslation();
+
     const [symptoms, setSymptoms] = useState([]);
     const [selectedSymptoms, setSelectedSymptoms] = useState({});
 
@@ -14,13 +25,12 @@ const ReportScreen = () => {
             try {
                 const [symptomsData, latestReport] = await Promise.all([
                     getSymptoms(),
-                    getLatestWeeklyReport(user?.id) // Fetch latest report
+                    getLatestWeeklyReport(user?.id)
                 ]);
 
                 setSymptoms(symptomsData);
 
                 if (latestReport?.symptoms) {
-                    // Convert latest report symptoms to selectedSymptoms state
                     const preSelected = {};
                     latestReport.symptoms.forEach(({ symptomId, hasSymptom }) => {
                         preSelected[symptomId._id] = hasSymptom;
@@ -29,8 +39,7 @@ const ReportScreen = () => {
                     setSelectedSymptoms(preSelected);
                 }
             } catch (error) {
-                // console.error("Error fetching symptoms or latest report:", error);
-                console.log("Patient has no reports ", error)
+                console.log("❌ Patient has no previous report:", error);
             }
         };
 
@@ -40,7 +49,7 @@ const ReportScreen = () => {
     const toggleSymptom = (symptomId) => {
         setSelectedSymptoms(prev => ({
             ...prev,
-            [symptomId]: !prev[symptomId] // Toggle true/false
+            [symptomId]: !prev[symptomId]
         }));
     };
 
@@ -52,25 +61,24 @@ const ReportScreen = () => {
         }));
 
         if (symptomsArray.length === 0) {
-            Alert.alert("Error", "Please select at least one symptom.");
+            Alert.alert(t("error"), t("select_at_least_one"));
             return;
         }
 
         const response = await submitWeeklyReport(userId, symptomsArray);
 
         if (response.message) {
-            Alert.alert("Success", "Weekly report submitted!");
-            // setSelectedSymptoms({}); // Reset selection after submission
+            Alert.alert(t("success"), t("weekly_report_success"));
+            // setSelectedSymptoms({});
         } else {
-            Alert.alert("Error", response.error || "Submission failed");
+            Alert.alert(t("error"), response.error || t("submission_failed"));
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Select Symptoms</Text>
+            <Text style={styles.header}>{t("select_symptoms")}</Text>
 
-            {/* Grid Layout with 2 columns */}
             <FlatList
                 data={symptoms}
                 keyExtractor={(item) => item._id}
@@ -90,11 +98,17 @@ const ReportScreen = () => {
             />
 
             <View style={styles.buttonContainer}>
-                <Button title="Submit Report" onPress={handleSubmit} color="#007BFF" />
+                <Button
+                    title={t("submit_report")}
+                    onPress={handleSubmit}
+                    color="#007BFF"
+                />
             </View>
         </View>
     );
 };
+
+
 
 const styles = StyleSheet.create({
     container: {

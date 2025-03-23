@@ -10,6 +10,7 @@ import { getSocket } from "../api/socket";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import ChatList from "../components/ChatList";
 import ChatInput from "../components/ChatInput";
+import { useTranslation } from "react-i18next"; // ✅ i18n hook
 
 const PatientChatScreen = () => {
     const { user } = useContext(AuthContext);
@@ -22,6 +23,7 @@ const PatientChatScreen = () => {
     const appState = useRef(AppState.currentState);
     const [isAppActive, setIsAppActive] = useState(true);
     const isFocused = useIsFocused();
+    const { t } = useTranslation();
 
     const refreshChat = async () => {
         if (!doctorId || !userId) return;
@@ -136,7 +138,9 @@ const PatientChatScreen = () => {
                 style={styles.container}
                 keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70}
             >
-                <RNText style={styles.header}>Chat with Your Doctor</RNText>
+                <RNText style={styles.header}>
+                    {t("chat_with_doctor")}
+                </RNText>
 
                 {doctorId ? (
                     <>
@@ -144,7 +148,7 @@ const PatientChatScreen = () => {
                         <ChatInput message={message} onChangeText={setMessage} onSend={sendMessage} />
                     </>
                 ) : (
-                    <RNText style={styles.noDoctorText}>You have no assigned doctor.</RNText>
+                    <RNText style={styles.noDoctorText}>{t("no_doctor_assigned")}</RNText>
                 )}
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>

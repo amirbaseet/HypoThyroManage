@@ -42,8 +42,33 @@
     "exercise": "Egzersiz",
     "stress": "Stres",
     "dermatological": "Dermatolojik",
-    "brain": "Beyin"
-    
-  
+    "brain": "Beyin",
+    "no_active_forms": "Aktif form bulunmamaktadır",
+    "form_submitted": "Form başarıyla gönderildi!",
+    "form_load_failed": "Form verileri yüklenemedi.",
+    "submit_form": "Formu Gönder",
+    "submitting": "Gönderiliyor...",
+    "symptom_severity": "Semptom Şiddeti",
+    "severity": "Şiddet",
+    "coping_assessment": "Başa Çıkma Değerlendirmesi",
+    "no_complaint": "Şikayetim yok",
+    "mark_no_complaint": "Şikayetim yok seç",
+    "submitted": "Gönderim Tarihi",
+    "week": "Hafta",
+    "level": "Seviye",
+    "untitled_form": "Başlıksız Form",
+    "untitled_coping_form": "Başlıksız Başa Çıkma Formu",
+    "no_submissions": "Herhangi bir gönderim bulunamadı.",
+    "select_symptoms": "Semptomları Seçin",
+    "submit_report": "Raporu Gönder",
+    "weekly_report_success": "Haftalık rapor gönderildi!",
+    "submission_failed": "Gönderim başarısız.",
+    "select_at_least_one": "Lütfen en az bir semptom seçin.",
+    "weekly_reports": "Haftalık Raporlar",
+    "symptoms": "Semptomlar",
+    "yes": "Evet",
+    "no": "Hayır",
+    "chat_with_doctor": "Doktorunuzla Sohbet Edin",
+    "no_doctor_assigned": "Atanmış bir doktorunuz yok."
   }
   

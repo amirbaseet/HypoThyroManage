@@ -42,7 +42,38 @@
       "exercise": "Exercise",
       "stress": "Stress",
       "dermatological": "Dermatological",
-      "brain": "Brain"
+      "brain": "Brain",
+      "no_active_forms": "No active forms available",
+      "form_submitted": "Form submitted successfully!",
+      "form_load_failed": "Failed to load form data.",
+      "submit_form": "Submit Form",
+      "submitting": "Submitting...",
+      "symptom_severity": "Symptom Severity",
+      "severity": "Severity",
+      "coping_assessment": "Coping Assessment",
+      "no_complaint": "No Complaint",
+      "mark_no_complaint": "Mark as No Complaint",
+      "submitted": "Submitted",
+      "week": "Week",
+      "level": "Level",
+      "untitled_form": "Untitled Form",
+      "untitled_coping_form": "Untitled Coping Form",
+      "no_submissions": "No submissions found.",
+      "select_symptoms": "Select Symptoms",
+      "submit_report": "Submit Report",
+      "weekly_report_success": "Weekly report submitted!",
+      "submission_failed": "Submission failed.",
+      "select_at_least_one": "Please select at least one symptom.",
+      "weekly_reports": "Weekly Reports",
+      "symptoms": "Symptoms",
+      "yes": "Yes",
+       "no": "No",
+       "chat_with_doctor": "Chat with Your Doctor",
+       "no_doctor_assigned": "You have no assigned doctor."
+     
+
+        
+
     
     
     
