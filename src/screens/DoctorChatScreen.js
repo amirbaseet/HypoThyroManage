@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef, useCallback, useEffect } from "react";
 import { 
     Text as RNText,  ActivityIndicator, StyleSheet, KeyboardAvoidingView,
-     Platform, Keyboard, TouchableWithoutFeedback, AppState 
+     Platform, Keyboard, TouchableWithoutFeedback, AppState, View, TouchableOpacity,
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "../services/chatService";
@@ -11,7 +11,7 @@ import ChatInput from "../components/ChatInput";
 import ChatList from "../components/ChatList";
 import { useTranslation } from "react-i18next"; // ✅ Import i18n
 
-const DoctorChatScreen = ({ route }) => {
+const DoctorChatScreen = ({ route, navigation  }) => {
     const { user } = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
@@ -131,7 +131,20 @@ const DoctorChatScreen = ({ route }) => {
                 style={styles.container}
                 keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90}
             >
-                <RNText style={styles.header}>{t("chat_with_patient", { name: patientName })}</RNText>
+<View style={styles.headerContainer}>
+    <RNText style={styles.header}>
+        {t("chat_with_patient", { name: patientName })}
+    </RNText>
+    <TouchableOpacity
+        style={styles.viewButton}
+        onPress={() => navigation.navigate("DoctorDashboardPopup", {
+            selectedPatientId: patientId,
+            defaultTab: "progress"
+        })}
+            >
+        <RNText style={styles.viewButtonText}>{t("view_details")}</RNText>
+    </TouchableOpacity>
+</View>
                 
 
                 <ChatList messages={messages} userId={doctorId} flatListRef={flatListRef} />
@@ -150,5 +163,23 @@ const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: "#FAF9F6" },
     header: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 20, color: "#444444" },
     loading: { flex: 1, justifyContent: "center", alignItems: "center" },
+    headerContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 10,
+    },
+    viewButton: {
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        backgroundColor: "#C6A477",
+        borderRadius: 8,
+    },
+    viewButtonText: {
+        color: "#fff",
+        fontWeight: "600",
+        fontSize: 13,
+    },
+    
 });
 export default DoctorChatScreen;

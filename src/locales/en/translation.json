@@ -105,8 +105,9 @@
       "patient_menu":"Home Screen",
 "please_select_at_least_one_symptom": "Please select at least one symptom or coping response.",
 "please_answer_all_symptoms": "Please answer all 20 symptom severity questions.",
-"please_fill_all_fields": "Please complete all coping assessments before submitting."
-
+"please_fill_all_fields": "Please complete all coping assessments before submitting.",
+"search_patient":"Search patient",
+"view_details":"View Details",
 
 
 

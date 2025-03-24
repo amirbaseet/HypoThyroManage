@@ -4,33 +4,43 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";  // Import Icons
 import DoctorChatListScreen from "../screens/DoctorChatListScreen";
 import DoctorChatScreen from "../screens/DoctorChatScreen";
-
+import DoctorDashboardScreen from "../screens/DoctorDashboardScreen";
 const Stack = createStackNavigator();
 
 const DoctorChatStack = ({ navigation }) => {
     return (
-        <Stack.Navigator>
-        <Stack.Screen 
-          name="ChatList" 
-          component={DoctorChatListScreen}
-          options={({ navigation }) => ({
-            headerLeft: () => (
-              <TouchableOpacity 
-                onPress={() => navigation.openDrawer()} 
-                style={{ marginLeft: 15 }}
-              >
-                <Ionicons name="menu" size={28} color="#FFF" />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        
-        <Stack.Screen 
-          name="DoctorChatScreen" 
-          component={DoctorChatScreen} 
-          options={({ route }) => ({ title: route.params.patientName })}
-        />
-      </Stack.Navigator>
+      <Stack.Navigator>
+      <Stack.Screen 
+        name="ChatList" 
+        component={DoctorChatListScreen}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <TouchableOpacity 
+              onPress={() => navigation.openDrawer()} 
+              style={{ marginLeft: 15 }}
+            >
+              <Ionicons name="menu" size={28} color="#FFF" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+
+      <Stack.Screen 
+        name="DoctorChatScreen" 
+        component={DoctorChatScreen} 
+        options={({ route }) => ({ title: route.params.patientName })}
+      />
+
+      <Stack.Screen 
+        name="DoctorDashboardPopup" 
+        component={DoctorDashboardScreen}
+        options={{
+          presentation: "modal", 
+          title: "Patient Details",
+          headerShown: true,
+        }}
+      />
+    </Stack.Navigator>
       );
 };
 
