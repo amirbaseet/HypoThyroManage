@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
          type: String,
           default: null
          }, // 🔹 Store Expo Push Token
+         refreshToken: {
+            type: String,
+            default: null,
+        },
+        
         },
 {
     timestamps: true,

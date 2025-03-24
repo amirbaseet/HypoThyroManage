@@ -92,11 +92,19 @@ const login = async (req, res) => {
         const token = jwt.sign(
             { id: user._id, phoneNumber: user.phoneNumber, username: user.username,doctorId: user.doctorId, gender: user.gender ,role: user.role },
             process.env.JWT_SEC, 
-            { expiresIn: "1d" }
+            { expiresIn: "15s" }
         );
+        // refresh Token
+        const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SEC, { expiresIn: "7d" });
+
+        // Save refreshToken to user
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        
         // 🔹 Send login notification
         await sendPushNotification(user._id, "Welcome Back!", `Hello ${user.username}, you are now logged in!`);
-        res.status(200).json({ token });
+        res.status(200).json({ token, refreshToken  });
 
     } catch (err) {
         console.error(err);
@@ -113,6 +121,7 @@ const updatePushToken  = async (req, res) =>{
         if(!userId || !pushToken){
             return res.status(400).json({ message: "User ID and Push Token are required" });
         } 
+        console.log("Updated")
         await User.findByIdAndUpdate(userId, { pushToken });
         res.status(200).json({ message: "Push token updated successfully" });
     }catch(error){
@@ -124,7 +133,7 @@ const updatePushToken  = async (req, res) =>{
 const removePushToken = async (req, res) => {
     try {
         const { userId } = req.body;
-
+        console.log("userId",userId)
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
         }
@@ -138,5 +147,45 @@ const removePushToken = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+const refreshTokenHandler = async (req, res) => {
+    const { refreshToken } = req.body;
 
-module.exports = { register, login, updatePushToken, removePushToken };
+    if (!refreshToken) {
+        return res.status(401).json({ message: "Refresh token required" });
+    }
+
+    try {
+        const user = await User.findOne({ refreshToken });
+
+        if (!user) {
+            return res.status(403).json({ message: "Invalid refresh token" });
+        }
+
+        jwt.verify(refreshToken, process.env.JWT_SEC, (err, decoded) => {
+            if (err || decoded.id !== user._id.toString()) {
+                return res.status(403).json({ message: "Invalid or expired refresh token" });
+            }
+
+            const newAccessToken = jwt.sign(
+                {
+                    id: user._id,
+                    phoneNumber: user.phoneNumber,
+                    username: user.username,
+                    doctorId: user.doctorId,
+                    gender: user.gender,
+                    role: user.role
+                },
+                process.env.JWT_SEC,
+                { expiresIn: "1d" }
+            );
+
+            res.status(200).json({ accessToken: newAccessToken });
+        });
+
+    } catch (err) {
+        console.error("Error verifying refresh token:", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+module.exports = { register, login, updatePushToken, refreshTokenHandler, removePushToken };
