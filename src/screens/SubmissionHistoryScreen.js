@@ -12,7 +12,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 
-const SubmissionHistoryScreen = () => {
+const SubmissionHistoryScreen = ({ patientId = null }) => {
     const { user } = useContext(AuthContext);
     const { t } = useTranslation();
 
@@ -22,14 +22,18 @@ const SubmissionHistoryScreen = () => {
     });
     const [loading, setLoading] = useState(true);
 
-    const userId = user?.id;
+    const userIdToFetch = patientId || user?.id;
 
     useFocusEffect(
         useCallback(() => {
+            if (!userIdToFetch) return;
+
             const fetchSubmissions = async () => {
                 setLoading(true);
                 try {
-                    const res = await api.get("/patient/form-submissions");
+                    const res = await api.get(`/patient/form-submissions`, {
+                        params: { userId: userIdToFetch }
+                    });
                     setSubmissions(res.data);
                 } catch (error) {
                     console.error("❌ Failed to load submissions", error);
@@ -38,7 +42,7 @@ const SubmissionHistoryScreen = () => {
             };
 
             fetchSubmissions();
-        }, [userId])
+        }, [userIdToFetch])
     );
 
     if (loading) {
@@ -124,7 +128,6 @@ const SubmissionHistoryScreen = () => {
         </ScrollView>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {

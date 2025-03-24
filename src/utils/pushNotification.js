@@ -1,6 +1,7 @@
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Alert, Platform } from "react-native";
+import i18n from "../i18n"; // Adjust the path based on your setup
 
 /**
  * Registers the device for push notifications
@@ -57,8 +58,8 @@ export const scheduleDailyNotification = async () => {
 
     await Notifications.scheduleNotificationAsync({
         content: {
-            title: "Good Morning! ☀️",
-            body: "Don't forget to check your schedule today!",
+            title: i18n.t("morning_reminder_title"),
+            body: i18n.t("morning_reminder_body"),
             sound: "default",
         },
         trigger: {
@@ -77,11 +78,11 @@ export const scheduleDailyNotification = async () => {
 export const sendTestNotification = async () => {
     await Notifications.scheduleNotificationAsync({
         content: {
-            title: "🚀 Test Notification",
-            body: "This is a test notification in Expo Go.",
+            title: i18n.t("test_notification_title"),
+            body: i18n.t("test_notification_body"),
             sound: "default",
         },
-        trigger: { seconds: 5 }, // Triggers after 5 seconds
+                trigger: { seconds: 5 }, // Triggers after 5 seconds
     });
 
     console.log("📩 Test notification sent successfully!");
