@@ -23,7 +23,6 @@ const NutritionScreen = ({ navigation }) => {
 
         <NutritionInfo/>
             
-                 <Button title='Go To Home' onPress={() => navigation.navigate('Home')} />
             
 </View>
     )

@@ -238,3 +238,14 @@ exports.getDoctorChatList = async (req, res) => {
         res.status(500).json({ error: "Server error fetching chat list." });
     }
 };
+// GET /messages/unread-count?userId=...
+exports.getPatientUnreadMessageCount = async (req, res) => {
+    try {
+      const { userId } = req.query;
+      const count = await Message.countDocuments({ receiverId: userId, read: false });
+      res.json(count);
+    } catch (err) {
+      res.status(500).json({ error: 'Error fetching unread count' });
+    }
+  };
+  

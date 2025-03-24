@@ -23,7 +23,6 @@ const ExerciseScreen = ({navigation}) => {
               {/** Video Player */}
               <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
               <ExcersiseInfo/>
-           <Button title='Go To Home'  onPress={() => navigation.navigate('Home')} />
   
           </View>
       )

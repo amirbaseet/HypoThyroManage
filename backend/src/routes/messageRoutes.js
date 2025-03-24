@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendMessage, getChatHistory ,markMessagesAsRead, getDoctorChatList } = require("../controllers/messageController");
+const { sendMessage, getChatHistory ,markMessagesAsRead, getDoctorChatList, getPatientUnreadMessageCount  } = require("../controllers/messageController");
 const verifyToken = require("../middlewares/authMiddleware")
 
 const router = express.Router();
@@ -13,5 +13,7 @@ router.post("/chatHistory",verifyToken, getChatHistory);
 router.post("/markAsRead",verifyToken, markMessagesAsRead)
 // ✅ Fetch chat list for doctor
 router.get("/doctor-chats", verifyToken, getDoctorChatList);
+// 🔴 Get unread message count for patient (for red dot)
+router.get("/unread-count", verifyToken, getPatientUnreadMessageCount);
 
 module.exports = router;

@@ -24,7 +24,6 @@ const BrainScreen = ({navigation}) => {
               {/** Video Player */}
               <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
               <BrainInfo/>
-           <Button title='Go To Home' onPress={() => navigation.navigate('Home')} />
   
           </View>
       )

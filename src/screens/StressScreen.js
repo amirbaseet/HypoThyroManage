@@ -27,7 +27,6 @@ const StressScreen = ({ navigation }) => {
   
           <StressInfo/>
   
-           <Button title='Go To Home' onPress={() => navigation.navigate('Home')} />
   
           </View>
       )

@@ -25,7 +25,6 @@ const DermatologicalScreen = ({navigation}) => {
               {/** Video Player */}
               <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
               <DermaInfo/>
-           <Button title='Go To Home' onPress={() => navigation.navigate('Home')} />
   
           </View>
       )
