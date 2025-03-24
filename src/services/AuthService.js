@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import api,{ updatePushToken, removePushToken } from "../api/apiService";
-// import { saveUserToLocalDB } from "../database/UsersCrud";
 import * as Notifications from "expo-notifications";
 
 const fileName = `IN AuthService`;

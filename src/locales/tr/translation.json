@@ -74,8 +74,8 @@
   "doctor_dashboard_title": "Doktor Hasta Takibi",
   "select_patient": "Hasta Seçin:",
   "weekly_symptom_reports": "Haftalık Semptom Raporları:",
-  "medicine_progress": "İlaç Takibi:",
-  "form_submissions": "Form Gönderimleri:",
+  "medicine_progress": "İlaç Takibi",
+  "form_submissions": "Ölçekler",
   "submitted_on": "Gönderim Tarihi",
   "taken": "Aldım",
   "missed": "Unuttum." ,
@@ -102,7 +102,10 @@
   "test_notification_body": "Bu, Expo Go içinde bir test bildirimidir.",
   "Tabreports":"Rapor",
   "reports_menu":"Raporlar menüsü",
-  "patient_menu":"Ana Sayfa"
+  "patient_menu":"Ana Sayfa",
+  "please_select_at_least_one_symptom": "Lütfen en az bir semptom veya başa çıkma seçeneği seçin.",
+  "please_answer_all_symptoms": "Lütfen 20 semptomun şiddetini eksiksiz olarak işaretleyin.",
+  "please_fill_all_fields": "Lütfen göndermeden önce tüm başa çıkma değerlendirmelerini tamamlayın."
 
 
 }

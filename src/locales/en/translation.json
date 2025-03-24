@@ -73,9 +73,9 @@
        "chat_with_patient": "{{name}}'s Chat",
        "doctor_dashboard_title": "Doctor's Patient Progress",
        "select_patient": "Select a Patient:",
-       "weekly_symptom_reports": "Weekly Symptom Reports:",
-       "medicine_progress": "Medicine Progress:",
-       "form_submissions": "Form Submissions:",
+       "weekly_symptom_reports": "Weekly Symptom Reports",
+       "medicine_progress": "Medicine Progress",
+       "form_submissions": "Scales",
        "submitted_on": "Submitted on",
        "taken": "Taken",
        "missed": "Missed",
@@ -103,6 +103,11 @@
       "Tabreports":"Rapor",
       "reports_menu":"Raports menu",
       "patient_menu":"Home Screen",
+"please_select_at_least_one_symptom": "Please select at least one symptom or coping response.",
+"please_answer_all_symptoms": "Please answer all 20 symptom severity questions.",
+"please_fill_all_fields": "Please complete all coping assessments before submitting."
+
+
 
 
         

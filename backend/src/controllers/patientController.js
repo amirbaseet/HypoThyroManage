@@ -128,3 +128,19 @@ exports.getSubmissionsByDoctor = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+exports.getLatestCopingSubmission = async (req, res) => {
+    try {
+        const { userId, formWindowId } = req.query;
+
+        const submission = await SymptomCopingSubmission.findOne({ userId, formWindowId });
+
+        if (!submission) {
+            return res.status(404).json({ message: "No coping submission found" });
+        }
+
+        res.json(submission);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+

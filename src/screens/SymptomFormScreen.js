@@ -9,7 +9,7 @@ import {
     StyleSheet
 } from "react-native";
 import { getSymptoms } from "../services/symptomsService";
-import { getLatestSymptomForm, submitSymptomForm } from "../services/patientService";
+import { getLatestSymptomForm, getLatestCopingForm, submitSymptomForm } from "../services/patientService";
 import { AuthContext } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
@@ -29,28 +29,40 @@ const SymptomFormScreen = ({ route, navigation }) => {
 
     const fetchData = async () => {
         try {
-            const [symptomsList, latestForm] = await Promise.all([
+            const [symptomsList, latestForm, latestCoping] = await Promise.all([
                 getSymptoms(),
-                getLatestSymptomForm(user?.id, formWindow._id)
+                getLatestSymptomForm(user?.id, formWindow._id),
+                getLatestCopingForm(user?.id, formWindow._id),
             ]);
-
+    
             setSymptoms(symptomsList);
-
-            const prefilled = {};
+    
+            // Prefill severity
+            const prefilledSeverities = {};
             symptomsList.forEach(symptom => {
                 const previous = latestForm?.symptoms?.find(
                     s => s.symptomId._id === symptom._id
                 );
-                prefilled[symptom._id] = previous ? previous.severity : 0;
+                prefilledSeverities[symptom._id] = previous ? previous.severity : 0;
             });
-
-            setSelectedSeverities(prefilled);
+            setSelectedSeverities(prefilledSeverities);
+    
+            // Prefill coping responses
+            const prefilledCoping = {};
+            latestCoping?.entries?.forEach(entry => {
+                prefilledCoping[entry.symptomName] = {
+                    noComplaint: entry.noComplaint,
+                    copingLevel: entry.copingLevel ?? null,
+                };
+            });
+            setCopingResponses(prefilledCoping);
+    
         } catch (error) {
             console.error("❌ Error fetching data:", error);
             Alert.alert(t("error"), t("form_load_failed"));
         }
     };
-
+    
     const cycleSeverity = (symptomId) => {
         setSelectedSeverities(prev => ({
             ...prev,
@@ -80,6 +92,20 @@ const SymptomFormScreen = ({ route, navigation }) => {
     };
 
     const handleSubmit = async () => {
+        for (let symptom of symptoms) {
+            const coping = copingResponses[symptom.name];
+
+            if (!coping) {
+                Alert.alert(t("error"), t("please_fill_all_fields"));
+                return;
+            }
+
+            if (!coping.noComplaint && (coping.copingLevel === null || coping.copingLevel === undefined)) {
+                Alert.alert(t("error"), t("please_fill_all_fields"));
+                return;
+            }
+        }
+
         const formatted = Object.entries(selectedSeverities).map(([symptomId, severity]) => ({
             symptomId,
             severity

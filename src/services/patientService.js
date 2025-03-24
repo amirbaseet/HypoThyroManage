@@ -77,3 +77,14 @@ export const submitSymptomForm = async (formWindowId, symptoms, copingResponses)
         return { error: error.response?.data?.message || "Submission failed" };
     }
 };
+export const getLatestCopingForm = async (userId, formWindowId) => {
+    try {
+        const res = await api.get(`/patient/coping`, {
+            params: { userId, formWindowId }
+        });
+        return res.data; // ✅ CORRECT
+            } catch (error) {
+        console.error("Failed to fetch coping form:", error);
+        return null;
+    }
+};
