@@ -34,10 +34,10 @@
   "patients_progress": "Hastaların İlerlemesi",
   "progress": "İlerleme",
   "take_medicine": "İlaç İçme Zamanı",
-  "available_forms": "Mevcut Formlar",
+  "available_forms": "Semptom Yönetimi Ölçeği",
   "submission_history": "Gönderim Geçmişi",
   "report": "Rapor",
-  "reports": "Raporlar",
+  "reports": "Geçmiş Raporları",
   "nutrition": "Beslenme Önerileri",
   "exercise": "Egzersiz Tavsileri",
   "stress": "Stress Yönetimi",
@@ -97,10 +97,12 @@
   "notification_permission_error": "Bildirimler için izin alınamadı.",
   "physical_device_required": "Bildirimler için fiziksel bir cihaz kullanmalısınız.",
   "morning_reminder_title": "Günaydın! ☀️",
-  "morning_reminder_body": "Bugün ilacınızı almayı unutmayın!",
+  "morning_reminder_body": "bugün tiroid ilacınızı almayı unutmayın!",
   "test_notification_title": "🚀 Test Bildirimi",
-  "test_notification_body": "Bu, Expo Go içinde bir test bildirimidir."
-
+  "test_notification_body": "Bu, Expo Go içinde bir test bildirimidir.",
+  "Tabreports":"Rapor",
+  "reports_menu":"Raporlar menüsü",
+  "patient_menu":"Ana Sayfa"
 
 
 }

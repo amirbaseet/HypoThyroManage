@@ -1,18 +1,16 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, Button } from "react-native";
 import LoginScreen from "./src/screens/LoginScreen";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
 import { AuthContext, AuthProvider } from "./src/context/AuthContext";
-import { initializeDatabase } from "./src/database/database";
 import * as Notifications from "expo-notifications";
+import PatientTabs from "./src/navigation/PatientTabs";
 
 // ✅ Import push notification functions
 import {
     registerForPushNotificationsAsync,
     scheduleDailyNotification,
-    sendTestNotification,
 } from "./src/utils/pushNotification";
 // ✅ Import i18n and translation provider
 import i18n from "./src/i18n";
@@ -47,7 +45,11 @@ const AppNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             {user ? (
-                <Stack.Screen name="Home" component={DrawerNavigator} />
+                user.role === "patient" ? (
+                    <Stack.Screen name="PatientTabs" component={PatientTabs} />
+                ) : (
+                    <Stack.Screen name="Drawer" component={DrawerNavigator} />
+                )
             ) : (
                 <Stack.Screen name="Login" component={LoginScreen} />
             )}
@@ -59,9 +61,6 @@ export default function App() {
     useEffect(() => {
         const initializeApp = async () => {
             console.log("🚀 Initializing app...");
-
-            // ✅ Initialize database
-            // await initializeDatabase();
 
             // ✅ Register for push notifications
             await registerForPushNotificationsAsync();

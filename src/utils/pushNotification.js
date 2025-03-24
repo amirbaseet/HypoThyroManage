@@ -63,13 +63,13 @@ export const scheduleDailyNotification = async () => {
             sound: "default",
         },
         trigger: {
-            hour: 6, // Set to 6 AM
+            hour: 7, // Set to 7 AM
             minute: 0,
             repeats: true, // Ensures it repeats every day
         },
     });
 
-    console.log("✅ Daily notification scheduled at 06:00.");
+    console.log("✅ Daily notification scheduled at 07:00.");
 };
 
 /**

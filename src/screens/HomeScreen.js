@@ -8,7 +8,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { initializeDatabase } from "../database/database";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import { deleteAllData, resetDatabase } from "../database/DropDB";
 // import { getLocalUsers } from "../database/UsersCrud";
@@ -46,7 +45,6 @@ const HomeScreen = () => {
       await resetDatabase();
     }
    async function InitialiseDb(){
-    // await initializeDatabase();
     // await getLocalUsers()
     // const existingUser = await getUserById("123");
     // console.log("exist ? = ",existingUser);

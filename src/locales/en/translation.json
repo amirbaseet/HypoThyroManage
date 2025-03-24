@@ -34,10 +34,10 @@
       "patients_progress": "Patients' Progress",
       "progress": "Progress",
       "take_medicine": "Take Medicine",
-      "available_forms": "Available Forms",
+      "available_forms": "Symptom Management Scale",
       "submission_history": "Submission History",
       "report": "Report",
-      "reports": "Reports",
+      "reports": "Passed Reports",
       "nutrition": "Nutrition",
       "exercise": "Exercise",
       "stress": "Stress",
@@ -99,7 +99,12 @@
       "morning_reminder_title": "Good Morning! ☀️",
       "morning_reminder_body": "Don't forget to take your medicine today!",
       "test_notification_title": "🚀 Test Notification",
-      "test_notification_body": "This is a test notification in Expo Go."
+      "test_notification_body": "This is a test notification in Expo Go.",
+      "Tabreports":"Rapor",
+      "reports_menu":"Raports menu",
+      "patient_menu":"Home Screen",
+
+
         
 
     
