@@ -12,7 +12,7 @@ import SubmissionHistoryScreen from './SubmissionHistoryScreen';
 import ProgressScreen from './ProgressScreen';
 import { useTranslation } from 'react-i18next'; // ✅ Import i18n
 
-const Reports = () => {
+const CombinedReportsScreen = () => {
     const [selectedReport, setSelectedReport] = useState('symptom');
     const { t } = useTranslation(); // ✅ Use translation hook
 
@@ -116,4 +116,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Reports;
+export default CombinedReportsScreen;
