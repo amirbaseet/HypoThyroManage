@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "myapp",
-    "slug": "myapp",
+    "name": "hypothyroManager",
+    "slug": "hypothyroManager",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,6 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.amrobaseet.hypothyromanager",
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
@@ -40,12 +41,9 @@
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "VIBRATE",
-        "WAKE_LOCK",
-        "ACCESS_FINE_LOCATION",
-        "VIBRATE",
         "WAKE_LOCK"
       ],
-      "package": "com.amrobaseet.myapp"
+      "package": "com.amrobaseet.hypothyromanager"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -59,11 +57,11 @@
       ],
       "expo-localization"
     ],
+    "owner": "amrobaseet",
     "extra": {
       "eas": {
-        "projectId": "db21a572-dd39-4230-86c2-82f5a36b75fb"
+        "projectId": "b8919a44-2386-4915-a23e-aa2994f2d09d"
       }
-    },
-    "owner": "amrobaseet"
+    }
   }
 }

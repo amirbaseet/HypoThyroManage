@@ -105,8 +105,9 @@
   "patient_menu":"Ana Sayfa",
   "please_select_at_least_one_symptom": "Lütfen en az bir semptom veya başa çıkma seçeneği seçin.",
   "please_answer_all_symptoms": "Lütfen 20 semptomun şiddetini eksiksiz olarak işaretleyin.",
-  "please_fill_all_fields": "Lütfen göndermeden önce tüm başa çıkma değerlendirmelerini tamamlayın."
-
+  "please_fill_all_fields": "Lütfen göndermeden önce tüm başa çıkma değerlendirmelerini tamamlayın.",
+  "search_patient":"Hasta ara",
+  "view_details":"Detayları Gör"
 
 }
 
