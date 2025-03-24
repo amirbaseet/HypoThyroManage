@@ -91,7 +91,17 @@
   "marking_btn": "İşleniyor...",
   "done": "Tamamlandı",
   "mark_success": "İlacınızı aldığınızı işaretlediniz.",
-  "mark_fail": "Bir şeyler ters gitti."
+  "mark_fail": "Bir şeyler ters gitti.",
+  "select_report_type": "Rapor türünü seçin",
+
+  "notification_permission_error": "Bildirimler için izin alınamadı.",
+  "physical_device_required": "Bildirimler için fiziksel bir cihaz kullanmalısınız.",
+  "morning_reminder_title": "Günaydın! ☀️",
+  "morning_reminder_body": "Bugün ilacınızı almayı unutmayın!",
+  "test_notification_title": "🚀 Test Bildirimi",
+  "test_notification_body": "Bu, Expo Go içinde bir test bildirimidir."
+
+
 
 }
 

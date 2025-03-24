@@ -13,12 +13,14 @@ export const markMedicineAsTaken = async () => {
 };
 
 // ✅ Get medicine progress
-export const getWeeklyProgress = async () => {
+export const getWeeklyProgress = async (userId = null) => {
     try {
-        const response = await api.get("/medicine/progress");
+        const response = await api.get("/medicine/progress", {
+            params: userId ? { userId } : {} // 👈 only add param if it's passed
+        });
         return response.data; // returns { weeks: [...] }
     } catch (error) {
-        console.error(fileName,"❌ Error fetching weekly progress:", error.response?.data || error);
+        console.error("❌ Error fetching weekly progress:", error.response?.data || error);
         return { error: "Could not fetch progress" };
     }
 };

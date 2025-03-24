@@ -76,7 +76,8 @@ exports.submitSymptomForm = async (req, res) => {
 // GET all submissions for the logged-in patient
 exports.getMySubmissions = async (req, res) => {
     try {
-        const userId = req.user.id;
+        // ✅ Use query param if provided (e.g., by a doctor)
+        const userId = req.query.userId || req.user.id;
 
         const symptomSubmissions = await SymptomFormSubmission.find({ userId })
             .populate('formWindowId')

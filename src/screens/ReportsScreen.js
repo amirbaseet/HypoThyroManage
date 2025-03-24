@@ -1,24 +1,32 @@
-import React, { useCallback , useState, useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useCallback, useState, useContext } from 'react';
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    ActivityIndicator
+} from 'react-native';
 import { getUserReports } from '../services/patientService';
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext
-import { useFocusEffect } from '@react-navigation/native'; // ✅ Import useFocusEffect
+import { AuthContext } from '../context/AuthContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next'; // ✅ Import i18n
 
-const ReportsScreen = () => {
+const ReportsScreen = ({ patientId = null }) => {
     const { user } = useContext(AuthContext);
+    const { t } = useTranslation(); // ✅ Use the hook
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
-    
 
-        const userId = user?.id; // 🔹 Get user ID dynamically
+    const userIdToFetch = patientId || user?.id;
 
-    // ✅ Fetch reports whenever screen is focused
     useFocusEffect(
         useCallback(() => {
+            if (!userIdToFetch) return;
+
             const fetchReports = async () => {
-                setLoading(true); // Show loader while fetching
+                setLoading(true);
                 try {
-                    const data = await getUserReports(userId);
+                    const data = await getUserReports(userIdToFetch);
                     setReports(data);
                 } catch (error) {
                     console.error("Error fetching reports:", error);
@@ -27,27 +35,34 @@ const ReportsScreen = () => {
             };
 
             fetchReports();
-        }, [userId])
+        }, [userIdToFetch])
     );
 
     if (loading) {
-        return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
+        return (
+            <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />
+        );
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Weekly Reports </Text>
+            <Text style={styles.header}>{t('weekly_reports')}</Text>
+
             <FlatList
                 data={reports}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
                     <View style={styles.reportCard}>
-                        <Text style={styles.week}>📅 Week: {new Date(item.weekStart).toDateString()}</Text>
-                        <Text style={styles.symptomTitle}>📝 Symptoms:</Text>
+                        <Text style={styles.week}>
+                            📅 {t('week')}: {new Date(item.weekStart).toDateString()}
+                        </Text>
+
+                        <Text style={styles.symptomTitle}>📝 {t('symptoms')}:</Text>
+
                         <FlatList
                             data={item.symptoms}
                             keyExtractor={(symptom) => symptom.symptomId._id}
-                            numColumns={2} // ✅ Show symptoms in a grid format
+                            numColumns={2}
                             columnWrapperStyle={styles.row}
                             renderItem={({ item: symptom }) => (
                                 <View
@@ -57,7 +72,7 @@ const ReportsScreen = () => {
                                     ]}
                                 >
                                     <Text style={styles.symptomText}>
-                                        {symptom.symptomId.name} {symptom.hasSymptom }
+                                        {symptom.symptomId.name} {symptom.hasSymptom ? '✅' : '❌'}
                                     </Text>
                                 </View>
                             )}
@@ -91,13 +106,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: '#EAE7DC',
         marginBottom: 15,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 3,
         borderWidth: 2,
         borderColor: '#C6A477',
+        elevation: 3,
     },
     week: {
         fontSize: 16,
@@ -110,7 +121,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#444444',
         marginBottom: 5,
-        
     },
     symptomButton: {
         flex: 1,
@@ -120,7 +130,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 2,
         borderColor: '#C6A477',
-        justifyContent: 'center',
     },
     selectedSymptom: {
         backgroundColor: '#B5E7A0',

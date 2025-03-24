@@ -48,7 +48,14 @@ router.post("/take", verifyToken, async (req, res) => {
 // ✅ GET /api/medicine/progress?days=30
 router.get("/progress", verifyToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.query.userId || req.user.id; // ✅ Support patientId from doctor
+    // prevent a normal user to fetch others users progress day
+    if (req.query.userId && req.query.userId !== req.user.id) {
+      if (req.user.role !== "doctor") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+    }
+    
     const days = parseInt(req.query.days) || 60;
 
     const user = await User.findById(userId);

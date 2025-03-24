@@ -91,7 +91,17 @@
       "marking_btn": "Marking...",
       "done": "Done",
       "mark_success": "You have marked your medicine as taken.",
-      "mark_fail": "Something went wrong."
+      "mark_fail": "Something went wrong.",
+      "select_report_type": "Select Report Type",
+      
+      "notification_permission_error": "Failed to get push token for notifications.",
+      "physical_device_required": "You must use a physical device for push notifications.",
+      "morning_reminder_title": "Good Morning! ☀️",
+      "morning_reminder_body": "Don't forget to take your medicine today!",
+      "test_notification_title": "🚀 Test Notification",
+      "test_notification_body": "This is a test notification in Expo Go."
+        
+
     
 
      

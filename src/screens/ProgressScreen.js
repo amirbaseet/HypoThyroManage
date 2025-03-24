@@ -11,22 +11,25 @@ import { getWeeklyProgress } from "../services/medicineService";
 import { AuthContext } from "../context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { getFormattedDate, getWeekday } from "../utils/date";
-import { useTranslation } from "react-i18next"; // ✅ i18n
+import { useTranslation } from "react-i18next";
 
-const ProgressScreen = () => {
+const ProgressScreen = ({ patientId = null }) => {
     const { user } = useContext(AuthContext);
     const { t } = useTranslation();
 
     const [weeks, setWeeks] = useState([]);
     const [loading, setLoading] = useState(true);
-    const userId = user?.id;
+
+    const userIdToFetch = patientId || user?.id;
 
     useFocusEffect(
         useCallback(() => {
+            if (!userIdToFetch) return;
+
             const loadProgress = async () => {
                 setLoading(true);
                 try {
-                    const data = await getWeeklyProgress();
+                    const data = await getWeeklyProgress(userIdToFetch); // Pass userId
                     if (!data.error) {
                         setWeeks(data.weeks);
                     } else {
@@ -40,7 +43,7 @@ const ProgressScreen = () => {
             };
 
             loadProgress();
-        }, [userId])
+        }, [userIdToFetch])
     );
 
     if (loading) {
