@@ -88,3 +88,8 @@ export const getLatestCopingForm = async (userId, formWindowId) => {
         return null;
     }
 };
+export const getPatientUnreadMessageCount = async (patientId) => {
+    const response = await api.get(`/messages/unread-count?userId=${patientId}`);
+    return response.data;
+  };
+  
