@@ -7,7 +7,7 @@ const authorizeRoles = (...allowedRoles) => {
         }
 
         // Debugging: Log the role trying to access
-        console.log(`User Role: ${req.user.role} | Allowed Roles: ${allowedRoles}`);
+        // console.log(`User Role: ${req.user.role} | Allowed Roles: ${allowedRoles}`);
 
         // Check if user role is allowed
         if (!allowedRoles.includes(req.user.role)) {
