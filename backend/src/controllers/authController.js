@@ -92,7 +92,7 @@ const login = async (req, res) => {
         const token = jwt.sign(
             { id: user._id, phoneNumber: user.phoneNumber, username: user.username,doctorId: user.doctorId, gender: user.gender ,role: user.role },
             process.env.JWT_SEC, 
-            { expiresIn: "15s" }
+            { expiresIn: "1y" }
         );
         // refresh Token
         const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SEC, { expiresIn: "7d" });

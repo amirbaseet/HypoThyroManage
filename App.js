@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import LoginScreen from "./src/screens/LoginScreen";
+import RegisterScreen from "./src/screens/RegisterScreen";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
 import { AuthContext, AuthProvider } from "./src/context/AuthContext";
 import * as Notifications from "expo-notifications";
@@ -51,7 +52,10 @@ const AppNavigator = () => {
                     <Stack.Screen name="Drawer" component={DrawerNavigator} />
                 )
             ) : (
+                <>
                 <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Register" component={RegisterScreen} />
+                </>
             )}
         </Stack.Navigator>
     );
