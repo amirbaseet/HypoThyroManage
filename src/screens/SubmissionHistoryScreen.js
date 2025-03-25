@@ -7,7 +7,8 @@ import {
     ActivityIndicator,
     ScrollView
 } from "react-native";
-import api from "../api/apiService";
+import { getFormSubmissions } from '../services/patientService'; // or wherever you put it
+
 import { AuthContext } from "../context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -31,11 +32,13 @@ const SubmissionHistoryScreen = ({ patientId = null }) => {
             const fetchSubmissions = async () => {
                 setLoading(true);
                 try {
-                    const res = await api.get(`/patient/form-submissions`, {
-                        params: { userId: userIdToFetch }
-                    });
-                    setSubmissions(res.data);
-                } catch (error) {
+                    const result = await getFormSubmissions(userIdToFetch);
+                    if (result.success) {
+                      setSubmissions(result.data);
+                    } else {
+                      console.error("❌ Failed to load submissions", result.error);
+                    }
+                                                          } catch (error) {
                     console.error("❌ Failed to load submissions", error);
                 }
                 setLoading(false);

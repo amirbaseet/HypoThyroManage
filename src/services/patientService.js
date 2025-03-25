@@ -30,16 +30,7 @@ export const getUserReports = async (userId) => {
     }
 };
 
-// ✅ Get the Latest Weekly Report
-export const getLatestReport = async (userId) => {
-    try {
-        const response = await api.get(`/reports/latest-report/${userId}`);
-        return response.data;
-    } catch (error) {
-        console.error(fileName,"❌ Error fetching latest report:", error);
-        return null;
-    }
-};
+
 
 export const getLatestWeeklyReport = async (userId) => {
     try {
@@ -62,7 +53,6 @@ export const getLatestSymptomForm = async (userId, formWindowId) => {
         return null; // fine if none exists
     }
 };
-
 // ✅ Submit or update the form
 export const submitSymptomForm = async (formWindowId, symptoms, copingResponses) => {
     try {
@@ -92,4 +82,31 @@ export const getPatientUnreadMessageCount = async (patientId) => {
     const response = await api.get(`/messages/unread-count?userId=${patientId}`);
     return response.data;
   };
+
+  // Get active form windows (for patients)
+export const getActiveFormWindows = async () => {
+    try {
+        const response = await api.get("/patient/form-windows/active");
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error fetching active windows:", error);
+        return { error: "Could not fetch form windows" };
+    }
+};
+// Get form submissions for a specific user
+export const getFormSubmissions = async (userId) => {
+    try {
+      const response = await api.get('/patient/form-submissions', {
+        params: { userId },
+      });
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error("❌ Error fetching form submissions:", error.response?.data || error);
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to fetch submissions",
+      };
+    }
+  };
+  
   

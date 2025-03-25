@@ -12,7 +12,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from "../context/AuthContext";
-import { resetUserPassword } from "../api/apiService";
+import { resetUserPassword } from "../services/adminService";
 import { useTranslation } from 'react-i18next'; // ✅ i18n
 
 const AdminResetPasswordScreen = ({ navigation }) => {

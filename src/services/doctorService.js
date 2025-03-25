@@ -20,22 +20,3 @@ export const getDoctorChatListAPI = async () => {
         return [];
     }
 };
-export const getDoctorSymptomSubmissions = async () => {
-    try {
-        const res = await api.get("/patient/doctor/submissions");
-        return res.data;
-    } catch (error) {
-        console.error(fileName,"❌ Error fetching doctor form submissions:", error.response?.data || error);
-        return { patients: [], submissions: [] };
-    }
-};
-
-export const getPatientMedicineProgress = async (patientId) => {
-    try {
-        const response = await api.get(`/medicine/patient-progress/${patientId}`);
-        return response.data;
-    } catch (error) {
-        console.error(fileName,"Error fetching patient progress:", error);
-        return { logs: [] };
-    }
-};

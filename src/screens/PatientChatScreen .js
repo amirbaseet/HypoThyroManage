@@ -133,26 +133,33 @@ const PatientChatScreen = () => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.container}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70}
-            >
+            <React.Fragment>
                 <RNText style={styles.header}>
                     {t("chat_with_doctor")}
                 </RNText>
-
+    
                 {doctorId ? (
                     <>
                         <ChatList messages={messages} userId={userId} flatListRef={flatListRef} />
-                        <ChatInput message={message} onChangeText={setMessage} onSend={sendMessage} />
+    
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS === "ios" ? "padding" : undefined}
+                            keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+                        >
+                            <ChatInput
+                                message={message}
+                                onChangeText={setMessage}
+                                onSend={sendMessage}
+                            />
+                        </KeyboardAvoidingView>
                     </>
                 ) : (
                     <RNText style={styles.noDoctorText}>{t("no_doctor_assigned")}</RNText>
                 )}
-            </KeyboardAvoidingView>
+            </React.Fragment>
         </TouchableWithoutFeedback>
     );
+    
 };
 
 const styles = StyleSheet.create({

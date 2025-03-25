@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import { createFormWindow } from '../api/apiService';
+import { createFormWindow } from '../services/adminService';
 import { useTranslation } from 'react-i18next';
 
 const CreateFormWindowScreen = () => {

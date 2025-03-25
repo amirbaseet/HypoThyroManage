@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
-import { getActiveFormWindows } from "../api/apiService";
+import { getActiveFormWindows } from "../services/patientService";
 import { useTranslation } from "react-i18next";
 
 export default function AvailableFormsScreen({ navigation }) {
