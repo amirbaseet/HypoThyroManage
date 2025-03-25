@@ -1,0 +1,53 @@
+// src/styles/infoCardStyles.js
+
+import { StyleSheet } from 'react-native';
+
+const infoCardStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#FAF9F6',
+  },
+  screenTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#444',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  header: {
+    backgroundColor: '#C6A477',
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 8,
+    borderWidth: 2,
+    borderColor: '#C6A477',
+  },
+  activeHeader: {
+    backgroundColor: '#BDA06F',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FAF9F6',
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#EAE7DC',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#C6A477',
+    elevation: 4,
+  },
+  contentText: {
+    fontSize: 15,
+    color: '#444',
+    fontWeight: '600',
+    marginBottom: 8,
+    lineHeight: 22,
+  },
+});
+
+export default infoCardStyles;

@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet
+} from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
 const BrainInfo = () => {
@@ -11,88 +17,106 @@ const BrainInfo = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* 1️⃣ Hipotiroidizm ve Bilişsel Etkileri */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(1)}>
-        <Text style={styles.headerText}>1️⃣ Hipotiroidizm ve Bilişsel Etkileri</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 1}>
-        <View style={styles.content}>
-          <Text>Hipotiroidizm hastaları **yorgunluk, unutkanlık ve odaklanma zorluğu** gibi semptomlar bildirmektedir.</Text>
-          <Text>✔️ **Düşük tiroid hormon seviyeleri, beyin fonksiyonlarını olumsuz etkileyebilir.**</Text>
-          <Text>✔️ **Düzenli tiroid hormonu tedavisi, bilişsel işlevleri korumak için çok önemlidir.**</Text>
+      {sections.map((section) => (
+        <View key={section.id}>
+          <TouchableOpacity
+            style={styles.header}
+            onPress={() => toggleSection(section.id)}
+          >
+            <Text style={styles.headerText}>{section.title}</Text>
+          </TouchableOpacity>
+          <Collapsible collapsed={activeSection !== section.id}>
+            <View style={styles.card}>
+              {section.content.map((text, index) => (
+                <Text key={index} style={styles.contentText}>
+                  {text}
+                </Text>
+              ))}
+            </View>
+          </Collapsible>
         </View>
-      </Collapsible>
-
-      {/* 2️⃣ Hafif Fiziksel Aktivitenin Bilişsel Faydaları */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(2)}>
-        <Text style={styles.headerText}>2️⃣ Hafif Fiziksel Aktivitenin Bilişsel Faydaları</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 2}>
-        <View style={styles.content}>
-          <Text>Hafif egzersiz, **beyin sağlığını destekleyerek odaklanmayı artırabilir.**</Text>
-          <Text>✔️ **Hafif yürüyüş, yoga ve esneme hareketleri, beyin fonksiyonlarını güçlendirebilir.**</Text>
-          <Text>✔️ **Fiziksel aktivite, hipotiroidizm hastalarında bilişsel zorlanmayı azaltabilir.**</Text>
-        </View>
-      </Collapsible>
-
-      {/* 3️⃣ Yapılandırılmış Beyin Egzersizleri */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(3)}>
-        <Text style={styles.headerText}>3️⃣ Yapılandırılmış Beyin Egzersizleri</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 3}>
-        <View style={styles.content}>
-          <Text>🧠 **Bilişsel sağlığı geliştiren aktiviteler:**</Text>
-          <Text style={styles.list}>✔️ **Bulmacalar ve hafıza oyunları**, beyin fonksiyonlarını güçlendirebilir.</Text>
-          <Text style={styles.list}>✔️ **Mobil cihazlarla yapılan bilişsel egzersizler**, odaklanmayı artırabilir.</Text>
-          <Text style={styles.list}>✔️ **Bilişsel eğitim programları**, hafıza ve öğrenme becerilerini geliştirebilir.</Text>
-        </View>
-      </Collapsible>
-
-      {/* 4️⃣ Uyku, Beslenme ve Stresin Rolü */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(4)}>
-        <Text style={styles.headerText}>4️⃣ Uyku, Beslenme ve Stresin Rolü</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 4}>
-        <View style={styles.content}>
-          <Text>🛌 **Beyin sağlığını desteklemek için önemli faktörler:**</Text>
-          <Text>✔️ **Kaliteli uyku**, zihinsel berraklık için kritik öneme sahiptir.</Text>
-          <Text>✔️ **Sağlıklı beslenme**, bilişsel fonksiyonları iyileştirir.</Text>
-          <Text>✔️ **Stresin yönetilmesi**, hafıza ve odaklanmayı artırabilir.</Text>
-        </View>
-      </Collapsible>
+      ))}
     </ScrollView>
   );
 };
 
-// Styles
+const sections = [
+  {
+    id: 1,
+    title: '1️⃣ Hipotiroidizm ve Bilişsel Etkileri',
+    content: [
+      'Hipotiroidizm hastaları yorgunluk, unutkanlık ve odaklanma zorluğu gibi semptomlar bildirmektedir.',
+      '✔️ Düşük tiroid hormon seviyeleri, beyin fonksiyonlarını olumsuz etkileyebilir.',
+      '✔️ Düzenli tiroid hormonu tedavisi, bilişsel işlevleri korumak için çok önemlidir.',
+    ],
+  },
+  {
+    id: 2,
+    title: '2️⃣ Hafif Fiziksel Aktivitenin Bilişsel Faydaları',
+    content: [
+      'Hafif egzersiz, beyin sağlığını destekleyerek odaklanmayı artırabilir.',
+      '✔️ Hafif yürüyüş, yoga ve esneme hareketleri, beyin fonksiyonlarını güçlendirebilir.',
+      '✔️ Fiziksel aktivite, hipotiroidizm hastalarında bilişsel zorlanmayı azaltabilir.',
+    ],
+  },
+  {
+    id: 3,
+    title: '3️⃣ Yapılandırılmış Beyin Egzersizleri',
+    content: [
+      '🧠 Bilişsel sağlığı geliştiren aktiviteler:',
+      '✔️ Bulmacalar ve hafıza oyunları, beyin fonksiyonlarını güçlendirebilir.',
+      '✔️ Mobil cihazlarla yapılan bilişsel egzersizler, odaklanmayı artırabilir.',
+      '✔️ Bilişsel eğitim programları, hafıza ve öğrenme becerilerini geliştirebilir.',
+    ],
+  },
+  {
+    id: 4,
+    title: '4️⃣ Uyku, Beslenme ve Stresin Rolü',
+    content: [
+      '🛌 Beyin sağlığını desteklemek için önemli faktörler:',
+      '✔️ Kaliteli uyku, zihinsel berraklık için kritik öneme sahiptir.',
+      '✔️ Sağlıklı beslenme, bilişsel fonksiyonları iyileştirir.',
+      '✔️ Stresin yönetilmesi, hafıza ve odaklanmayı artırabilir.',
+    ],
+  },
+];
+
+// Styles adapted from ReportsScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
-    backgroundColor: '#F5F5F5',
+    padding: 20,
+    backgroundColor: '#FAF9F6',
   },
   header: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#C6A477',
     padding: 12,
-    marginVertical: 5,
-    borderRadius: 8,
+    marginVertical: 6,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#C6A477',
   },
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#FAF9F6',
     textAlign: 'center',
   },
-  content: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginBottom: 5,
-    borderRadius: 8,
+  card: {
+    backgroundColor: '#EAE7DC',
+    borderRadius: 10,
+    padding: 15,
+    marginTop: 5,
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#C6A477',
+    elevation: 3,
   },
-  list: {
-    fontSize: 14,
-    marginLeft: 10,
-    marginVertical: 3,
+  contentText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#444444',
+    marginBottom: 8,
   },
 });
 

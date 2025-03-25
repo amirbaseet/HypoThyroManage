@@ -1,128 +1,119 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from 'react-native';
 import Collapsible from 'react-native-collapsible';
+import infoCardStyles from '../styles/infoCardStyles'; // ✅ import shared styles
+
+if (Platform.OS === 'android') {
+  UIManager.setLayoutAnimationEnabledExperimental &&
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+const sections = [
+  {
+    id: 1,
+    title: '1️⃣ Beslenme Tavsiyesi',
+    content: [
+      'Hipotiroidizm hastaları vitamin, mineral, demir, iyot ve selenyum açısından zengin bir diyet uygulamalıdır.',
+      '✔️ Süt ürünleri, yumurta, balık, et, meyve ve sebze tüketilmelidir.',
+      '❌ Guatrojenik yiyeceklerden kaçınılmalıdır: brokoli, lahana, karnabahar, turp, şalgam.',
+    ],
+  },
+  {
+    id: 2,
+    title: '2️⃣ Selenyumun Önemi',
+    content: [
+      'Selenyum, tiroid bezinin korunması ve metabolizması için gereklidir.',
+      '✔️ En iyi kaynakları: Et, süt ürünleri, tahıllar ve deniz ürünleri.',
+      '⚠️ Fazla tüketimi toksik olabilir, doktor kontrolünde alınmalıdır.',
+    ],
+  },
+  {
+    id: 3,
+    title: '3️⃣ İyotun Önemi',
+    content: [
+      'İyot, tiroid hormonlarının üretimi için gereklidir.',
+      '✔️ İyot Kaynakları: Deniz yosunu, balık, deniz ürünleri, iyotlu tuz, süt ürünleri.',
+      '⚠️ Güneş ışığı, nem ve yüksek ısı iyot miktarını azaltabilir.',
+      '⚠️ İyot, koyu renkli ve kapaklı kaplarda saklanmalıdır.',
+    ],
+  },
+  {
+    id: 4,
+    title: '4️⃣ Levotiroksin Kullanımı',
+    content: [
+      'Levotiroksin ilacının emilimini artırmak için şu kurallara dikkat edilmelidir:',
+      '✔️ Kahvaltıdan 60 dakika önce veya akşam yemeğinden 3 saat sonra alınmalıdır.',
+      '✔️ İlaç alındıktan sonra 30-60 dakika boyunca yemek yenmemelidir.',
+      '❌ Reçetesiz satılan takviyeler kullanılmamalıdır.',
+      '❌ Özellikle farmakolojik iyot dozları önerilmez.',
+    ],
+  },
+  {
+    id: 5,
+    title: '5️⃣ Levotiroksin ve Beslenme',
+    content: [
+      'Levotiroksin ile bazı yiyeceklerin ve ilaçların etkileşimi vardır.',
+      '❌ Demir, kalsiyum, yüksek lifli yiyecekler ilacın emilimini azaltabilir.',
+      '❌ İnek sütü ve kahve levotiroksinin etkinliğini düşürebilir.',
+      '⏳ Kalsiyum ve demir takviyeleri ile en az 4 saat arayla alınmalıdır.',
+    ],
+  },
+  {
+    id: 6,
+    title: '6️⃣ Levotiroksin ile Tüketilmemesi Gerekenler',
+    content: [
+      'Levotiroksin ile aşağıdaki besinlerden kaçınılmalıdır:',
+      '❌ Ceviz, soya unu, demir takviyeleri, kalsiyum takviyeleri.',
+      '❌ Alüminyum, magnezyum içeren antasitler.',
+      '❌ Bazı ülser ilaçları (sukralfat).',
+      '❌ Kolesterol düşürücü ilaçlar.',
+      '❌ Süt, yoğurt, peynir, ıspanak, kırmızı et.',
+    ],
+  },
+];
 
 const NutritionInfo = () => {
   const [activeSection, setActiveSection] = useState(null);
 
   const toggleSection = (section) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setActiveSection(activeSection === section ? null : section);
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* 1️⃣ Beslenme Tavsiyesi */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(1)}>
-        <Text style={styles.headerText}>1️⃣ Beslenme Tavsiyesi</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 1}>
-        <View style={styles.content}>
-          <Text>Hipotiroidizm hastaları vitamin, mineral, demir, iyot ve selenyum açısından zengin bir diyet uygulamalıdır.</Text>
-          <Text style={styles.list}>✔️ Süt ürünleri, yumurta, balık, et, meyve ve sebze tüketilmelidir.</Text>
-          <Text style={styles.list}>❌ Guatrojenik yiyeceklerden kaçınılmalıdır: brokoli, lahana, karnabahar, turp, şalgam.</Text>
-        </View>
-      </Collapsible>
+    <ScrollView style={infoCardStyles.container}>
+      <Text style={infoCardStyles.screenTitle}>🍽️ Beslenme Rehberi</Text>
 
-      {/* 2️⃣ Selenyumun Önemi */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(2)}>
-        <Text style={styles.headerText}>2️⃣ Selenyumun Önemi</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 2}>
-        <View style={styles.content}>
-          <Text>Selenyum, tiroid bezinin korunması ve metabolizması için gereklidir.</Text>
-          <Text style={styles.list}>✔️ En iyi kaynakları: Et, süt ürünleri, tahıllar ve deniz ürünleri.</Text>
-          <Text style={styles.list}>⚠️ Fazla tüketimi toksik olabilir, doktor kontrolünde alınmalıdır.</Text>
-        </View>
-      </Collapsible>
+      {sections.map((section) => (
+        <View key={section.id}>
+          <TouchableOpacity
+            style={[
+              infoCardStyles.header,
+              activeSection === section.id && infoCardStyles.activeHeader,
+            ]}
+            onPress={() => toggleSection(section.id)}
+          >
+            <Text style={infoCardStyles.headerText}>{section.title}</Text>
+          </TouchableOpacity>
 
-      {/* 3️⃣ İyotun Önemi */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(3)}>
-        <Text style={styles.headerText}>3️⃣ İyotun Önemi</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 3}>
-        <View style={styles.content}>
-          <Text>İyot, tiroid hormonlarının üretimi için gereklidir.</Text>
-          <Text style={styles.list}>✔️ İyot Kaynakları: Deniz yosunu, balık, deniz ürünleri, iyotlu tuz, süt ürünleri.</Text>
-          <Text style={styles.list}>⚠️ Güneş ışığı, nem ve yüksek ısı iyot miktarını azaltabilir.</Text>
-          <Text style={styles.list}>⚠️ İyot, koyu renkli ve kapaklı kaplarda saklanmalıdır.</Text>
+          <Collapsible collapsed={activeSection !== section.id}>
+            <View style={infoCardStyles.card}>
+              {section.content.map((line, idx) => (
+                <Text key={idx} style={infoCardStyles.contentText}>{line}</Text>
+              ))}
+            </View>
+          </Collapsible>
         </View>
-      </Collapsible>
-
-      {/* 4️⃣ Levotiroksin Kullanımı */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(4)}>
-        <Text style={styles.headerText}>4️⃣ Levotiroksin Kullanımı</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 4}>
-        <View style={styles.content}>
-          <Text>Levotiroksin ilacının emilimini artırmak için şu kurallara dikkat edilmelidir:</Text>
-          <Text style={styles.list}>✔️ Kahvaltıdan 60 dakika önce veya akşam yemeğinden 3 saat sonra alınmalıdır.</Text>
-          <Text style={styles.list}>✔️ İlaç alındıktan sonra 30-60 dakika boyunca yemek yenmemelidir.</Text>
-          <Text style={styles.list}>❌ Reçetesiz satılan takviyeler kullanılmamalıdır.</Text>
-          <Text style={styles.list}>❌ Özellikle farmakolojik iyot dozları önerilmez.</Text>
-        </View>
-      </Collapsible>
-
-      {/* 5️⃣ Levotiroksin ve Beslenme */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(5)}>
-        <Text style={styles.headerText}>5️⃣ Levotiroksin ve Beslenme</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 5}>
-        <View style={styles.content}>
-          <Text>Levotiroksin ile bazı yiyeceklerin ve ilaçların etkileşimi vardır.</Text>
-          <Text style={styles.list}>❌ Demir, kalsiyum, yüksek lifli yiyecekler ilacın emilimini azaltabilir.</Text>
-          <Text style={styles.list}>❌ İnek sütü ve kahve levotiroksinin etkinliğini düşürebilir.</Text>
-          <Text style={styles.list}>⏳ Kalsiyum ve demir takviyeleri ile en az 4 saat arayla alınmalıdır.</Text>
-        </View>
-      </Collapsible>
-
-      {/* 6️⃣ Levotiroksin ile Tüketilmemesi Gerekenler */}
-      <TouchableOpacity style={styles.header} onPress={() => toggleSection(6)}>
-        <Text style={styles.headerText}>6️⃣ Levotiroksin ile Tüketilmemesi Gerekenler</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={activeSection !== 6}>
-        <View style={styles.content}>
-          <Text>Levotiroksin ile aşağıdaki besinlerden kaçınılmalıdır:</Text>
-          <Text style={styles.list}>❌ Ceviz, soya unu, demir takviyeleri, kalsiyum takviyeleri.</Text>
-          <Text style={styles.list}>❌ Alüminyum, magnezyum içeren antasitler.</Text>
-          <Text style={styles.list}>❌ Bazı ülser ilaçları (sukralfat).</Text>
-          <Text style={styles.list}>❌ Kolesterol düşürücü ilaçlar.</Text>
-          <Text style={styles.list}>❌ Süt, yoğurt, peynir, ıspanak, kırmızı et.</Text>
-        </View>
-      </Collapsible>
+      ))}
     </ScrollView>
   );
 };
-
-// Styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: '#F5F5F5',
-  },
-  header: {
-    backgroundColor: '#007AFF',
-    padding: 12,
-    marginVertical: 5,
-    borderRadius: 8,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-  },
-  content: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginBottom: 5,
-    borderRadius: 8,
-  },
-  list: {
-    fontSize: 14,
-    marginLeft: 10,
-    marginVertical: 3,
-  },
-});
 
 export default NutritionInfo;
