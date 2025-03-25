@@ -13,30 +13,27 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from "../context/AuthContext";
 import { resetUserPassword } from "../api/apiService";
+import { useTranslation } from 'react-i18next'; // ✅ i18n
 
 const AdminResetPasswordScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
+  const { t } = useTranslation(); // ✅ hook
   const [phoneNumber, setPhoneNumber] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
   const handleResetPassword = async () => {
     if (!phoneNumber || !newPassword) {
-      Alert.alert('Missing Fields', 'Please fill out all fields.');
+      Alert.alert(t('missing_fields_title'), t('missing_fields_msg'));
       return;
     }
-
-    // if (!/^\d{6}$/.test(newPassword)) {
-    //   Alert.alert('Invalid Password', 'Password must be exactly 6 digits.');
-    //   return;
-    // }
 
     const fullPhone = `+90${phoneNumber}`;
     const response = await resetUserPassword(fullPhone, newPassword);
 
     if (response.error) {
-      Alert.alert('Error', response.error);
+      Alert.alert(t('error'), response.error);
     } else {
-      Alert.alert('Success', 'Password reset successfully!');
+      Alert.alert(t('success'), t('password_reset_success'));
       setPhoneNumber('');
       setNewPassword('');
     }
@@ -45,9 +42,9 @@ const AdminResetPasswordScreen = ({ navigation }) => {
   if (user?.role !== "admin") {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.headerText}>Unauthorized</Text>
+        <Text style={styles.headerText}>{t('unauthorized')}</Text>
         <Text style={{ textAlign: 'center', color: 'red', fontSize: 16 }}>
-          Only admins can access this screen.
+          {t('admin_only_access')}
         </Text>
       </SafeAreaView>
     );
@@ -57,7 +54,7 @@ const AdminResetPasswordScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={{ paddingHorizontal: 25 }}>
-          <Text style={styles.headerText}>Reset User Password</Text>
+          <Text style={styles.headerText}>{t('reset_user_password')}</Text>
 
           <View style={styles.inputWrapper}>
             {/* Phone Number */}
@@ -65,7 +62,7 @@ const AdminResetPasswordScreen = ({ navigation }) => {
               <MaterialIcons name='phone' size={20} color='#666' style={styles.icon} />
               <Text style={{ fontSize: 16, color: '#000', paddingRight: 5 }}>+90</Text>
               <TextInput
-                placeholder='5XXXXXXXXX'
+                placeholder={t('phone_placeholder')}
                 style={styles.input}
                 keyboardType='phone-pad'
                 value={phoneNumber}
@@ -80,7 +77,7 @@ const AdminResetPasswordScreen = ({ navigation }) => {
             <View style={styles.inputContainer}>
               <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
               <TextInput
-                placeholder='Enter new 6-digit PIN'
+                placeholder={t('new_password_placeholder')}
                 style={styles.input}
                 value={newPassword}
                 onChangeText={(text) => {
@@ -95,7 +92,7 @@ const AdminResetPasswordScreen = ({ navigation }) => {
 
             {/* Reset Button */}
             <TouchableOpacity style={styles.loginButton} onPress={handleResetPassword}>
-              <Text style={styles.loginButtonText}>Reset Password</Text>
+              <Text style={styles.loginButtonText}>{t('reset_password_button')}</Text>
             </TouchableOpacity>
           </View>
         </View>

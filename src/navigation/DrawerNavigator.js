@@ -53,7 +53,7 @@ const DrawerNavigator = () => {
                     <Drawer.Screen 
                         name="AdminResetPassword" 
                         component={AdminResetPasswordScreen} 
-                        options={{ title: t('manage_form_windows') }} 
+                        options={{ title: t('reset_password_screen') }} 
                     />
                 </>
             )}
