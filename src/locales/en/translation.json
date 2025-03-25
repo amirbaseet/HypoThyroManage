@@ -109,7 +109,18 @@
       "search_patient":"Search patient",
       "view_details":"View Details",
       "chat_list_title": "Chat List",
-      "patient_details": "Patient Details"
+      "patient_details": "Patient Details",
+    "reset_password_screen": "Reset Password",
+    "reset_user_password": "Reset User Password",
+    "phone_placeholder": "5XXXXXXXXX",
+    "new_password_placeholder": "Enter new 6-digit PIN",
+    "reset_password_button": "Reset Password",
+    "missing_fields_title": "Missing Fields",
+    "missing_fields_msg": "Please fill out all fields.",
+    "password_reset_success": "Password reset successfully!",
+    "admin_only_access": "Only admins can access this screen."
+  
+
 
 
 

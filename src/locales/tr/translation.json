@@ -109,8 +109,15 @@
   "search_patient":"Hasta ara",
   "view_details":"Detayları Gör",
   "chat_list_title": "Sohbet Listesi",
-  "patient_details": "Hasta Detayları"
-
-
+  "patient_details": "Hasta Detayları",
+  "reset_password_screen": "Şifre sıfırlama",
+  "reset_user_password": "Kullanıcı Şifresini Sıfırla",
+  "phone_placeholder": "5XXXXXXXXX",
+  "new_password_placeholder": "Yeni 6 haneli PIN girin",
+  "reset_password_button": "Şifreyi Sıfırla",
+  "missing_fields_title": "Eksik Alanlar",
+  "missing_fields_msg": "Lütfen tüm alanları doldurun.",
+  "password_reset_success": "Şifre başarıyla sıfırlandı!",
+  "admin_only_access": "Bu ekrana yalnızca yöneticiler erişebilir."
 }
 
