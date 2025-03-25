@@ -143,5 +143,17 @@ export const getAllFormWindows = async () => {
         return { error: error.response?.data?.message || "Failed to fetch windows" };
     }
 };
+export const resetUserPassword = async (phoneNumber, newPassword) => {
+    try {
+        const response = await api.post(`/auth/admin/reset-password`, {
+            phoneNumber,
+            newPassword,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error resetting password:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Failed to reset password" };
+    }
+};
 
 export default api;

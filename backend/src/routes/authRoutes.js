@@ -1,7 +1,9 @@
 const express = require('express');
-const {register,login, logout, updatePushToken, removePushToken, refreshTokenHandler } = require('../controllers/authController')
+const {register,login, resetUserPassword, logout, updatePushToken, removePushToken, refreshTokenHandler } = require('../controllers/authController')
 const router =express.Router();
 const verifyToken = require("../middlewares/authMiddleware")
+const authorizeRoles = require("../middlewares/roleMiddleware")
+
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", verifyToken, logout);
@@ -12,6 +14,10 @@ router.post("/update-push-token",verifyToken, updatePushToken);
 
 // Remove push token (on logout)
 router.post("/remove-push-token", removePushToken);
+
+//Reset Password by admin Only
+router.post("/admin/reset-password", verifyToken, authorizeRoles("admin"), resetUserPassword);
+
 // refresh Token 
 router.post("/refresh-token", refreshTokenHandler);
 
