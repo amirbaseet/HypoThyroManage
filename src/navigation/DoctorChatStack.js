@@ -1,19 +1,24 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";  // Import Icons
+import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+
 import DoctorChatListScreen from "../screens/DoctorChatListScreen";
 import DoctorChatScreen from "../screens/DoctorChatScreen";
 import DoctorDashboardScreen from "../screens/DoctorDashboardScreen";
+
 const Stack = createStackNavigator();
 
 const DoctorChatStack = ({ navigation }) => {
-    return (
-      <Stack.Navigator>
+  const { t } = useTranslation();
+
+  return (
+    <Stack.Navigator>
       <Stack.Screen 
         name="ChatList" 
         component={DoctorChatListScreen}
-        options={({ navigation }) => ({
+        options={{
           headerLeft: () => (
             <TouchableOpacity 
               onPress={() => navigation.openDrawer()} 
@@ -22,26 +27,29 @@ const DoctorChatStack = ({ navigation }) => {
               <Ionicons name="menu" size={28} color="#FFF" />
             </TouchableOpacity>
           ),
-        })}
+          title: t('chat_list_title'), // ✅ localized title
+        }}
       />
 
       <Stack.Screen 
         name="DoctorChatScreen" 
         component={DoctorChatScreen} 
-        options={({ route }) => ({ title: route.params.patientName })}
+        options={({ route }) => ({
+          title: route.params?.patientName || t('chat'), // fallback to translation if no name
+        })}
       />
 
       <Stack.Screen 
         name="DoctorDashboardPopup" 
         component={DoctorDashboardScreen}
         options={{
-          presentation: "modal", 
-          title: "Patient Details",
+          presentation: "modal",
           headerShown: true,
+          title: t("patient_details"),
         }}
       />
     </Stack.Navigator>
-      );
+  );
 };
 
 export default DoctorChatStack;

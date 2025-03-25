@@ -7,6 +7,7 @@ import DrawerNavigator from "./src/navigation/DrawerNavigator";
 import { AuthContext, AuthProvider } from "./src/context/AuthContext";
 import * as Notifications from "expo-notifications";
 import PatientTabs from "./src/navigation/PatientTabs";
+import DoctorTabs from "./src/navigation/DoctorTabs"; 
 
 // ✅ Import push notification functions
 import {
@@ -48,7 +49,9 @@ const AppNavigator = () => {
             {user ? (
                 user.role === "patient" ? (
                     <Stack.Screen name="PatientTabs" component={PatientTabs} />
-                ) : (
+                ) : user.role === "doctor" ? (
+                    <Stack.Screen name="DoctorTabs" component={DoctorTabs} />
+                )  : (
                     <Stack.Screen name="Drawer" component={DrawerNavigator} />
                 )
             ) : (

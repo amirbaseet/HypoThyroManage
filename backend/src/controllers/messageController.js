@@ -8,10 +8,10 @@ const {
     decryptAESKeyWithRSA
 } = require("../utils/encryptionUtils");
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 /**
- * Send a message (Patient ↔ Doctor)
+ * Send Message (Patient ↔ Doctor)
  */
 exports.sendMessage = async (req, res) => {
     try {
@@ -25,6 +25,7 @@ exports.sendMessage = async (req, res) => {
         const receiver = await User.findById(receiverId).select("publicKey");
 
         if (!sender || !receiver) {
+            console.error("❌ User not found: Sender or Receiver is missing");
             return res.status(404).json({ message: "User not found" });
         }
 
@@ -37,10 +38,11 @@ exports.sendMessage = async (req, res) => {
             receiverId,
             encryptedMessage,
             aesKey: encryptedAESKey,
-            read: false,
+            read: false
         });
 
         await newMessage.save();
+        console.log("✅ Message saved successfully");
 
         res.status(201).json({ message: "Message sent successfully", data: newMessage });
     } catch (error) {
@@ -50,7 +52,7 @@ exports.sendMessage = async (req, res) => {
 };
 
 /**
- * Get Chat History (with decryption)
+ * Get Chat History (Decrypt Messages)
  */
 exports.getChatHistory = async (req, res) => {
     try {
@@ -74,7 +76,13 @@ exports.getChatHistory = async (req, res) => {
             try {
                 const recipient = msg.receiverId.toString() === user1 ? userOne : userTwo;
 
+                if (!recipient.privateKey) {
+                    console.error(`❌ Missing private key for recipient: ${recipient._id}`);
+                    throw new Error("Recipient private key missing");
+                }
+
                 const aesKey = decryptAESKeyWithRSA(msg.aesKey, recipient.privateKey);
+
                 return {
                     sender: msg.senderId,
                     receiver: msg.receiverId,
@@ -83,10 +91,11 @@ exports.getChatHistory = async (req, res) => {
                     timestamp: msg.timestamp
                 };
             } catch (error) {
+                console.error("❌ Error decrypting message:", error);
                 return {
                     sender: msg.senderId,
                     receiver: msg.receiverId,
-                    message: "🔒 Unable to decrypt message",
+                    message: "🔒 Error decrypting message",
                     read: msg.read,
                     timestamp: msg.timestamp
                 };
@@ -106,7 +115,7 @@ exports.getChatHistory = async (req, res) => {
 };
 
 /**
- * Mark messages as read
+ * Mark Messages as Read
  */
 exports.markMessagesAsRead = async (req, res) => {
     try {
@@ -144,14 +153,8 @@ exports.getDoctorChatList = async (req, res) => {
             {
                 $match: {
                     $or: [
-                        {
-                            senderId: new ObjectId(doctorId),
-                            receiverId: { $in: patientIds.map(id => new ObjectId(id)) }
-                        },
-                        {
-                            receiverId: new ObjectId(doctorId),
-                            senderId: { $in: patientIds.map(id => new ObjectId(id)) }
-                        }
+                        { senderId: new ObjectId(doctorId), receiverId: { $in: patientIds.map(id => new ObjectId(id)) } },
+                        { receiverId: new ObjectId(doctorId), senderId: { $in: patientIds.map(id => new ObjectId(id)) } }
                     ]
                 }
             },
@@ -183,24 +186,24 @@ exports.getDoctorChatList = async (req, res) => {
                 }
             }
         ]);
-        
+
         const finalChats = await Promise.all(
             patients.map(async (patient) => {
                 const chat = latestMessages.find(msg => msg._id.toString() === patient._id.toString());
 
                 if (chat) {
                     try {
-                        const doctorPrivateKey = patients.find(p => p._id.toString() === doctorId)?.privateKey;
+                        const doctorPrivateKey = (await User.findById(doctorId).select("privateKey")).privateKey;
 
                         if (!doctorPrivateKey) throw new Error("Doctor private key missing");
 
-                        const decryptedAESKey = decryptAESKeyWithRSA(chat.lastMessage.aesKey, doctorPrivateKey);
-                        const decryptedMessage = decryptMessageAES(chat.lastMessage.encryptedMessage, decryptedAESKey);
+                         // const decryptedAESKey = decryptAESKeyWithRSA(chat.lastMessage.aesKey, doctorPrivateKey);
+                        // const decryptedMessage = decryptMessageAES(chat.lastMessage.encryptedMessage, decryptedAESKey);
 
                         return {
                             patientId: patient._id,
                             patientName: patient.username,
-                            lastMessage: decryptedMessage,
+                            lastMessage: "Message",
                             lastMessageTimestamp: chat.lastMessage.timestamp,
                             isLastMessageRead: chat.lastMessage.read,
                             unreadCount: chat.unreadCount
@@ -217,7 +220,6 @@ exports.getDoctorChatList = async (req, res) => {
                     }
                 }
 
-                // No messages found for this patient
                 return {
                     patientId: patient._id,
                     patientName: patient.username,
@@ -229,7 +231,6 @@ exports.getDoctorChatList = async (req, res) => {
             })
         );
 
-        // Final sort
         finalChats.sort((a, b) => new Date(b.lastMessageTimestamp) - new Date(a.lastMessageTimestamp));
 
         res.json(finalChats);
@@ -238,14 +239,17 @@ exports.getDoctorChatList = async (req, res) => {
         res.status(500).json({ error: "Server error fetching chat list." });
     }
 };
-// GET /messages/unread-count?userId=...
+
+/**
+ * Get Unread Message Count for Patient
+ * GET /messages/unread-count?userId=...
+ */
 exports.getPatientUnreadMessageCount = async (req, res) => {
     try {
-      const { userId } = req.query;
-      const count = await Message.countDocuments({ receiverId: userId, read: false });
-      res.json(count);
+        const { userId } = req.query;
+        const count = await Message.countDocuments({ receiverId: userId, read: false });
+        res.json(count);
     } catch (err) {
-      res.status(500).json({ error: 'Error fetching unread count' });
+        res.status(500).json({ error: 'Error fetching unread count' });
     }
-  };
-  
+};

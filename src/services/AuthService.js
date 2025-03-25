@@ -9,43 +9,43 @@ const fileName = `IN AuthService`;
  * Log in user using phoneNumber and password
  */
 export const loginUser = async (phoneNumber, password) => {
-    try {
-        const res = await api.post(`/auth/login`, { phoneNumber, password });
+  try {
+      const res = await api.post(`/auth/login`, { phoneNumber, password });
 
-        const token = res.data.token;
-        const refreshToken = res.data.refreshToken;
-        const decoded = jwtDecode(token);
+      const token = res.data.token;
+      const decoded = jwtDecode(token);
 
-        const user = {
-            id: decoded.id,
-            username: decoded.username || "Unknown",
-            phoneNumber: decoded.phoneNumber || "No phone",
-            gender: decoded.gender || "Unknown",
-            doctorId: decoded.doctorId || null,
-            role: decoded.role || "User",
-        };
+      const user = {
+          id: decoded.id,
+          username: decoded.username || "Unknown",
+          phoneNumber: decoded.phoneNumber || "No phone",
+          gender: decoded.gender || "Unknown",
+          doctorId: decoded.doctorId || null,
+          role: decoded.role || "User",
+      };
 
-        // 🔹 Store token, refreshToken, and user in AsyncStorage
-        await AsyncStorage.setItem("token", token);
-        await AsyncStorage.setItem("refreshToken", refreshToken);
-        await AsyncStorage.setItem("user", JSON.stringify(user));
+      // 🔹 Store token and user in AsyncStorage
+      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("user", JSON.stringify(user));
 
-        // 🔹 Fetch Expo Push Token
-        try {
-            const { data } = await Notifications.getExpoPushTokenAsync();
-            const pushToken = data;
-            console.log("Expo Push Token:", pushToken);
-            await updatePushToken(user.id, pushToken);
-        } catch (pushError) {
-            console.error("Error fetching Expo push token:", pushError.message);
-        }
+      // 🔹 Fetch Expo Push Token
+      try {
+          const { data } = await Notifications.getExpoPushTokenAsync();
+          const pushToken = data;
+          console.log("Expo Push Token:", pushToken);
+          await updatePushToken(user.id, pushToken);
+      } catch (pushError) {
+          console.error("Error fetching Expo push token:", pushError.message);
+      }
 
-        return { token, user };
-    } catch (error) {
-        console.error(`${fileName} Login Error:`, error.response?.data || error.message);
-        return { error: error.response?.data?.message || "Login failed" };
-    }
+      return { token, user };
+  } catch (error) {
+      console.error(`${fileName} Login Error:`, error.response?.data || error.message);
+      return { error: error.response?.data?.message || "Login failed" };
+  }
 };
+
+
 
 /**
  * Logout user: clear tokens, user info, and notify backend
@@ -64,32 +64,32 @@ export const logoutUser = async () => {
 
     // 🔹 Clear all auth-related storage
     await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("refreshToken");
+    // await AsyncStorage.removeItem("refreshToken");
     await AsyncStorage.removeItem("user");
 };
 
-/**
- * Use refresh token to get a new access token
- */
-export const refreshAccessToken = async () => {
-    try {
-        const refreshToken = await AsyncStorage.getItem("refreshToken");
-        if (!refreshToken) return null;
+// /**
+//  * Use refresh token to get a new access token
+//  */
+// export const refreshAccessToken = async () => {
+//     try {
+//         const refreshToken = await AsyncStorage.getItem("refreshToken");
+//         if (!refreshToken) return null;
 
-        const response = await api.post("/auth/refresh-token", { refreshToken });
-        const { accessToken } = response.data;
+//         const response = await api.post("/auth/refresh-token", { refreshToken });
+//         const { accessToken } = response.data;
 
-        if (accessToken) {
-            await AsyncStorage.setItem("token", accessToken);
-            return accessToken;
-        }
+//         if (accessToken) {
+//             await AsyncStorage.setItem("token", accessToken);
+//             return accessToken;
+//         }
 
-        return null;
-    } catch (error) {
-        console.error("🔄 Refresh Token Error:", error.response?.data || error.message);
+//         return null;
+//     } catch (error) {
+//         console.error("🔄 Refresh Token Error:", error.response?.data || error.message);
 
-        // Optional: Auto logout on refresh failure
-        await logoutUser();
-        return null;
-    }
-};
+//         // Optional: Auto logout on refresh failure
+//         await logoutUser();
+//         return null;
+//     }
+// };

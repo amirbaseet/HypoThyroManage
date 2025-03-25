@@ -95,16 +95,17 @@ const login = async (req, res) => {
             { expiresIn: "1y" }
         );
         // refresh Token
-        const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SEC, { expiresIn: "7d" });
+        // const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SEC, { expiresIn: "2y" });
 
-        // Save refreshToken to user
-        user.refreshToken = refreshToken;
-        await user.save();
+        // // Save refreshToken to user
+        // user.refreshToken = refreshToken;
+        // await user.save();
 
         
         // 🔹 Send login notification
         await sendPushNotification(user._id, "Welcome Back!", `Hello ${user.username}, you are now logged in!`);
-        res.status(200).json({ token, refreshToken  });
+        // res.status(200).json({ token, refreshToken  });
+        res.status(200).json({ token});
 
     } catch (err) {
         console.error(err);
@@ -155,37 +156,40 @@ const refreshTokenHandler = async (req, res) => {
     }
 
     try {
-        const user = await User.findOne({ refreshToken });
+        const decoded = jwt.verify(refreshToken, process.env.JWT_SEC);
+        const user = await User.findById(decoded.id);
 
-        if (!user) {
+        if (!user || user.refreshToken !== refreshToken) {
             return res.status(403).json({ message: "Invalid refresh token" });
         }
 
-        jwt.verify(refreshToken, process.env.JWT_SEC, (err, decoded) => {
-            if (err || decoded.id !== user._id.toString()) {
-                return res.status(403).json({ message: "Invalid or expired refresh token" });
-            }
+        const newAccessToken = jwt.sign(
+            {
+                id: user._id,
+                phoneNumber: user.phoneNumber,
+                username: user.username,
+                doctorId: user.doctorId,
+                gender: user.gender,
+                role: user.role
+            },
+            process.env.JWT_SEC,
+            { expiresIn: "1min" }
+        );
 
-            const newAccessToken = jwt.sign(
-                {
-                    id: user._id,
-                    phoneNumber: user.phoneNumber,
-                    username: user.username,
-                    doctorId: user.doctorId,
-                    gender: user.gender,
-                    role: user.role
-                },
-                process.env.JWT_SEC,
-                { expiresIn: "1d" }
-            );
-
-            res.status(200).json({ accessToken: newAccessToken });
-        });
-
+        return res.status(200).json({ accessToken: newAccessToken });
     } catch (err) {
         console.error("Error verifying refresh token:", err);
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(403).json({ message: "Invalid or expired refresh token" });
+    }
+};
+const logout = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        await User.findByIdAndUpdate(userId, { refreshToken: null });
+        res.status(200).json({ message: "Logged out successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Logout failed" });
     }
 };
 
-module.exports = { register, login, updatePushToken, refreshTokenHandler, removePushToken };
+module.exports = { register, login, logout, updatePushToken, refreshTokenHandler, removePushToken };

@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { saveUserToLocalDB } from "../database/UsersCrud";
 import { loginUser, logoutUser } from "../services/AuthService";
 import { getSocket } from "../api/socket";
 
@@ -25,7 +24,7 @@ export const AuthProvider = ({ children }) => {
                     const currentTime = Date.now() / 1000;
                     if (decoded.exp && decoded.exp < currentTime) {
                         console.log("Token expired, logging out...");
-                        await logout(); // Handle expired token
+                        await logoutUser(); // Handle expired token
                     }  else {
                         setUser(JSON.parse(userData));
 
@@ -65,6 +64,7 @@ export const AuthProvider = ({ children }) => {
 
         await logoutUser();
         setUser(null); // Reset user first to prevent UI flicker
+
     };
 
     if (loading) {
