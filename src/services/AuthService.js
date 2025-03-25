@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import api, { updatePushToken, removePushToken } from "../api/apiService";
+import api from "../api/apiService";
 import * as Notifications from "expo-notifications";
 
 const fileName = `IN AuthService`;
@@ -68,6 +68,32 @@ export const logoutUser = async () => {
     await AsyncStorage.removeItem("user");
 };
 
+
+
+// File: apiService.js or authApi.js
+
+export const registerUser = async ({ phoneNumber, username, password, gender, role }) => {
+    try {
+      const payload = {
+        phoneNumber,
+        username,
+        password,
+        gender,
+        role,
+      };
+  
+      const response = await api.post('/auth/register', payload);
+      return { success: true, message: response.data.message };
+    } catch (err) {
+      const error = err?.response?.data?.message || 'Registration failed';
+      return { success: false, error };
+    }
+  };
+  
+
+
+
+
 // /**
 //  * Use refresh token to get a new access token
 //  */
@@ -93,3 +119,33 @@ export const logoutUser = async () => {
 //         return null;
 //     }
 // };
+export const updatePushToken = async (userId, pushToken) => {
+    try{
+        if(!pushToken){
+            console.log("❌ Error: Push token is Missing");
+            return { error: "Push token is required" };
+        }
+
+        const response = await api.post(`/auth/update-push-token`, { userId, pushToken });
+        return response.data;
+    }catch(error){
+        console.error("❌ Error updating push token:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Failed to update push token" };
+    }
+};
+
+// ✅ Remove Push Token (when logging out)
+export const removePushToken = async (userId) => {
+    try {
+        if (!userId) {
+            console.log("❌ Error: User ID is required to remove push token");
+            return { error: "User ID is required" };
+        }
+
+        const response = await api.post(`/auth/remove-push-token`, { userId });
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error removing push token:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Failed to remove push token" };
+    }
+};

@@ -10,3 +10,54 @@ export const sendToAllNotifications = async (title, message) => {
         return { error: error.response?.data?.message || "Failed to send notification" };
     }
 };
+export const resetUserPassword = async (phoneNumber, newPassword) => {
+    try {
+        const response = await api.post(`/auth/admin/reset-password`, {
+            phoneNumber,
+            newPassword,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error resetting password:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Failed to reset password" };
+    }
+};
+
+
+
+// Admin: Create new form window
+export const createFormWindow = async (title, weekStart, weekEnd) => {
+    try {
+        const response = await api.post("/admin/form-windows", {
+            title,
+            weekStart,
+            weekEnd
+        });
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error creating form window:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Creation failed" };
+    }
+};
+
+// Admin: Toggle form window status
+export const toggleFormWindowStatus = async (id) => {
+    try {
+        const response = await api.patch(`/admin/form-windows/${id}/toggle`);
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error toggling status:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Failed to toggle status" };
+    }
+};
+
+// Admin: Get all form windows
+export const getAllFormWindows = async () => {
+    try {
+        const response = await api.get("/admin/form-windows");
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error fetching all windows:", error.response?.data || error);
+        return { error: error.response?.data?.message || "Failed to fetch windows" };
+    }
+};

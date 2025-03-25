@@ -13,7 +13,8 @@ import RegImg from '../../assets/img/misc/registration.svg';
 import GoogleSVG from '../../assets/img/misc/google.svg';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import api from '../api/apiService';
+import { registerUser } from '../services/AuthService'; // or '../api/authApi'
+
 import { useNavigation } from '@react-navigation/native';
 
 const RegisterScreen = () => {
@@ -31,35 +32,33 @@ const RegisterScreen = () => {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
-
+  
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
-
+  
     if (!/^\d{6}$/.test(password)) {
       Alert.alert('Error', 'Password must be exactly 6 digits');
       return;
     }
-
-    try {
-      const payload = {
-        phoneNumber: `+90${phoneNumber}`,
-        username,
-        password,
-        gender,
-        role,
-      };
-
-      const res = await api.post('/auth/register', payload);
-      Alert.alert('Success', res.data.message || 'Registered successfully');
+  
+    const res = await registerUser({
+      phoneNumber: `+90${phoneNumber}`,
+      username,
+      password,
+      gender,
+      role,
+    });
+  
+    if (res.success) {
+      Alert.alert('Success', res.message || 'Registered successfully');
       navigation.navigate('Login');
-    } catch (err) {
-      const message = err?.response?.data?.message || 'Registration failed';
-      Alert.alert('Error', message);
+    } else {
+      Alert.alert('Error', res.error);
     }
   };
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>

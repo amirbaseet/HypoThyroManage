@@ -126,37 +126,44 @@ const DoctorChatScreen = ({ route, navigation  }) => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.container}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 90}
-            >
-<View style={styles.headerContainer}>
-    <RNText style={styles.header}>
-        {t("chat_with_patient", { name: patientName })}
-    </RNText>
-    <TouchableOpacity
-        style={styles.viewButton}
-        onPress={() => navigation.navigate("DoctorDashboardPopup", {
-            selectedPatientId: patientId,
-            defaultTab: "progress"
-        })}
-            >
-        <RNText style={styles.viewButtonText}>{t("view_details")}</RNText>
-    </TouchableOpacity>
-</View>
-                
-
-                <ChatList messages={messages} userId={doctorId} flatListRef={flatListRef} />
-
-                <ChatInput
-                    message={message}
-                    onChangeText={setMessage}
-                    onSend={sendMessage}
+            <View style={styles.container}>
+                <View style={styles.headerContainer}>
+                    <RNText style={styles.header}>
+                        {t("chat_with_patient", { name: patientName })}
+                    </RNText>
+                    <TouchableOpacity
+                        style={styles.viewButton}
+                        onPress={() =>
+                            navigation.navigate("DoctorDashboardPopup", {
+                                selectedPatientId: patientId,
+                                defaultTab: "progress",
+                            })
+                        }
+                    >
+                        <RNText style={styles.viewButtonText}>{t("view_details")}</RNText>
+                    </TouchableOpacity>
+                </View>
+    
+                <ChatList
+                    messages={messages}
+                    userId={doctorId}
+                    flatListRef={flatListRef}
                 />
-            </KeyboardAvoidingView>
+    
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                    keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 0}
+                >
+                    <ChatInput
+                        message={message}
+                        onChangeText={setMessage}
+                        onSend={sendMessage}
+                    />
+                </KeyboardAvoidingView>
+            </View>
         </TouchableWithoutFeedback>
     );
+    
 };
 
 const styles = StyleSheet.create({
