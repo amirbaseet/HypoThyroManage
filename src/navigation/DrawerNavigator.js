@@ -9,6 +9,7 @@ import HomeScreen from '../screens/HomeScreen';
 import AdminDashboardScreen from "../screens/AdminDashboardScreen";
 import CreateFormWindowScreen from "../screens/CreateFormWindowScreen";
 import ManageFormWindowsScreen from "../screens/ManageFormWindowsScreen";
+import AdminResetPasswordScreen from "../screens/AdminResetPasswordScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -47,6 +48,11 @@ const DrawerNavigator = () => {
                     <Drawer.Screen 
                         name="ManageFormWindows" 
                         component={ManageFormWindowsScreen} 
+                        options={{ title: t('manage_form_windows') }} 
+                    />
+                    <Drawer.Screen 
+                        name="AdminResetPassword" 
+                        component={AdminResetPasswordScreen} 
                         options={{ title: t('manage_form_windows') }} 
                     />
                 </>

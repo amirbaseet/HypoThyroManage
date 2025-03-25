@@ -191,5 +191,31 @@ const logout = async (req, res) => {
         res.status(500).json({ message: "Logout failed" });
     }
 };
-
-module.exports = { register, login, logout, updatePushToken, refreshTokenHandler, removePushToken };
+const resetUserPassword = async (req, res) => {
+    try {
+      const { phoneNumber, newPassword } = req.body; // 🛠 fixed name
+  
+      // Validate new password (must be exactly 6 digits)
+      if (!/^\d{6}$/.test(newPassword)) {
+        return res.status(400).json({ message: "Password must be exactly 6 digits" });
+      }
+  
+      const targetUser = await User.findOne({ phoneNumber });
+  
+      if (!targetUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      const hashedPass = await bcrypt.hash(newPassword, 10);
+  
+      targetUser.password = hashedPass;
+      await targetUser.save();
+  
+      res.status(200).json({ message: "Password reset successfully" });
+    } catch (error) {
+      console.error("Error resetting password", error);
+      res.status(500).json({ message: "Internal server error" }); // 🛠 fixed res.status.json → res.status(500).json
+    }
+  };
+  
+module.exports = { register, resetUserPassword, login, logout, updatePushToken, refreshTokenHandler, removePushToken };
