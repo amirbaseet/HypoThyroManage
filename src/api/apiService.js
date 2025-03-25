@@ -1,5 +1,6 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { logoutUser } from "../services/AuthService"; // Make sure path is correct
 
 // Define base URL for API (use environment variables for flexibility)
 const ip = "172.20.10.4";  // Replace with your machine's local network IP
@@ -13,33 +14,29 @@ const api = axios.create({
     },
 });
 
-// Add an interceptor to include the token in every request
-api.interceptors.response.use(
-    (response) => response, // If the response is fine, return it
-    async (error) => {
-        const originalRequest = error.config;
-
-        // Check if it's an Unauthorized error AND we haven't retried this request before
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
-
-            try {
-                const newAccessToken = await refreshAccessToken();
-                if (newAccessToken) {
-                    // ✅ Update the Authorization header with the new token
-                    originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-
-                    // ✅ Retry the original request
-                    return api(originalRequest);
-                }
-            } catch (refreshError) {
-                console.error("Error refreshing token:", refreshError);
-            }
-        }
-
-        return Promise.reject(error); // If refresh failed or it's another error
+// ✅ Attach token to every request
+api.interceptors.request.use(
+    async (config) => {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+  
+  // ✅ Handle 401/403 responses
+  api.interceptors.response.use(
+    response => response,
+    async error => {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        await logoutUser();
+      }
+      return Promise.reject(error);
     }
-);
+  );
+      
 export const updatePushToken = async (userId, pushToken) => {
     try{
         if(!pushToken){
@@ -146,27 +143,5 @@ export const getAllFormWindows = async () => {
         return { error: error.response?.data?.message || "Failed to fetch windows" };
     }
 };
-// Refresh Token 
-export const refreshAccessToken = async () => {
-    try {
-        const refreshToken = await AsyncStorage.getItem("refreshToken");
-        if (!refreshToken) return null;
-
-        const response = await api.post("/auth/refresh-token", { refreshToken });
-        const { accessToken } = response.data;
-
-        if (accessToken) {
-            await AsyncStorage.setItem("token", accessToken);
-            return accessToken;
-        }
-        return null;
-    } catch (error) {
-        console.error("Refresh Token Error:", error.response?.data || error.message);
-        return null;
-    }
-};
-
-
-
 
 export default api;

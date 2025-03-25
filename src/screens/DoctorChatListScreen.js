@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  TextInput,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -15,6 +16,8 @@ const DoctorChatListScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filteredChats, setFilteredChats] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // ⏳ Fetch chat list every time screen is focused
   useFocusEffect(
@@ -24,6 +27,7 @@ const DoctorChatListScreen = ({ navigation }) => {
           setLoading(true);
           const data = await getDoctorChatListAPI();
           setChats(data);
+          setFilteredChats(data); 
           console.log("✅ Doctor Chat List API response:", data);
         } catch (error) {
           console.error("❌ Error fetching chat list:", error);
@@ -33,21 +37,40 @@ const DoctorChatListScreen = ({ navigation }) => {
       };
 
       fetchChats();
+      
     }, [])
   );
 
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    const filtered = chats.filter((chat) =>
+      chat.patientName.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredChats(filtered);
+  };
+
+  
   if (loading) {
     return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Chats</Text>
-      {chats.length === 0 ? (
-        <Text style={styles.noChats}>No chats available</Text>
+
+      {/* 🔍 Search Input */}
+      <TextInput
+        placeholder="Search by patient name..."
+        value={searchQuery}
+        onChangeText={handleSearch}
+        style={styles.searchInput}
+        placeholderTextColor="#aaa"
+      />
+
+      {filteredChats.length === 0 ? (
+        <Text style={styles.noChats}>No chats found</Text>
       ) : (
         <FlatList
-          data={chats}
+          data={filteredChats}
           keyExtractor={(item) => item.patientId.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -111,6 +134,15 @@ const styles = StyleSheet.create({
   },
   unreadText: { color: "white", fontWeight: "bold" },
   loading: { flex: 1, justifyContent: "center", alignItems: "center" },
+  searchInput: {
+    backgroundColor: "#EFEFEF",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 15,
+    fontSize: 16,
+    color: "#333",
+  },
+  
 });
 
 export default DoctorChatListScreen;

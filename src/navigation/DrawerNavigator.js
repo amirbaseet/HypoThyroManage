@@ -6,11 +6,9 @@ import { AuthContext } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
 import HomeScreen from '../screens/HomeScreen';
-import DoctorDashboardScreen from "../screens/DoctorDashboardScreen";
 import AdminDashboardScreen from "../screens/AdminDashboardScreen";
 import CreateFormWindowScreen from "../screens/CreateFormWindowScreen";
 import ManageFormWindowsScreen from "../screens/ManageFormWindowsScreen";
-import DoctorChatStack from "./DoctorChatStack";
 
 const Drawer = createDrawerNavigator();
 
@@ -54,20 +52,6 @@ const DrawerNavigator = () => {
                 </>
             )}
 
-            {user?.role === "doctor" && (
-                <>
-                    <Drawer.Screen 
-                        name="Chat" 
-                        component={DoctorChatStack} 
-                        options={{ title: t('chat') }} 
-                    />
-                    <Drawer.Screen 
-                        name="Dashboard" 
-                        component={DoctorDashboardScreen} 
-                        options={{ title: t('dashboard') }} 
-                    />
-                </>
-            )}
         </Drawer.Navigator>
     );
 };

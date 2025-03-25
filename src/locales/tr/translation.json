@@ -107,7 +107,10 @@
   "please_answer_all_symptoms": "Lütfen 20 semptomun şiddetini eksiksiz olarak işaretleyin.",
   "please_fill_all_fields": "Lütfen göndermeden önce tüm başa çıkma değerlendirmelerini tamamlayın.",
   "search_patient":"Hasta ara",
-  "view_details":"Detayları Gör"
+  "view_details":"Detayları Gör",
+  "chat_list_title": "Sohbet Listesi",
+  "patient_details": "Hasta Detayları"
+
 
 }
 
