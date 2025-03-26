@@ -1,8 +1,7 @@
 import { io } from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SOCKET_URL } from "@env";  
 
-const ip = "10.7.84.67";
-const SOCKET_URL = `http://${ip}:3001`;
 
 let socket = null; // Maintain a persistent socket instance
 
@@ -11,7 +10,6 @@ const connectSocket = async () => {
         console.log("⚡ Socket already connected:", socket.id);
         return socket;
     }
-
     try {
         const token = await AsyncStorage.getItem("token");
         // console.log("🔑 Retrieved Token:", token);
