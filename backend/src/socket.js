@@ -16,6 +16,7 @@ const io = new Server(server, {
 
 // Store online users with socket IDs
 const users = new Map();
+const activeChats = new Map(); // Tracks which user is actively viewing which chat
 
 // 🔑 Middleware: Authenticate WebSocket connection using JWT
 io.use((socket, next) => {
@@ -61,10 +62,33 @@ io.on("connection", (socket) => {
         }
 
         const receiverSocketId = users.get(receiver);
+        const isChatActive = activeChats.get(receiver) === sender;
 
         if (receiverSocketId) {
             // ✅ Send message via WebSocket if the user is online
             io.to(receiverSocketId).emit("receiveMessage", { sender, message });
+                    // 🟡 User is online but not viewing the chat → send push notification
+        if (!isChatActive) {
+            try {
+                const receiverUser = await User.findById(receiver);
+                const senderUser = await User.findById(sender);
+                if (receiverUser?.pushToken) {
+                    const notificationMessage =
+                        receiverUser.role === "doctor"
+                            ? `You have a new message from ${senderUser.username}`
+                            : `You have a new message from your doctor`;
+
+                    await sendPushNotificationByToken(
+                        receiverUser.pushToken,
+                        "New Message",
+                        notificationMessage
+                    );
+                }
+            } catch (error) {
+                console.error("❌ Error sending push notification:", error);
+            }
+        }
+
         } else {
             // ✅ If user is offline, fetch their Expo push token and send a notification
             try {
@@ -115,6 +139,14 @@ io.on("connection", (socket) => {
             console.error("❌ Error marking messages as read:", error);
         }
     });
+    //chat open or closed
+    socket.on("chatOpened", ({ withUserId }) => {
+        activeChats.set(socket.userId, withUserId);
+    });
+    socket.on("chatClosed", () => {
+        activeChats.delete(socket.userId);
+    });
+        
         /**
      * ✅ Handle User Disconnect
      */
