@@ -118,6 +118,14 @@
   "missing_fields_title": "Eksik Alanlar",
   "missing_fields_msg": "Lütfen tüm alanları doldurun.",
   "password_reset_success": "Şifre başarıyla sıfırlandı!",
-  "admin_only_access": "Bu ekrana yalnızca yöneticiler erişebilir."
+  "admin_only_access": "Bu ekrana yalnızca yöneticiler erişebilir.",
+  "export_medicine_logs": "İlaç Kayıtlarını Dışa Aktar",
+  "export_weekly_reports": "Haftalık Raporları Dışa Aktar",
+  "export_specified_week_reports": "Belirli Haftanın Raporlarını Dışa Aktar",
+  "export_failed": "Dışa Aktarma Başarısız",
+  "export_error_message": "Dosya dışa aktarılırken bir sorun oluştu.",
+  "choose_language": "Dil Seçin",
+  "export_data": "Veri Dışa Aktar"
+
 }
 

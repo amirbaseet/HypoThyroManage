@@ -8,10 +8,10 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 
 const menuOptions = [
-  { route: 'CombinedReportsScreen', icon: 'document-text-outline', labelKey: 'reports' },
-  { route: 'TakeMedicineScreen', icon: 'medkit-outline', labelKey: 'take_medicine' },
   { route: 'AvailableForms', icon: 'folder-open-outline', labelKey: 'available_forms' },
   { route: 'Report', icon: 'create-outline', labelKey: 'report' },
+  { route: 'TakeMedicineScreen', icon: 'medkit-outline', labelKey: 'take_medicine' },
+  { route: 'CombinedReportsScreen', icon: 'document-text-outline', labelKey: 'reports' },
 ];
 
 const ReportsMenuScreen = () => {
