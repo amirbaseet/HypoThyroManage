@@ -1,8 +1,17 @@
-module.exports = function (api) {
+module.exports = function(api) {
     api.cache(true);
-    // console.log("✅ Babel config is loaded!");
-
     return {
-        presets: ['babel-preset-expo'],
+      presets: ['babel-preset-expo'],
+      plugins: [
+        ['module:react-native-dotenv', {
+          "moduleName": "@env",
+          "path": ".env",
+          "blacklist": null,
+          "whitelist": null,
+          "safe": false,
+          "allowUndefined": true
+        }]
+      ]
     };
-};
+  };
+  
