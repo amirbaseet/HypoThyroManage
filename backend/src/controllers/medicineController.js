@@ -9,7 +9,7 @@ exports.takeMedicine = async (req, res) => {
     today.setHours(0, 0, 0, 0);
 
     const day = today.getDate();
-    const month = today.getMonth();
+    const month = today.getMonth()+1;
     const year = today.getFullYear();
     const { weekStart, weekEnd } = getCurrentWeek();
 
