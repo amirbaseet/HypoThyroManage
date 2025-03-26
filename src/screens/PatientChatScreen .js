@@ -57,28 +57,28 @@ const PatientChatScreen = () => {
         const subscription = AppState.addEventListener("change", handleAppStateChange);
         return () => subscription.remove();
     }, [doctorId, userId]);
-    useFocusEffect(
-        useCallback(() => {
-            const sendChatPresence = async () => {
-                const socket = await getSocket();
-                if (socket && doctorId) {
-                    socket.emit("chatOpened", { withUserId: doctorId });
-                }
-            };
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         const sendChatPresence = async () => {
+    //             const socket = await getSocket();
+    //             if (socket && doctorId) {
+    //                 socket.emit("chatOpened", { withUserId: doctorId });
+    //             }
+    //         };
     
-            sendChatPresence();
+    //         sendChatPresence();
     
-            return () => {
-                const cleanupChatPresence = async () => {
-                    const socket = await getSocket();
-                    if (socket) {
-                        socket.emit("chatClosed");
-                    }
-                };
-                cleanupChatPresence();
-            };
-        }, [doctorId])
-    );
+    //         return () => {
+    //             const cleanupChatPresence = async () => {
+    //                 const socket = await getSocket();
+    //                 if (socket) {
+    //                     socket.emit("chatClosed");
+    //                 }
+    //             };
+    //             cleanupChatPresence();
+    //         };
+    //     }, [doctorId])
+    // );
     
     useFocusEffect(
         useCallback(() => {
