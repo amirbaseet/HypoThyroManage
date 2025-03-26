@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect,useState } from 'react';
 import {
     View,
     Text,
@@ -7,11 +7,13 @@ import {
     TouchableOpacity,
     SafeAreaView,
 } from 'react-native';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import i18n from '../i18n';
 import { AuthContext } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
+import { Alert, ActivityIndicator } from 'react-native';
+import { markMedicineAsTaken, getWeeklyProgress } from '../services/medicineService';
+import { format } from 'date-fns';
 
 const navigationOptions = [
     { route: 'Nutrition', icon: 'restaurant-outline', labelKey: 'nutrition' },
@@ -23,18 +25,68 @@ const navigationOptions = [
 
 const PatientMenuScreen = () => {
     const navigation = useNavigation();
-    const { user, logout } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const { t } = useTranslation();
 
-    const handleLogout = async () => {
-        await logout();
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'Login' }],
-            })
-        );
+    const [todayTaken, setTodayTaken] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [checking, setChecking] = useState(true);
+    
+    const checkTodayStatus = async () => {
+        setChecking(true);
+        try {
+            const data = await getWeeklyProgress();
+            const todayStr = format(new Date(), "yyyy-MM-dd");
+    
+            let found = false;
+            if (data?.weeks?.length) {
+                for (const week of data.weeks) {
+                    const match = week.logs.find(
+                        (log) =>
+                            format(new Date(log.date), "yyyy-MM-dd") === todayStr &&
+                            log.taken === true
+                    );
+                    if (match) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+    
+            setTodayTaken(found);
+        } catch (error) {
+            console.error("Error checking today's status:", error);
+            Alert.alert(t("error"), t("progress_fetch_error"));
+        }
+        setChecking(false);
     };
+    
+    useEffect(() => {
+        checkTodayStatus();
+    }, []);
+    
+    const handleTakeMedicine = async () => {
+        setLoading(true);
+        try {
+            const res = await markMedicineAsTaken();
+            if (!res.error) {
+                Alert.alert(t("done"), t("mark_success"));
+                setTodayTaken(true);
+            } else {
+                Alert.alert(t("error"), res.error);
+            }
+        } catch (err) {
+            console.error("Mark medicine error:", err);
+            Alert.alert(t("error"), t("mark_fail"));
+        }
+        setLoading(false);
+    };
+    
+    
+    
+
+
+
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -43,28 +95,28 @@ const PatientMenuScreen = () => {
                     <Text style={styles.header}>
                         {user?.username ? `${t('welcome')}, ${user.username}! 👋` : t('welcome')}
                     </Text>
+                    <View style={styles.takeMedicineSection}>
+    <Text style={styles.takeMedicineHeader}>💊 {t("daily_medicine_title")}</Text>
 
-                    <View style={styles.controlsRow}>
-                        <View style={styles.langButtonGroup}>
-                            <TouchableOpacity
-                                style={styles.langButton}
-                                onPress={() => i18n.changeLanguage('tr')}
-                            >
-                                <Text style={styles.langText}>🇹🇷 Türkçe</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.langButton}
-                                onPress={() => i18n.changeLanguage('en')}
-                            >
-                                <Text style={styles.langText}>🇬🇧 English</Text>
-                            </TouchableOpacity>
-                        </View>
+    {checking ? (
+        <ActivityIndicator size="small" color="#C6A477" />
+    ) : todayTaken ? (
+        <Text style={styles.takenMessage}>{t("medicine_taken_msg")}</Text>
+    ) : (
+        <TouchableOpacity
+            style={[styles.takeMedicineButton, loading && styles.disabledButton]}
+            onPress={handleTakeMedicine}
+            disabled={loading}
+        >
+            {loading ? (
+                <ActivityIndicator color="#fff" />
+            ) : (
+                <Text style={styles.takeMedicineButtonText}>{t("take_medicine_btn")}</Text>
+            )}
+        </TouchableOpacity>
+    )}
+</View>
 
-                        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                            <Ionicons name="log-out-outline" size={20} color="#fff" />
-                            <Text style={styles.logoutText}>{t('logout')}</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
 
                 <View style={styles.menuContainer}>
@@ -108,42 +160,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'center',
     },
-    controlsRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-        marginBottom: 20,
-    },
-    langButtonGroup: {
-        flexDirection: 'row',
-    },
-    langButton: {
-        backgroundColor: '#C6A477',
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        borderRadius: 10,
-        marginRight: 10,
-    },
-    langText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 14,
-    },
-    logoutButton: {
-        flexDirection: 'row',
-        backgroundColor: '#e74c3c',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    logoutText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        marginLeft: 8,
-    },
     menuContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -170,6 +186,43 @@ const styles = StyleSheet.create({
         color: '#444444',
         textAlign: 'center',
     },
+    takeMedicineSection: {
+        backgroundColor: '#FFF5E6',
+        padding: 15,
+        borderRadius: 15,
+        marginBottom: 25,
+        borderColor: '#FFD59E',
+        borderWidth: 1.5,
+        alignItems: 'center',
+        elevation: 2,
+    },
+    takeMedicineHeader: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#444',
+        marginBottom: 10,
+    },
+    takeMedicineButton: {
+        backgroundColor: '#C6A477',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    takeMedicineButtonText: {
+        color: '#fff',
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    takenMessage: {
+        color: '#4CAF50',
+        fontWeight: '500',
+    },
+    disabledButton: {
+        opacity: 0.6,
+    },
+    
 });
 
 export default PatientMenuScreen;
