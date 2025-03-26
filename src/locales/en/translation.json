@@ -118,7 +118,17 @@
     "missing_fields_title": "Missing Fields",
     "missing_fields_msg": "Please fill out all fields.",
     "password_reset_success": "Password reset successfully!",
-    "admin_only_access": "Only admins can access this screen."
+    "admin_only_access": "Only admins can access this screen.",
+    "export_medicine_logs": "Export Medicine Logs",
+    "export_weekly_reports": "Export Weekly Reports",
+    "export_specified_week_reports": "Export Specified Week Reports",
+    "export_failed": "Export Failed",
+    "export_error_message": "Something went wrong while exporting the file.",
+    "choose_language": "Choose Language",
+    "export_data": "Export Data",
+    
+  
+  
   
 
 

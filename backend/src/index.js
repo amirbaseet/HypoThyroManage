@@ -25,6 +25,7 @@ const pushNotificationRoutes = require("./routes/pushNotificationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const medicineRoutes = require("./routes/medicineRoutes");
+const exportToExcelRoutes = require("./routes/exportToExcelRoutes");
 
 
 app.use("/api/auth", authRoutes);
@@ -36,6 +37,7 @@ app.use("/api/notifications", pushNotificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/patient", patientRoutes);
 app.use("/api/medicine", medicineRoutes);
+app.use("/api/exportToExcel", exportToExcelRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
