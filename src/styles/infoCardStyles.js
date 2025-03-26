@@ -30,7 +30,7 @@ const infoCardStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#FAF9F6',
-    textAlign: 'center',
+    textAlign: 'flex-start',
   },
   card: {
     backgroundColor: '#EAE7DC',

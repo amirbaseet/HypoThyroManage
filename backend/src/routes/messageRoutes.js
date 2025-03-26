@@ -9,7 +9,7 @@ router.post("/send",verifyToken, sendMessage);
 
 // Get chat history between two users
 router.post("/chatHistory",verifyToken, getChatHistory);
-
+// mark messeges as read 
 router.post("/markAsRead",verifyToken, markMessagesAsRead)
 // ✅ Fetch chat list for doctor
 router.get("/doctor-chats", verifyToken, getDoctorChatList);

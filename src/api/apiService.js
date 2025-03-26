@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logoutUser } from "../services/AuthService"; // Make sure path is correct
 
 // Define base URL for API (use environment variables for flexibility)
-const ip = "172.20.10.4";  // Replace with your machine's local network IP
+const ip = "10.7.84.67";  // Replace with your machine's local network IP
 
 const API_URL = `http://${ip}:3001/api`;
 // Create an axios instance

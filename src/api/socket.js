@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ip = "172.20.10.4";
+const ip = "10.7.84.67";
 const SOCKET_URL = `http://${ip}:3001`;
 
 let socket = null; // Maintain a persistent socket instance

@@ -13,7 +13,7 @@ router.post("/logout", verifyToken, logout);
 router.post("/update-push-token",verifyToken, updatePushToken);
 
 // Remove push token (on logout)
-router.post("/remove-push-token", removePushToken);
+router.post("/remove-push-token", verifyToken, removePushToken);
 
 //Reset Password by admin Only
 router.post("/admin/reset-password", verifyToken, authorizeRoles("admin"), resetUserPassword);
