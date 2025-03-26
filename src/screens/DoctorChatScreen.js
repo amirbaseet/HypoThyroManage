@@ -69,8 +69,15 @@ const DoctorChatScreen = ({ route, navigation  }) => {
             refreshChat();
             setupSocket();
 
+                    // 🟢 Inform server user opened this chat
+        if (socketRef.current && patientId) {
+            socketRef.current.emit("chatOpened", { withUserId: patientId });
+        }
+
             return () => {
                 if (socketRef.current) {
+             // 🔴 Inform server user left this chat
+                    socketRef.current.emit("chatClosed");
                     socketRef.current.off("receiveMessage");
                     console.log("🧹 Cleaned up socket on blur");
                 }
