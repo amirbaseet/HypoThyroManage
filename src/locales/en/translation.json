@@ -126,7 +126,10 @@
     "export_error_message": "Something went wrong while exporting the file.",
     "choose_language": "Choose Language",
     "export_data": "Export Data",
-    
+      "open_symptom_form": "Open Symptom Severity Form",
+  "open_coping_form": "Open Coping Scale Form",
+  "coping_form_link": "Coping Scale Form URL",
+
   
   
   

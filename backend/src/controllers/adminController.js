@@ -4,12 +4,11 @@ const { getCurrentWeek } = require('../utils/weekUtils');
 // CREATE a new symptom form window
 exports.createFormWindow = async (req, res) => {
     try {
-        const { title } = req.body;
+        const { title, symptomSeverityFormLink, copingScaleFormLink } = req.body;
 
-        const { weekStart, weekEnd } = getCurrentWeek(); // ✅ Auto week range
+        const { weekStart, weekEnd } = getCurrentWeek(); // Auto week range
 
         const existing = await SymptomFormWindow.findOne({ weekStart });
-
         if (existing) {
             return res.status(400).json({ error: "Form window for this week already exists." });
         }
@@ -17,7 +16,9 @@ exports.createFormWindow = async (req, res) => {
         const newWindow = await SymptomFormWindow.create({
             title,
             weekStart,
-            weekEnd
+            weekEnd,
+            symptomSeverityFormLink,
+            copingScaleFormLink
         });
 
         res.status(201).json(newWindow);

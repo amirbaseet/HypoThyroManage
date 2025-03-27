@@ -3,9 +3,6 @@ const MedicineLog = require('../models/MedicineLog');
 const User = require('../models/userModels');
 const WeeklyReport = require('../models/weeklyReport');
 const Symptom = require("../models/Symptom");
-const SymptomFormSubmission = require('../models/SymptomFormSubmission');
-const SymptomCopingSubmission = require('../models/SymptomCopingSubmission');
-const SymptomFormWindow = require('../models/SymptomFormWindow');
 
 
 exports.exportAllMedicineLogs = async (req, res) => {
@@ -135,110 +132,5 @@ exports.exportAllWeeklyReports = async (req, res) => {
   } catch (err) {
     console.error("❌ Error exporting weekly reports:", err);
     res.status(500).json({ message: "Failed to export weekly reports" });
-  }
-};
-exports.exportAllSymptomAndCopingSubmissions = async (req, res) => {
-  try {
-
-    const workbook = new ExcelJS.Workbook();
-
-    // ─────────────────────────────────────────────
-    // SHEET 1: SYMPTOM SEVERITY SUBMISSIONS
-    // ─────────────────────────────────────────────
-    let severitySubmissions = await SymptomFormSubmission.find({})
-      .populate('userId', 'username phoneNumber doctorId')
-      .populate('formWindowId', 'title weekStart weekEnd')
-      .populate('symptoms.symptomId', 'name')
-      .sort({ createdAt: -1 });
-
-    // if (req.user.role === 'doctor') {
-    //   severitySubmissions = severitySubmissions.filter(
-    //     sub => String(sub.userId.doctorId) === String(req.user.id)
-    //   );
-    // }
-
-    const severitySheet = workbook.addWorksheet('Symptom Severity Submissions');
-
-    severitySheet.columns = [
-      { header: 'Patient Name', key: 'username', width: 20 },
-      { header: 'Phone Number', key: 'phoneNumber', width: 15 },
-      { header: 'Form Title', key: 'formTitle', width: 25 },
-      { header: 'Week Start', key: 'weekStart', width: 15 },
-      { header: 'Week End', key: 'weekEnd', width: 15 },
-      { header: 'Submission Date', key: 'createdAt', width: 20 },
-      { header: 'Symptom', key: 'symptomName', width: 25 },
-      { header: 'Severity (0–5)', key: 'severity', width: 15 },
-    ];
-
-    for (const sub of severitySubmissions) {
-      for (const symptom of sub.symptoms) {
-        severitySheet.addRow({
-          username: sub.userId.username,
-          phoneNumber: sub.userId.phoneNumber,
-          formTitle: sub.formWindowId?.title || 'Unknown',
-          weekStart: sub.formWindowId?.weekStart?.toISOString().split('T')[0],
-          weekEnd: sub.formWindowId?.weekEnd?.toISOString().split('T')[0],
-          createdAt: sub.createdAt.toISOString().split('T')[0],
-          symptomName: symptom.symptomId?.name || 'Unknown',
-          severity: symptom.severity,
-        });
-      }
-    }
-
-    // ─────────────────────────────────────────────
-    // SHEET 2: SYMPTOM COPING SUBMISSIONS
-    // ─────────────────────────────────────────────
-    let copingSubmissions = await SymptomCopingSubmission.find({})
-      .populate('userId', 'username phoneNumber doctorId')
-      .populate('formWindowId', 'title weekStart weekEnd')
-      .sort({ createdAt: -1 });
-
-    // if (req.user.role === 'doctor') {
-    //   copingSubmissions = copingSubmissions.filter(
-    //     sub => String(sub.userId.doctorId) === String(req.user.id)
-    //   );
-    // }
-
-    const copingSheet = workbook.addWorksheet('Coping Strategy Submissions');
-
-    copingSheet.columns = [
-      { header: 'Patient Name', key: 'username', width: 20 },
-      { header: 'Phone Number', key: 'phoneNumber', width: 15 },
-      { header: 'Form Title', key: 'formTitle', width: 25 },
-      { header: 'Week Start', key: 'weekStart', width: 15 },
-      { header: 'Week End', key: 'weekEnd', width: 15 },
-      { header: 'Submission Date', key: 'createdAt', width: 20 },
-      { header: 'Symptom Name', key: 'symptomName', width: 25 },
-      { header: 'Coping Level (1–5)', key: 'copingLevel', width: 15 },
-      { header: 'No Complaint', key: 'noComplaint', width: 15 },
-    ];
-
-    for (const sub of copingSubmissions) {
-      for (const entry of sub.entries) {
-        copingSheet.addRow({
-          username: sub.userId.username,
-          phoneNumber: sub.userId.phoneNumber,
-          formTitle: sub.formWindowId?.title || 'Unknown',
-          weekStart: sub.formWindowId?.weekStart?.toISOString().split('T')[0],
-          weekEnd: sub.formWindowId?.weekEnd?.toISOString().split('T')[0],
-          createdAt: sub.createdAt.toISOString().split('T')[0],
-          symptomName: entry.symptomName,
-          copingLevel: entry.noComplaint ? '' : entry.copingLevel,
-          noComplaint: entry.noComplaint ? 'Yes' : 'No',
-        });
-      }
-    }
-
-    // ─────────────────────────────────────────────
-    // SEND THE FILE
-    // ─────────────────────────────────────────────
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=Symptom_Submissions_Report.xlsx');
-
-    await workbook.xlsx.write(res);
-    res.end();
-  } catch (err) {
-    console.error('❌ Error exporting symptom submissions:', err);
-    res.status(500).json({ message: 'Failed to export submissions' });
   }
 };

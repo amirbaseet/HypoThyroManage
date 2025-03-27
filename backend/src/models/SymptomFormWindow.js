@@ -16,6 +16,14 @@ const symptomFormWindowSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    symptomSeverityFormLink: {
+        type: String,
+        required: true // or false, depending on use case
+    },
+    copingScaleFormLink: {
+        type: String,
+        required: true // or false, same as above
     }
 }, {
     timestamps: true

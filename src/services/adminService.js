@@ -26,17 +26,17 @@ export const resetUserPassword = async (phoneNumber, newPassword) => {
 
 
 // Admin: Create new form window
-export const createFormWindow = async (title, weekStart, weekEnd) => {
+export const createFormWindow = async (title, symptomSeverityFormLink, copingScaleFormLink) => {
     try {
-        const response = await api.post("/admin/form-windows", {
+        const res = await api.post('/admin/form-windows', {
             title,
-            weekStart,
-            weekEnd
+            symptomSeverityFormLink,
+            copingScaleFormLink
         });
-        return response.data;
+        return res.data;
     } catch (error) {
-        console.error("❌ Error creating form window:", error.response?.data || error);
-        return { error: error.response?.data?.message || "Creation failed" };
+        console.error("❌ Error creating form window:", error.response?.data || error.message);
+        return { error: error.response?.data?.message || "Failed to create form window" };
     }
 };
 
