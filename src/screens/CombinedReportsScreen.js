@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 import ReportsScreen from './ReportsScreen';
-import SubmissionHistoryScreen from './SubmissionHistoryScreen';
 import ProgressScreen from './ProgressScreen';
 import { useTranslation } from 'react-i18next'; // ✅ Import i18n
 
@@ -44,15 +43,7 @@ const CombinedReportsScreen = () => {
                     <Text style={styles.tabText}>📝 {t('weekly_symptoms')}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[
-                        styles.tabButton,
-                        selectedReport === 'submission' && styles.activeTab
-                    ]}
-                    onPress={() => setSelectedReport('submission')}
-                >
-                    <Text style={styles.tabText}>📄 {t('form_submissions')}</Text>
-                </TouchableOpacity>
+       
 
                 <TouchableOpacity
                     style={[

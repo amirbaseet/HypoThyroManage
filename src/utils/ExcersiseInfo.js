@@ -48,7 +48,7 @@ const sections = [
     content: [
       'Hipotiroidi tedavisinde TSH seviyesini dengelemek esastır, ancak hastalar yorgunluk ve kilo alma gibi sorunlar yaşayabilir.',
       '✅ Egzersiz, enerji seviyelerini yükseltmeye ve yaşam kalitesini artırmaya yardımcı olabilir.',
-      '✔️ Aerobik ve direnç egzersizleri fiziksel ve ruhsal sağlığa olumlu katkılar sağlar.'
+      '✔ Aerobik ve direnç egzersizleri fiziksel ve ruhsal sağlığa olumlu katkılar sağlar.'
     ]
   },
   {
@@ -56,11 +56,11 @@ const sections = [
     title: '2️⃣ Yavaş Başlangıçla Aerobik Egzersiz',
     content: [
       'Aerobik egzersizler kalp sağlığını iyileştirir, metabolizmayı hızlandırır ve kilo kontrolüne yardımcı olur.',
-      '✔️ Egzersiz Tipi: Yürüyüş, düşük tempolu bisiklet, yüzme, hafif koşu',
-      '✔️ Sıklık: Haftada 3-5 gün',
-      '✔️ Süre: 20-30 dakika, zamanla artırılabilir.',
-      '✔️ Yoğunluk: Düşük - orta seviye',
-      '⚠️ Eğer aşırı yorgunluk hissediliyorsa, egzersiz süresi azaltılmalıdır.'
+      '✔ Egzersiz Tipi: Yürüyüş, düşük tempolu bisiklet, yüzme, hafif koşu',
+      '✔ Sıklık: Haftada 3-5 gün',
+      '✔ Süre: 20-30 dakika, zamanla artırılabilir.',
+      '✔ Yoğunluk: Düşük - orta seviye',
+      '⚠ Eğer aşırı yorgunluk hissediliyorsa, egzersiz süresi azaltılmalıdır.'
     ]
   },
   {
@@ -68,10 +68,10 @@ const sections = [
     title: '3️⃣ Güçlendirme (Ağırlıksız) Egzersizleri',
     content: [
       'Hipotiroidi hastalarında kas zayıflığı yaygın görülebilir. Ağırlıksız egzersizler, kasları zorlamadan güçlendirmek için idealdir.',
-      '✔️ Egzersiz Tipi: Vücut ağırlığıyla yapılan squat, lunges, plank, direnç bandı egzersizleri',
-      '✔️ Sıklık: Haftada 2-3 gün',
-      '✔️ Süre: 15-30 dakika',
-      '✅ Önerilen Hareketler:',
+      '✔ Egzersiz Tipi: Vücut ağırlığıyla yapılan squat, lunges, plank, direnç bandı egzersizleri',
+      '✔ Sıklık: Haftada 2-3 gün',
+      '✔ Süre: 15-30 dakika',
+      '✅ Önerilen Hareketler: (Videoda hareketler gösterilmektedir.)',
       '🔹 Squat: Sırt düz olacak şekilde bacakları 90 derece bükerek çömelme',
       '🔹 Lunge: Adım atarak yapılan hareket; dizler 90 derece olmalı',
       '🔹 Plank: Yüz üstü yere paralel durarak, karın kaslarını çalıştırma'
@@ -82,10 +82,10 @@ const sections = [
     title: '4️⃣ Esneme ve Mobilite Egzersizleri',
     content: [
       'Hipotiroidi kaslarda sertlik ve ağrıya neden olabilir. Düzenli esneme hareketleri kasları rahatlatabilir.',
-      '✔️ Egzersiz Tipi: Yoga, Pilates, basit esneme hareketleri',
-      '✔️ Sıklık: Haftada 2-3 gün',
-      '✔️ Süre: 10-20 dakika',
-      '✅ Önerilen Hareketler:',
+      '✔ Egzersiz Tipi: Yoga, Pilates, basit esneme hareketleri',
+      '✔ Sıklık: Haftada 2-3 gün',
+      '✔ Süre: 10-20 dakika',
+      '✅ Önerilen Hareketler: (Videoda hareketler gösterilmektedir.) ',
       '🔹 Child’s Pose: Dizler üzerinde oturup öne eğilerek sırtın gerilmesi',
       '🔹 Kedi-İnek Hareketi: Sırtı yukarı ve aşağı hareket ettirme',
       '🔹 Öne Eğilme: Ellerle yere uzanarak sırtı esnetme'
@@ -96,11 +96,10 @@ const sections = [
     title: '5️⃣ Mental Sağlık İçin Egzersiz',
     content: [
       'Hipotiroidi hastalarında ruh hali değişiklikleri ve depresyon görülebilir. Egzersiz, endorfin salgılanmasını artırarak ruh halini iyileştirir.',
-      '✔️ Egzersiz Tipi: Yürüyüş, yoga, meditasyon, nefes egzersizleri',
-      '✔️ Sıklık: Günlük',
-      '✔️ Süre: 10-30 dakika'
+      '✔ Egzersiz Tipi: Yürüyüş, yoga, meditasyon, nefes egzersizleri',
+      '✔ Sıklık: Günlük',
+      '✔ Süre: 10-30 dakika'
     ]
   }
 ];
-
 export default ExcersiseInfo;
