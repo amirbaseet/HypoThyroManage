@@ -7,7 +7,10 @@ import {
     FlatList,
     SafeAreaView,
     ActivityIndicator,
-    TextInput
+    TextInput,
+    Platform,
+    StatusBar,
+    ScrollView
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -72,7 +75,8 @@ const DoctorDashboardScreen = ({ route, navigation }) => {
     const selectedPatientObj = patients.find((p) => p._id === selectedPatient);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.safeContainer}>
+              <View style={styles.androidSafeArea}>
             {/* Close button for modal */}
             {selectedPatientId && (
                 <TouchableOpacity
@@ -163,6 +167,7 @@ const DoctorDashboardScreen = ({ route, navigation }) => {
                     <View style={styles.content}>{renderSelectedTab()}</View>
                 </>
             )}
+                    </View>
         </SafeAreaView>
     );
 };
@@ -173,6 +178,16 @@ const styles = StyleSheet.create({
         backgroundColor: "#FAF9F6",
         paddingHorizontal: 15,
         paddingTop: 10,
+    },
+    safeContainer: {
+        flex: 1,
+        backgroundColor: "#FAF9F6",
+    },
+    androidSafeArea: {
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        paddingHorizontal: 15,
+        paddingBottom: 10,
     },
     closeButton: {
         position: "absolute",

@@ -3,15 +3,16 @@ import {
     View,
     Text,
     TextInput,
-    Button,
+    TouchableOpacity,
     Alert,
     StyleSheet,
-    ActivityIndicator
+    ActivityIndicator,
+    ScrollView,
+    SafeAreaView
 } from "react-native";
 import { sendToAllNotifications } from "../services/adminService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
-import i18n from "../i18n";
 
 const AdminDashboard = () => {
     const { t } = useTranslation();
@@ -69,70 +70,123 @@ const AdminDashboard = () => {
 
     if (isLoading) {
         return (
-            <View style={styles.container}>
-                <ActivityIndicator size="large" color="#007bff" />
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#C6A477" />
             </View>
         );
     }
 
     if (!admin) {
         return (
-            <View style={styles.container}>
+            <View style={styles.loadingContainer}>
                 <Text style={styles.errorText}>❌ {t("access_denied")}</Text>
             </View>
         );
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.heading}>{t("admin_panel")}</Text>
+        <SafeAreaView style={styles.safeContainer}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <Text style={styles.header}>{t("admin_panel")}</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder={t("notification_title")}
-                value={title}
-                onChangeText={setTitle}
-            />
+                <View style={styles.card}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder={t("notification_title")}
+                        value={title}
+                        onChangeText={setTitle}
+                        placeholderTextColor="#999"
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder={t("notification_message")}
-                value={message}
-                onChangeText={setMessage}
-                multiline
-            />
+                    <TextInput
+                        style={[styles.input, styles.textArea]}
+                        placeholder={t("notification_message")}
+                        value={message}
+                        onChangeText={setMessage}
+                        multiline
+                        numberOfLines={4}
+                        placeholderTextColor="#999"
+                    />
 
-            <Button
-                title={isSending ? t("sending") : t("send_notification")}
-                onPress={sendNotification}
-                color="#007bff"
-                disabled={isSending}
-            />
-        </View>
+                    <TouchableOpacity
+                        style={[
+                            styles.button,
+                            isSending && styles.disabledButton,
+                        ]}
+                        onPress={sendNotification}
+                        disabled={isSending}
+                    >
+                        {isSending ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            <Text style={styles.buttonText}>
+                                {t("send_notification")}
+                            </Text>
+                        )}
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    safeContainer: {
         flex: 1,
-        padding: 20,
-        backgroundColor: "#f8f9fa",
-        justifyContent: "center",
+        backgroundColor: '#FAF9F6',
+        paddingTop: 20,
     },
-    heading: {
+    container: {
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FAF9F6',
+    },
+    header: {
         fontSize: 22,
-        fontWeight: "bold",
-        marginBottom: 20,
-        textAlign: "center",
-        color: "#343a40",
+        fontWeight: 'bold',
+        color: '#444444',
+        marginBottom: 25,
+        textAlign: 'center',
+    },
+    card: {
+        backgroundColor: '#FFF5E6',
+        padding: 20,
+        borderRadius: 15,
+        borderColor: '#FFD59E',
+        borderWidth: 1.5,
+        elevation: 2,
     },
     input: {
+        backgroundColor: '#fff',
         borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
+        borderColor: '#ccc',
+        borderRadius: 10,
         padding: 10,
         marginBottom: 15,
-        backgroundColor: "#fff",
+        color: '#333',
+    },
+    textArea: {
+        height: 100,
+        textAlignVertical: 'top',
+    },
+    button: {
+        backgroundColor: '#C6A477',
+        paddingVertical: 12,
+        borderRadius: 25,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    disabledButton: {
+        opacity: 0.6,
     },
     errorText: {
         fontSize: 18,

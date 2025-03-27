@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 
 import { AuthContext } from "../context/AuthContext";
@@ -66,99 +68,108 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>
-        {user?.username ? `${t("welcome")}, ${user.username}!` : t("welcome")}
-      </Text>
+    <SafeAreaView style={styles.safeContainer}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.header}>
+          {user?.username ? `${t("welcome")}, ${user.username}! 👋` : t("welcome")}
+        </Text>
 
-      <View style={styles.languageSection}>
-        <Text style={styles.sectionLabel}>{t("choose_language")}</Text>
-        <View style={styles.languageButtons}>
-          <TouchableOpacity style={[styles.button, styles.langButton]} onPress={() => i18n.changeLanguage("tr")}>
-            <Text style={styles.buttonText}>Türkçe</Text>
+        <View style={styles.card}>
+          <Text style={styles.sectionLabel}>{t("choose_language")}</Text>
+          <View style={styles.languageButtons}>
+            <TouchableOpacity style={[styles.button, styles.langButton]} onPress={() => i18n.changeLanguage("tr")}>
+              <Text style={styles.buttonText}>Türkçe</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, styles.langButton]} onPress={() => i18n.changeLanguage("en")}>
+              <Text style={styles.buttonText}>English</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.sectionLabel}>{t("export_data")}</Text>
+
+          <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("medicine")}>
+            <Text style={styles.buttonText}>{t("export_medicine_logs")}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.langButton]} onPress={() => i18n.changeLanguage("en")}>
-            <Text style={styles.buttonText}>English</Text>
+
+          <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("weekly")}>
+            <Text style={styles.buttonText}>{t("export_weekly_reports")}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("specified")}>
+            <Text style={styles.buttonText}>{t("export_specified_week_reports")}</Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>{t("export_data")}</Text>
-
-        <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("medicine")}>
-          <Text style={styles.buttonText}>{t("export_medicine_logs")}</Text>
+        <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
+          <Text style={styles.buttonText}>{t("logout")}</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("weekly")}>
-          <Text style={styles.buttonText}>{t("export_weekly_reports")}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("specified")}>
-          <Text style={styles.buttonText}>{t("export_specified_week_reports")}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
-        <Text style={styles.buttonText}>{t("logout")}</Text>
-      </TouchableOpacity>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeContainer: {
     flex: 1,
-    padding: 25,
     backgroundColor: "#FAF9F6",
-    justifyContent: "center",
+    paddingTop: 20,
+  },
+  container: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   header: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#2c3e50",
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#444444",
+    marginBottom: 25,
     textAlign: "center",
-    marginBottom: 30,
   },
-  section: {
-    marginBottom: 30,
+  card: {
+    backgroundColor: "#FFF5E6",
+    padding: 20,
+    borderRadius: 15,
+    borderColor: "#FFD59E",
+    borderWidth: 1.5,
+    marginBottom: 25,
+    elevation: 2,
   },
   sectionLabel: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333",
-    marginBottom: 10,
+    color: "#444",
+    marginBottom: 15,
     textAlign: "center",
-  },
-  languageSection: {
-    marginBottom: 30,
   },
   languageButtons: {
     flexDirection: "row",
-    justifyContent: "center",
-    gap: 12,
+    justifyContent: "space-around",
   },
   button: {
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 25,
     alignItems: "center",
-    marginTop: 10,
+    justifyContent: "center",
+    marginBottom: 10,
   },
   buttonText: {
-    color: "white",
-    fontSize: 16,
+    color: "#fff",
+    fontSize: 15,
     fontWeight: "600",
   },
   langButton: {
-    backgroundColor: "#007AFF",
-    flex: 1,
+    backgroundColor: "#C6A477",
+    flex: 0.45,
   },
   exportButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#6AB04C",
   },
   logoutButton: {
     backgroundColor: "#FF3B30",
+    marginTop: 15,
   },
 });
 
