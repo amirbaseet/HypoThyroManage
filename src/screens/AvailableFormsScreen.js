@@ -43,6 +43,7 @@ export default function AvailableFormsScreen({ navigation }) {
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
   return (
+    
     <FlatList
       data={forms}
       keyExtractor={(item) => item._id}
@@ -50,6 +51,7 @@ export default function AvailableFormsScreen({ navigation }) {
       ListEmptyComponent={
         <Text style={styles.empty}>{t("no_active_forms")}</Text>
       }
+      
     />
   );
 }

@@ -1,295 +1,75 @@
-import React, { useEffect, useState, useContext } from "react";
-import {
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    Button,
-    Alert,
-    StyleSheet
-} from "react-native";
-import { getSymptoms } from "../services/symptomsService";
-import { getLatestSymptomForm, getLatestCopingForm, submitSymptomForm } from "../services/patientService";
-import { AuthContext } from "../context/AuthContext";
+import React from "react";
+import { View, Text, TouchableOpacity, Linking, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 
-const SymptomFormScreen = ({ route, navigation }) => {
-    const { user } = useContext(AuthContext);
+const SymptomFormScreen = ({ route }) => {
     const { formWindow } = route.params;
     const { t } = useTranslation();
 
-    const [symptoms, setSymptoms] = useState([]);
-    const [selectedSeverities, setSelectedSeverities] = useState({});
-    const [copingResponses, setCopingResponses] = useState({});
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        try {
-            const [symptomsList, latestForm, latestCoping] = await Promise.all([
-                getSymptoms(),
-                getLatestSymptomForm(user?.id, formWindow._id),
-                getLatestCopingForm(user?.id, formWindow._id),
-            ]);
-    
-            setSymptoms(symptomsList);
-    
-            // Prefill severity
-            const prefilledSeverities = {};
-            symptomsList.forEach(symptom => {
-                const previous = latestForm?.symptoms?.find(
-                    s => s.symptomId._id === symptom._id
-                );
-                prefilledSeverities[symptom._id] = previous ? previous.severity : 0;
-            });
-            setSelectedSeverities(prefilledSeverities);
-    
-            // Prefill coping responses
-            const prefilledCoping = {};
-            latestCoping?.entries?.forEach(entry => {
-                prefilledCoping[entry.symptomName] = {
-                    noComplaint: entry.noComplaint,
-                    copingLevel: entry.copingLevel ?? null,
-                };
-            });
-            setCopingResponses(prefilledCoping);
-    
-        } catch (error) {
-            console.error("❌ Error fetching data:", error);
-            Alert.alert(t("error"), t("form_load_failed"));
-        }
-    };
-    
-    const cycleSeverity = (symptomId) => {
-        setSelectedSeverities(prev => ({
-            ...prev,
-            [symptomId]: (prev[symptomId] + 1) % 6
-        }));
-    };
-
-    const toggleNoComplaint = (symptomName) => {
-        setCopingResponses((prev) => ({
-            ...prev,
-            [symptomName]: {
-                ...prev[symptomName],
-                noComplaint: !prev[symptomName]?.noComplaint,
-                copingLevel: null
-            }
-        }));
-    };
-
-    const setCopingLevel = (symptomName, level) => {
-        setCopingResponses((prev) => ({
-            ...prev,
-            [symptomName]: {
-                noComplaint: false,
-                copingLevel: level
-            }
-        }));
-    };
-
-    const handleSubmit = async () => {
-        for (let symptom of symptoms) {
-            const coping = copingResponses[symptom.name];
-
-            if (!coping) {
-                Alert.alert(t("error"), t("please_fill_all_fields"));
-                return;
-            }
-
-            if (!coping.noComplaint && (coping.copingLevel === null || coping.copingLevel === undefined)) {
-                Alert.alert(t("error"), t("please_fill_all_fields"));
-                return;
-            }
-        }
-
-        const formatted = Object.entries(selectedSeverities).map(([symptomId, severity]) => ({
-            symptomId,
-            severity
-        }));
-
-        const formattedCoping = Object.entries(copingResponses).map(([symptomName, data]) => ({
-            symptomName,
-            copingLevel: data.noComplaint ? null : data.copingLevel,
-            noComplaint: data.noComplaint
-        }));
-
-        setLoading(true);
-        const res = await submitSymptomForm(formWindow._id, formatted, formattedCoping);
-        setLoading(false);
-
-        if (res.error) {
-            Alert.alert(t("error"), res.error);
+    const openLink = async (url) => {
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            await Linking.openURL(url);
         } else {
-            Alert.alert(t("success"), t("form_submitted"));
-            navigation.goBack();
+            alert("Cannot open this link");
         }
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.header}>{formWindow.title}</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>{formWindow.title}</Text>
+            <Text style={styles.dates}>
+                {new Date(formWindow.weekStart).toDateString()} →{" "}
+                {new Date(formWindow.weekEnd).toDateString()}
+            </Text>
 
-            <Text style={styles.sectionTitle}>1. {t("symptom_severity")}</Text>
-            <View style={styles.symptomGrid}>
-                {symptoms.map((item) => {
-                    const severity = selectedSeverities[item._id] ?? 0;
-                    return (
-                        <TouchableOpacity
-                            key={item._id}
-                            style={[
-                                styles.symptomButton,
-                                severity > 0 && styles.selectedSymptom
-                            ]}
-                            onPress={() => cycleSeverity(item._id)}
-                        >
-                            <Text style={styles.symptomText}>{item.name}</Text>
-                            <Text style={styles.severityText}>{t("severity")}: {severity}</Text>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => openLink(formWindow.symptomSeverityFormLink)}
+            >
+                <Text style={styles.buttonText}>{t("open_symptom_form")}</Text>
+            </TouchableOpacity>
 
-            <Text style={styles.sectionTitle}>2. {t("coping_assessment")}</Text>
-            {symptoms.map((symptom) => {
-                const coping = copingResponses[symptom.name] || {};
-                return (
-                    <View key={symptom._id} style={styles.copingItem}>
-                        <Text style={styles.copingSymptom}>{symptom.name}</Text>
-
-                        <TouchableOpacity
-                            onPress={() => toggleNoComplaint(symptom.name)}
-                            style={styles.noComplaintBtn}
-                        >
-                            <Text style={{
-                                color: coping.noComplaint ? '#2e7d32' : '#aaa',
-                                fontWeight: '600'
-                            }}>
-                                {coping.noComplaint ? `✔ ${t("no_complaint")}` : t("mark_no_complaint")}
-                            </Text>
-                        </TouchableOpacity>
-
-                        {!coping.noComplaint && (
-                            <View style={styles.levelButtons}>
-                                {[1, 2, 3, 4, 5].map((level) => (
-                                    <TouchableOpacity
-                                        key={level}
-                                        style={[
-                                            styles.levelBtn,
-                                            coping.copingLevel === level && styles.activeLevelBtn
-                                        ]}
-                                        onPress={() => setCopingLevel(symptom.name, level)}
-                                    >
-                                        <Text style={{
-                                            color: coping.copingLevel === level ? "#fff" : "#444"
-                                        }}>{level}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                        )}
-                    </View>
-                );
-            })}
-
-            <View style={styles.buttonContainer}>
-                <Button
-                    title={loading ? t("submitting") : t("submit_form")}
-                    onPress={handleSubmit}
-                    disabled={loading}
-                    color="#007BFF"
-                />
-            </View>
-        </ScrollView>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => openLink(formWindow.copingScaleFormLink)}
+            >
+                <Text style={styles.buttonText}>{t("open_coping_form")}</Text>
+            </TouchableOpacity>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#FAF9F6',
+        padding: 24,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#fff"
     },
-    header: {
+    title: {
         fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        textAlign: 'center',
-        color: '#2c3e50',
+        fontWeight: "bold",
+        marginBottom: 12,
+        textAlign: "center"
     },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: '700',
-        marginVertical: 15,
-        color: '#444',
+    dates: {
+        fontSize: 16,
+        marginBottom: 30,
+        textAlign: "center",
+        color: "#666"
     },
-    symptomGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-    },
-    symptomButton: {
-        width: '48%',
-        padding: 12,
-        marginBottom: 10,
-        borderRadius: 10,
-        backgroundColor: '#EAE7DC',
-        borderWidth: 1.5,
-        borderColor: '#C6A477',
-    },
-    selectedSymptom: {
-        backgroundColor: '#B5E7A0',
-        borderColor: '#8AAD60',
-    },
-    symptomText: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: '#333',
-        textAlign: 'center',
-    },
-    severityText: {
-        fontSize: 13,
-        marginTop: 6,
-        color: '#555',
-        textAlign: 'center',
-    },
-    copingItem: {
-        marginBottom: 20,
-        paddingVertical: 8,
-        borderBottomWidth: 1,
-        borderBottomColor: "#ddd",
-    },
-    copingSymptom: {
-        fontWeight: '600',
-        fontSize: 15,
-        marginBottom: 5,
-        color: '#222',
-    },
-    noComplaintBtn: {
-        marginBottom: 8,
-    },
-    levelButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    levelBtn: {
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        backgroundColor: "#f5f5f5",
-        marginRight: 5,
-    },
-    activeLevelBtn: {
+    button: {
         backgroundColor: "#007BFF",
-        borderColor: "#007BFF",
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        marginBottom: 16
     },
-    buttonContainer: {
-        marginTop: 30,
-        marginBottom: 50,
+    buttonText: {
+        color: "#fff",
+        fontSize: 16
     }
 });
 

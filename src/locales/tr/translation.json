@@ -34,7 +34,7 @@
   "patients_progress": "Hastaların İlerlemesi",
   "progress": "İlerleme",
   "take_medicine": "İlaç İçme Zamanı",
-  "available_forms": "Semptom Yönetimi Ölçeği",
+  "available_forms": "Ölçeklerimiz",
   "submission_history": "Gönderim Geçmişi",
   "report": "Rapor",
   "reports": "Geçmiş Raporları",
@@ -125,7 +125,14 @@
   "export_failed": "Dışa Aktarma Başarısız",
   "export_error_message": "Dosya dışa aktarılırken bir sorun oluştu.",
   "choose_language": "Dil Seçin",
-  "export_data": "Veri Dışa Aktar"
+  "export_data": "Veri Dışa Aktar",
+  "video_yonlendir":"video izlemek için aşağdaki buttonları tıklayın",
+  "open_symptom_form": "Belirti Şiddeti Formunu Aç",
+  "open_coping_form": "Başa Çıkma Ölçeği Formunu Aç",
+  "symptom_form_link": "Belirti Şiddeti Formu Bağlantısı",
+  "coping_form_link": "Başa Çıkma Ölçeği Formu Bağlantısı",
+
+
 
 }
 

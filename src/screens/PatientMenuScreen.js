@@ -118,6 +118,7 @@ const PatientMenuScreen = () => {
 </View>
 
                 </View>
+                <Text style={styles.header}> {t("video_yonlendir")}</Text>
 
                 <View style={styles.menuContainer}>
                     {navigationOptions.map((item) => (
