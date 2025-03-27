@@ -7,6 +7,9 @@ const {sendPushNotificationByToken} = require("../src/utils/notificationService"
 require("dotenv").config();
 const User = require("../src/models/userModels");
 const Message  = require("./models/Message");
+const cron = require("node-cron");
+const MedicineLog = require("./models/MedicineLog"); // Adjust path if needed
+
 const app = express();
 const server = http.createServer(app);
 
@@ -155,5 +158,62 @@ io.on("connection", (socket) => {
         users.delete(socket.userId);
     });
     });
+
+    // ⏰ Run every day at 12:00 PM server time
+cron.schedule("0 12 * * *", async () => {
+    try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth(); // 0-11
+        const day = today.getDate();
+
+        // 🔍 Find all logs for today where `taken` is false
+        const missingLogs = await MedicineLog.find({
+            year,
+            month,
+            day,
+            taken: false,
+        }).populate("userId");
+
+        for (const log of missingLogs) {
+            const user = log.userId;
+
+            if (user?.pushToken) {
+                await sendPushNotificationByToken(
+                    user.pushToken,
+                    "💊 İlaç Hatırlatıcısı",
+                    "Bugün ilacınızı almadınız. Lütfen unutmayın!"
+                                    );
+                console.log(`📤 Reminder sent to ${user.username}`);
+            }
+        }
+
+        console.log(`✅ Medicine reminders sent at 12:00PM`);
+    } catch (error) {
+        console.error("❌ Error sending medicine reminders:", error);
+    }
+});
+const sendMorningReminders = async () => {
+    try {
+        const users = await User.find({ pushToken: { $exists: true, $ne: null } });
+
+        for (const user of users) {
+            await sendPushNotificationByToken(
+                user.pushToken,
+                "Günaydın! ☀️",
+                "Bugün tiroid ilacınızı almayı unutmayın!"
+            );
+            console.log(`📤 Reminder sent to ${user.username}`);
+        }
+
+        console.log("✅ 7AM medicine reminders sent to all users.");
+    } catch (error) {
+        console.error("❌ Error sending 7AM medicine reminders:", error);
+    }
+};
+
+
+cron.schedule("0 7 * * *", sendMorningReminders);
+
 
 module.exports = { io, app, server };
