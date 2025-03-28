@@ -8,6 +8,8 @@ import { AuthContext, AuthProvider } from "./src/context/AuthContext";
 import * as Notifications from "expo-notifications";
 import PatientTabs from "./src/navigation/PatientTabs";
 import DoctorTabs from "./src/navigation/DoctorTabs"; 
+import PatientDrawerNavigator from "./src/navigation/PatientDrawerNavigator"; // 👈 New import
+import GreetingScreen from "./src/screens/GreetingScreen"; // 👈 Add this line
 
 // ✅ Import push notification functions
 import {
@@ -46,20 +48,19 @@ const AppNavigator = () => {
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {user ? (
-                user.role === "patient" ? (
-                    <Stack.Screen name="PatientTabs" component={PatientTabs} />
-                ) : user.role === "doctor" ? (
-                    <Stack.Screen name="DoctorTabs" component={DoctorTabs} />
-                )  : (
-                    <Stack.Screen name="Drawer" component={DrawerNavigator} />
-                )
-            ) : (
-                <>
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="Register" component={RegisterScreen} />
-                </>
-            )}
+{user ? (
+    <>
+        <Stack.Screen name="Greeting" component={GreetingScreen} />
+        <Stack.Screen name="PatientDrawer" component={PatientDrawerNavigator} />
+        <Stack.Screen name="DoctorTabs" component={DoctorTabs} />
+        <Stack.Screen name="Drawer" component={DrawerNavigator} />
+    </>
+) : (
+    <>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+    </>
+)}
         </Stack.Navigator>
     );
 };

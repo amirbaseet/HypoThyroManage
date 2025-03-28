@@ -10,6 +10,7 @@ import AdminDashboardScreen from "../screens/AdminDashboardScreen";
 import CreateFormWindowScreen from "../screens/CreateFormWindowScreen";
 import ManageFormWindowsScreen from "../screens/ManageFormWindowsScreen";
 import AdminResetPasswordScreen from "../screens/AdminResetPasswordScreen";
+import PatientStack from './PatientStack'; // instead of only importing PatientVideosScreen
 
 const Drawer = createDrawerNavigator();
 
