@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -25,9 +24,8 @@ import { Buffer } from "buffer";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { user, logout, token } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const { t } = useTranslation();
-  const [missedUsers, setMissedUsers] = useState([]);
 
   const handleLogout = async () => {
     await logout();
@@ -69,21 +67,6 @@ const HomeScreen = () => {
     }
   };
 
-  const fetchMissedUsers = async () => {
-    try {
-      const res = await axios.get("https://your-api.com/api/medicine/missed-medicine-users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMissedUsers(res.data.missedUsers || []);
-    } catch (err) {
-      console.error("Error fetching missed users:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchMissedUsers();
-  }, []);
-
   return (
     <SafeAreaView style={styles.safeContainer}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -91,7 +74,6 @@ const HomeScreen = () => {
           {user?.username ? `${t("welcome")}, ${user.username}! 👋` : t("welcome")}
         </Text>
 
-        {/* 🔹 Language Selection */}
         <View style={styles.card}>
           <Text style={styles.sectionLabel}>{t("choose_language")}</Text>
           <View style={styles.languageButtons}>
@@ -104,32 +86,20 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* 📤 Export Buttons */}
         <View style={styles.card}>
           <Text style={styles.sectionLabel}>{t("export_data")}</Text>
+
           <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("medicine")}>
             <Text style={styles.buttonText}>{t("export_medicine_logs")}</Text>
           </TouchableOpacity>
+
           <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("weekly")}>
             <Text style={styles.buttonText}>{t("export_weekly_reports")}</Text>
           </TouchableOpacity>
+
           <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("specified")}>
             <Text style={styles.buttonText}>{t("export_specified_week_reports")}</Text>
           </TouchableOpacity>
-        </View>
-
-        {/* 🚨 Missed Patients */}
-        <View style={styles.card}>
-          <Text style={styles.sectionLabel}>💊 {t("patients_missed_today") || "Patients who missed their medicine today"}</Text>
-          {missedUsers.length === 0 ? (
-            <Text style={styles.successText}>{t("all_patients_taken") || "All patients have taken their medicine today 🎉"}</Text>
-          ) : (
-            missedUsers.map((user) => (
-              <View key={user._id} style={styles.missedItem}>
-                <Text style={styles.missedText}>{user.username} - {user.phoneNumber}</Text>
-              </View>
-            ))
-          )}
         </View>
 
         <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
@@ -200,18 +170,6 @@ const styles = StyleSheet.create({
   logoutButton: {
     backgroundColor: "#FF3B30",
     marginTop: 15,
-  },
-  missedItem: {
-    paddingVertical: 6,
-  },
-  missedText: {
-    color: "#D62828",
-    fontWeight: "600",
-  },
-  successText: {
-    color: "#2E7D32",
-    fontWeight: "500",
-    textAlign: "center",
   },
 });
 
