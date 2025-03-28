@@ -1,11 +1,9 @@
-// screens/ReportsMenuScreen.js
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import i18n from '../i18n';
-import { AuthContext } from '../context/AuthContext';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const menuOptions = [
   { route: 'AvailableForms', icon: 'folder-open-outline', labelKey: 'available_forms' },
@@ -17,43 +15,29 @@ const menuOptions = [
 const ReportsMenuScreen = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
-    const { logout } = useContext(AuthContext);
-   
-    const handleLogout = async () => {
-        await logout();
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'Login' }],
-            })
-        );
-    };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-                    <View style={styles.controlsRow}>
-                        <View style={styles.langButtonGroup}>
-                            <TouchableOpacity
-                                style={styles.langButton}
-                                onPress={() => i18n.changeLanguage('tr')}
-                            >
-                                <Text style={styles.langText}>🇹🇷 Türkçe</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.langButton}
-                                onPress={() => i18n.changeLanguage('en')}
-                            >
-                                <Text style={styles.langText}>🇬🇧 English</Text>
-                            </TouchableOpacity>
-                        </View>
+      <View style={styles.controlsRow}>
+        <View style={styles.langButtonGroup}>
+          <TouchableOpacity
+            style={styles.langButton}
+            onPress={() => i18n.changeLanguage('tr')}
+          >
+            <Text style={styles.langText}>🇹🇷 Türkçe</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.langButton}
+            onPress={() => i18n.changeLanguage('en')}
+          >
+            <Text style={styles.langText}>🇬🇧 English</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-                        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                            <Ionicons name="log-out-outline" size={20} color="#fff" />
-                            <Text style={styles.logoutText}>{t('logout')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={styles.header}>{t('reports_menu')}</Text>
-                    <View style={styles.menuContainer}>
+      <Text style={styles.header}>{t('reports_menu')}</Text>
+
+      <View style={styles.menuContainer}>
         {menuOptions.map((item) => (
           <TouchableOpacity
             key={item.route}
@@ -75,7 +59,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAF9F6",
     paddingVertical: 20,
     paddingHorizontal: 15,
-    justifyContent: "center",
   },
   header: {
     fontSize: 26,
@@ -115,42 +98,26 @@ const styles = StyleSheet.create({
   },
   langButtonGroup: {
     flexDirection: 'row',
-},
-langButton: {
-  backgroundColor: '#C6A477',
-  paddingVertical: 8,
-  paddingHorizontal: 12,
-  borderRadius: 10,
-  marginRight: 10,
-},
-langText: {
-  color: '#fff',
-  fontWeight: '600',
-  fontSize: 14,
-},
-logoutButton: {
-  flexDirection: 'row',
-  backgroundColor: '#e74c3c',
-  paddingHorizontal: 15,
-  paddingVertical: 10,
-  borderRadius: 20,
-  alignItems: 'center',
-  justifyContent: 'center',
-},
-logoutText: {
-  color: '#fff',
-  fontWeight: 'bold',
-  marginLeft: 8,
-},
-controlsRow: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  width: '100%',
-  marginBottom: 20,
-},
-
-
+  },
+  langButton: {
+    backgroundColor: '#C6A477',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginHorizontal: 5,
+  },
+  langText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  controlsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center', // ✅ Center horizontally
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 20,
+  },
 });
 
 export default ReportsMenuScreen;

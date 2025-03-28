@@ -28,7 +28,7 @@
   "home": "Ana Sayfa",
   "admin_dashboard": "Yönetici Paneli",
   "manage_form_windows": "Form Pencerelerini Yönet",
-  "chat": "Sohbet",
+  "chat": "Sağlık Profesyoneline sorun.",
   "dashboard": "Gösterge Paneli",
   "submissions": "Gönderimler",
   "patients_progress": "Hastaların İlerlemesi",
@@ -131,6 +131,10 @@
   "open_coping_form": "Başa Çıkma Ölçeği Formunu Aç",
   "symptom_form_link": "Belirti Şiddeti Formu Bağlantısı",
   "coping_form_link": "Başa Çıkma Ölçeği Formu Bağlantısı",
+  "patient_home_title": "Hasta Ana Sayfası",
+  "videos": "Videolar ve Eğitim",
+  "hypothyroid_info": "Hipotiroidi Bilgilendirmesi",
+  "about_us": "Hakkımızda"
 
 
 
