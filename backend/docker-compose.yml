@@ -16,6 +16,8 @@ services:
 
   mongo:
     image: mongo:6
+    ports:
+      - "27017:27017"    # 👈 Expose to host
     volumes:
       - mongo-data:/data/db
 
