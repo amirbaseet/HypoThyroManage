@@ -20,3 +20,13 @@ export const getDoctorChatListAPI = async () => {
         return [];
     }
 };
+
+export const getMissedMedicineUsers = async () => {
+    try {
+        const response = await api.get(`/medicine/missed-medicine-users`);
+        return response.data.missedUsers;
+    } catch (error) {
+        console.error("❌ Error fetching missed medicine users:", error.response?.data || error);
+        return [];
+    }
+};

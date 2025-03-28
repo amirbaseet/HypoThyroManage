@@ -113,3 +113,39 @@ exports.getProgress = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch progress" });
   }
 };
+// Keep this utility function for internal use
+const getPatientsWhoMissedMedicine = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const patients = await User.find({ role: 'patient' });
+
+    const takenToday = await MedicineLog.find({
+      date: today,
+      taken: true,
+    }).select('userId');
+
+    const takenUserIds = takenToday.map(log => log.userId.toString());
+
+    const missedPatients = patients.filter(
+      patient => !takenUserIds.includes(patient._id.toString())
+    );
+
+    return missedPatients;
+
+  } catch (err) {
+    console.error("Error fetching users who missed medicine:", err);
+    throw err;
+  }
+};
+
+// This is your Express route controller
+exports.getMissedMedicineUsers = async (req, res) => {
+  try {
+    const missedUsers = await getPatientsWhoMissedMedicine();
+    res.status(200).json({ missedUsers });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch missed users" });
+  }
+};
