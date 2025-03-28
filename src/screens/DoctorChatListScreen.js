@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,54 +10,63 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
-import { getDoctorChatListAPI } from "../services/doctorService"; // API call for doctor chat list
+import { getDoctorChatListAPI, getMissedMedicineUsers } from "../services/doctorService";
 
 const DoctorChatListScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [missedUsers, setMissedUsers] = useState([]);
   const [filteredChats, setFilteredChats] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [missedOnly, setMissedOnly] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // ⏳ Fetch chat list every time screen is focused
   useFocusEffect(
     useCallback(() => {
-      const fetchChats = async () => {
+      const fetchData = async () => {
         try {
           setLoading(true);
           const data = await getDoctorChatListAPI();
+          const missed = await getMissedMedicineUsers();
           setChats(data);
-          setFilteredChats(data); 
-          console.log("✅ Doctor Chat List API response:", data);
+          setMissedUsers(missed.map(user => user._id));
+          setFilteredChats(data);
         } catch (error) {
-          console.error("❌ Error fetching chat list:", error);
+          console.error("❌ Error fetching chat list or missed users:", error);
         } finally {
           setLoading(false);
         }
       };
 
-      fetchChats();
-      
+      fetchData();
     }, [])
   );
 
   const handleSearch = (text) => {
     setSearchQuery(text);
-    const filtered = chats.filter((chat) =>
-      chat.patientName.toLowerCase().includes(text.toLowerCase())
-    );
+    filterChats(text, missedOnly);
+  };
+
+  const toggleFilter = (value) => {
+    setMissedOnly(value);
+    filterChats(searchQuery, value);
+  };
+
+  const filterChats = (search, missedOnlyFilter) => {
+    const filtered = chats.filter((chat) => {
+      const matchName = chat.patientName.toLowerCase().includes(search.toLowerCase());
+      const isMissed = missedUsers.includes(chat.patientId);
+      return matchName && (!missedOnlyFilter || isMissed);
+    });
     setFilteredChats(filtered);
   };
 
-  
   if (loading) {
     return <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />;
   }
 
   return (
     <View style={styles.container}>
-
-      {/* 🔍 Search Input */}
       <TextInput
         placeholder="Search by patient name..."
         value={searchQuery}
@@ -65,6 +74,22 @@ const DoctorChatListScreen = ({ navigation }) => {
         style={styles.searchInput}
         placeholderTextColor="#aaa"
       />
+
+      <View style={styles.toggleButtonsContainer}>
+        <TouchableOpacity
+          style={[styles.toggleButton, !missedOnly && styles.activeToggle]}
+          onPress={() => toggleFilter(false)}
+        >
+          <Text style={styles.toggleText}>All Patients</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.toggleButton, missedOnly && styles.activeToggle]}
+          onPress={() => toggleFilter(true)}
+        >
+          <Text style={styles.toggleText}>Missed Only</Text>
+        </TouchableOpacity>
+      </View>
 
       {filteredChats.length === 0 ? (
         <Text style={styles.noChats}>No chats found</Text>
@@ -142,7 +167,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
-  
+  toggleButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginBottom: 15,
+  },
+  toggleButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#EAE7DC",
+  },
+  activeToggle: {
+    backgroundColor: "#C6A477",
+  },
+  toggleText: {
+    color: "#333",
+    fontWeight: "600",
+  },
 });
 
 export default DoctorChatListScreen;
