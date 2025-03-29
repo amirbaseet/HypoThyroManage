@@ -11,6 +11,7 @@ import ReportsStack from "./ReportsStack";
 import PatientHomeScreen from '../screens/PatientHomeScreen';
 import HakkimizdaScreen from '../screens/HakkimizdaScreen';
 import useUnreadMessages from "../hooks/useUnreadMessages";
+import SymptomTableScreen from "../screens/SymptomTableScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -79,6 +80,16 @@ const PatientDrawerNavigator = () => {
                 }}
             />
 
+<Drawer.Screen
+    name="SymptomTable"
+    component={SymptomTableScreen}
+    options={{
+        title: t('Tavsiye_İlgili_Semptomlar'),
+        drawerIcon: ({ color, size }) => (
+            <Ionicons name="information-circle-outline" size={size} color={color} />
+        ),
+    }}
+/>
 <Drawer.Screen
     name="Hakkimizda"
     component={HakkimizdaScreen}

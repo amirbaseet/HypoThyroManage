@@ -20,7 +20,7 @@ const PatientHomeScreen = () => {
     const { t } = useTranslation();
     const { user } = useContext(AuthContext);
 
-    const [todayTaken, setTodayTaken] = useState(false);
+    const [todayTaken, setTodayTaken] = useState(null);
     const [loading, setLoading] = useState(false);
     const [checking, setChecking] = useState(true);
 
@@ -30,16 +30,15 @@ const PatientHomeScreen = () => {
             const data = await getWeeklyProgress();
             const todayStr = format(new Date(), 'yyyy-MM-dd');
 
-            let found = false;
+            let found = null;
             if (data?.weeks?.length) {
                 for (const week of data.weeks) {
                     const match = week.logs.find(
                         (log) =>
-                            format(new Date(log.date), 'yyyy-MM-dd') === todayStr &&
-                            log.taken === true
+                            format(new Date(log.date), 'yyyy-MM-dd') === todayStr
                     );
                     if (match) {
-                        found = true;
+                        found = match.taken;
                         break;
                     }
                 }
@@ -57,13 +56,13 @@ const PatientHomeScreen = () => {
         checkTodayStatus();
     }, []);
 
-    const handleTakeMedicine = async () => {
+    const handleTakeMedicine = async (takenValue) => {
         setLoading(true);
         try {
-            const res = await markMedicineAsTaken();
+            const res = await markMedicineAsTaken(takenValue);
             if (!res.error) {
-                Alert.alert(t("done"), t("mark_success"));
-                setTodayTaken(true);
+                Alert.alert(t("done"), takenValue ? t("mark_success") : t("mark_missed"));
+                setTodayTaken(takenValue);
             } else {
                 Alert.alert(t("error"), res.error);
             }
@@ -86,39 +85,61 @@ const PatientHomeScreen = () => {
 
                     {checking ? (
                         <ActivityIndicator size="small" color="#C6A477" />
-                    ) : todayTaken ? (
-                        <Text style={styles.successMessage}>{t("medicine_taken_msg")}</Text>
                     ) : (
-                        <TouchableOpacity
-                            style={[styles.actionButton, loading && styles.disabledButton]}
-                            onPress={handleTakeMedicine}
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <ActivityIndicator color="#fff" />
-                            ) : (
-                                <Text style={styles.actionButtonText}>{t("take_medicine_btn")}</Text>
+                        <View style={{ alignItems: 'center' }}>
+                            {todayTaken === true && (
+                                <Text style={styles.statusLabel}>{t("you_marked_taken")}</Text>
                             )}
-                        </TouchableOpacity>
+                            {todayTaken === false && (
+                                <Text style={styles.statusLabel}>{t("you_marked_missed")}</Text>
+                            )}
+                            {todayTaken === null && (
+                                <Text style={styles.statusLabel}>{t("medicine_not_taken")}</Text>
+                            )}
+
+                            <TouchableOpacity
+                                style={[
+                                    styles.actionButton,
+                                    todayTaken === true && styles.selectedButton,
+                                    loading && styles.disabledButton,
+                                ]}
+                                onPress={() => handleTakeMedicine(true)}
+                                disabled={loading}
+                            >
+                                <Text style={styles.actionButtonText}>{t("take_medicine_btn")}</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[
+                                    styles.missedButton,
+                                    todayTaken === false && styles.selectedButton,
+                                    loading && styles.disabledButton,
+                                ]}
+                                onPress={() => handleTakeMedicine(false)}
+                                disabled={loading}
+                            >
+                                <Text style={styles.actionButtonText}>{t("missed_medicine_btn")}</Text>
+                            </TouchableOpacity>
+                        </View>
                     )}
                 </View>
 
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#6D676E' }]} // Videos button
+                    style={[styles.button, { backgroundColor: '#6D676E' }]}
                     onPress={() => navigation.navigate('Patient', { screen: 'PatientVideosScreen' })}
                 >
                     <Text style={styles.buttonText}>{t('videos')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#7BB661' }]} // Hypothyroid button
+                    style={[styles.button, { backgroundColor: '#7BB661' }]}
                     onPress={() => navigation.navigate('Patient', { screen: 'HypothyroidInfo' })}
                 >
                     <Text style={styles.buttonText}>{t('hypothyroid_info')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#F4A259' }]} // Reports button
+                    style={[styles.button, { backgroundColor: '#F4A259' }]}
                     onPress={() => navigation.navigate('Reports', { screen: 'ReportsMenuScreen' })}
                 >
                     <Text style={styles.buttonText}>{t('reports_menu')}</Text>
@@ -162,19 +183,34 @@ const styles = StyleSheet.create({
         color: '#444',
     },
     actionButton: {
-        backgroundColor: '#C6A477',
+        backgroundColor: '#34D399',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 25,
+        marginTop: 10,
+    },
+    missedButton: {
+        backgroundColor: '#EF9A9A',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        marginTop: 10,
+    },
+    selectedButton: {
+        borderWidth: 2,
+        borderColor: '#4CAF50',
     },
     actionButtonText: {
         color: '#fff',
         fontSize: 15,
         fontWeight: '600',
     },
-    successMessage: {
+    statusLabel: {
+        fontSize: 14,
         color: '#4CAF50',
+        marginBottom: 10,
         fontWeight: '500',
+        textAlign: 'center',
     },
     disabledButton: {
         opacity: 0.6,

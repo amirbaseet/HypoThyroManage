@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useState,useContext, useEffect, useRef } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import LoginScreen from "./src/screens/LoginScreen";
@@ -6,10 +6,12 @@ import RegisterScreen from "./src/screens/RegisterScreen";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
 import { AuthContext, AuthProvider } from "./src/context/AuthContext";
 import * as Notifications from "expo-notifications";
+import AppLoading from 'expo-app-loading';
 import PatientTabs from "./src/navigation/PatientTabs";
 import DoctorTabs from "./src/navigation/DoctorTabs"; 
 import PatientDrawerNavigator from "./src/navigation/PatientDrawerNavigator"; // 👈 New import
 import GreetingScreen from "./src/screens/GreetingScreen"; // 👈 Add this line
+import * as Font from 'expo-font';
 
 // ✅ Import push notification functions
 import {
@@ -21,7 +23,13 @@ import i18n from "./src/i18n";
 import { I18nextProvider } from "react-i18next";
 
 const Stack = createStackNavigator();
-
+const fetchFonts = () => {
+    return Font.loadAsync({
+      'LibreBaskerville-Regular': require('./assets/fonts/LibreBaskerville-Regular.ttf'),
+      'SourceSans3-Regular': require('./assets/fonts/SourceSans3-Regular.ttf'),
+    });
+  };
+  
 const AppNavigator = () => {
     const { user } = useContext(AuthContext);
     const notificationListener = useRef();
@@ -66,6 +74,8 @@ const AppNavigator = () => {
 };
 
 export default function App() {
+    const [fontsLoaded, setFontsLoaded] = useState(false);
+
     useEffect(() => {
         const initializeApp = async () => {
             console.log("🚀 Initializing app...");
@@ -79,7 +89,16 @@ export default function App() {
 
         initializeApp();
     }, []);
-
+    if (!fontsLoaded) {
+        return (
+          <AppLoading
+            startAsync={fetchFonts}
+            onFinish={() => setFontsLoaded(true)}
+            onError={console.warn}
+          />
+        );
+      }
+    
     return (
         <AuthProvider>
             <I18nextProvider i18n={i18n}>
