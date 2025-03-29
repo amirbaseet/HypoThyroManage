@@ -175,12 +175,12 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
     },
     button: {
-        backgroundColor: '#C6A477',
+        backgroundColor: '#4DA8DA', // Sky Blue
         paddingVertical: 12,
         borderRadius: 25,
         alignItems: 'center',
     },
-    buttonText: {
+        buttonText: {
         color: '#fff',
         fontSize: 15,
         fontWeight: '600',

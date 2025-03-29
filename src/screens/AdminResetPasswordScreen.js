@@ -156,13 +156,12 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   button: {
-    backgroundColor: '#C6A477',
+    backgroundColor: '#4DA8DA', // Sky Blue
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
+},
+buttonText: {
     color: '#fff',
     fontSize: 15,
     fontWeight: '600',

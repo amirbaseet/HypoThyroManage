@@ -16,14 +16,14 @@ const infoCardStyles = StyleSheet.create({
     marginBottom: 15,
   },
   header: {
-    backgroundColor: '#C6A477',
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 8,
+    backgroundColor: '#B08968',
+    padding: 12,
+    marginVertical: 6,
+    borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#C6A477',
+    borderColor: '#B08968',
   },
-  activeHeader: {
+    activeHeader: {
     backgroundColor: '#BDA06F',
   },
   headerText: {

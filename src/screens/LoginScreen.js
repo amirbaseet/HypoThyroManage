@@ -7,11 +7,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginUser } from "../services/AuthService";
 import { AuthContext } from "../context/AuthContext"; // Import AuthContext
+import { useTranslation } from "react-i18next";
 
 const LoginScreen = ({ navigation }) => {
     const { setUser } = useContext(AuthContext); // Get setUser from AuthContext
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
+    const { t } = useTranslation();
+
     const handleLogin = async () => {
         const res = await loginUser(`+90${phoneNumber}`, password);
 
@@ -40,7 +43,7 @@ const LoginScreen = ({ navigation }) => {
                 </View>
 
                 {/* Login Header */}
-                <Text style={styles.headerText}>Login Screen</Text>
+                <Text style={styles.headerText}>{t("login_title")}</Text>
 
                 {/* Inputs Wrapper */}
                 <View style={styles.inputWrapper}>
@@ -49,8 +52,8 @@ const LoginScreen = ({ navigation }) => {
   <MaterialIcons name='phone' size={20} color='#666' style={styles.icon} />
   <Text style={{ fontSize: 16, color: '#000', paddingRight: 5 }}>+90</Text>
   <TextInput
-    placeholder='5XXXXXXXXX'
-    style={styles.input}
+                placeholder={t("phone_placeholder")}
+                style={styles.input}
     keyboardType='phone-pad'
     value={phoneNumber}
     onChangeText={(text) => {
@@ -64,8 +67,8 @@ const LoginScreen = ({ navigation }) => {
 <View style={styles.inputContainer}>
   <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
   <TextInput
-    placeholder='Enter 6-digit PIN'
-    style={styles.input}
+                placeholder={t("pin_placeholder")}
+                style={styles.input}
     value={password}
     onChangeText={(text) => {
       // Allow only numbers and limit to 6 digits
@@ -81,7 +84,7 @@ const LoginScreen = ({ navigation }) => {
 
                     {/* Login Button */}
                     <TouchableOpacity style={styles.loginButton}  onPress={handleLogin}>
-                        <Text style={styles.loginButtonText}>Login</Text>
+                    <Text style={styles.loginButtonText}>{t("login_button")}</Text>
 
                     </TouchableOpacity>
 
@@ -109,9 +112,9 @@ const LoginScreen = ({ navigation }) => {
             justifyContent: 'center',
             marginBottom: 30,
           }}>
-          <Text>New to the app?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={{color: '#AD40AF', fontWeight: '700'}}> Register</Text>
+            <Text>{t("new_user_prompt")}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={{color: '#AD40AF', fontWeight: '700'}}> {t("register_link")}</Text>
           </TouchableOpacity>
         </View>
             </View>

@@ -19,6 +19,8 @@ const ReportScreen = () => {
 
     const [symptoms, setSymptoms] = useState([]);
     const [selectedSymptoms, setSelectedSymptoms] = useState({});
+    const [isFirstTimeThisWeek, setIsFirstTimeThisWeek] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,8 +40,23 @@ const ReportScreen = () => {
 
                     setSelectedSymptoms(preSelected);
                 }
+
+                setIsFirstTimeThisWeek(false);
             } catch (error) {
-                console.log("❌ Patient has no previous report:", error);
+                if (error?.response?.status === 404) {
+                    console.log("🆕 No report found for this week — user should submit a new one.");
+                    const symptomsData = await getSymptoms();
+                    setSymptoms(symptomsData);
+                    setSelectedSymptoms({});
+                    setIsFirstTimeThisWeek(true);
+                    
+                  }
+                   else {
+                    console.error("❌ Unexpected error fetching report:", error);
+                    Alert.alert(t("error"), t("submission_failed"));
+                }
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -69,15 +86,28 @@ const ReportScreen = () => {
 
         if (response.message) {
             Alert.alert(t("success"), t("weekly_report_success"));
-            // setSelectedSymptoms({});
         } else {
             Alert.alert(t("error"), response.error || t("submission_failed"));
         }
     };
 
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.loadingText}>{t("loading")}</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>{t("select_symptoms")}</Text>
+
+            {isFirstTimeThisWeek && (
+                <Text style={styles.infoText}>
+                    🆕 {t("no_report_this_week")}
+                </Text>
+            )}
 
             <FlatList
                 data={symptoms}
@@ -108,8 +138,6 @@ const ReportScreen = () => {
     );
 };
 
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -119,9 +147,15 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 10,
         textAlign: 'center',
         color: '#444444',
+    },
+    infoText: {
+        textAlign: 'center',
+        marginBottom: 15,
+        fontSize: 14,
+        color: '#777',
     },
     row: {
         justifyContent: 'space-between',
@@ -153,6 +187,12 @@ const styles = StyleSheet.create({
         padding: 10,
         alignSelf: 'center',
         width: '100%',
+    },
+    loadingText: {
+        marginTop: 100,
+        textAlign: 'center',
+        fontSize: 16,
+        color: '#888',
     },
 });
 
