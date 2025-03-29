@@ -18,10 +18,15 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
+          "fetch",
+          "audio",
           "fetch"
         ],
         "UIUserNotificationSettings": {
           "types": [
+            "alert",
+            "badge",
+            "sound",
             "alert",
             "badge",
             "sound"
@@ -40,13 +45,11 @@
         "ACCESS_FINE_LOCATION",
         "VIBRATE",
         "WAKE_LOCK",
-        "NOTIFICATIONS"
+        "NOTIFICATIONS",
+        "ACCESS_FINE_LOCATION"
       ],
       "package": "com.amrobaseet.hypothyromanager",
-      "useNextNotificationsApi": true,
-      "config": {
-        "cleartextTraffic": true
-      }
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
