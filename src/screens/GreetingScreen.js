@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Image, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,8 @@ const GreetingScreen = () => {
 
     return (
         <View style={styles.container}>
+    <Image source={require('../../assets/app-logo.png')} style={styles.logo} />
+
             <Text style={styles.appName}>HypoThyroManage</Text>
             <Text style={styles.welcome}>
                 {t('welcome')}, {user?.username}! 👋
@@ -48,6 +50,13 @@ const styles = StyleSheet.create({
         color: '#003366', // 🔵 dark blue
         marginBottom: 10,
     },
+    logo: {
+        width: 100, // adjust to your needs
+        height: 100,
+        marginBottom: 20,
+        resizeMode: 'contain',
+      },
+    
     welcome: {
         fontSize: 22,
         fontWeight: '600',

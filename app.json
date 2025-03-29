@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "hypothyroManager",
-    "slug": "hypothyroManager",
+    "name": "HypoThyroManage",
+    "slug": "hypoThyroManager",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/app-logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -34,16 +34,16 @@
       ]
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
+      "icon": "./assets/app-logo.png",
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "VIBRATE",
-        "WAKE_LOCK"
+        "WAKE_LOCK",
+        "NOTIFICATIONS",
+        "ACCESS_FINE_LOCATION"
       ],
-      "package": "com.amrobaseet.hypothyromanager"
+      "package": "com.amrobaseet.hypothyromanager",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -60,7 +60,7 @@
     "owner": "amrobaseet",
     "extra": {
       "eas": {
-        "projectId": "b8919a44-2386-4915-a23e-aa2994f2d09d"
+        "projectId": "c51ecc8a-519f-4894-9eb6-6aef93b1a203"
       }
     }
   }

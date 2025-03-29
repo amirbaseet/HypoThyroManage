@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { registerUser } from '../services/AuthService'; // or '../api/authApi'
 
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from "react-i18next";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -26,20 +27,21 @@ const RegisterScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [gender, setGender] = useState('');
   const [role] = useState('patient'); // Default role is patient
+    const { t } = useTranslation();
 
   const handleRegister = async () => {
     if (!phoneNumber || !username || !password || !confirmPassword || !gender) {
-      Alert.alert('Error', 'Please fill all fields');
+      Alert.alert(t("error"), t("error_fill_fields"));
       return;
     }
   
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert(t("error"), t("error_password_match"));
       return;
     }
   
     if (!/^\d{6}$/.test(password)) {
-      Alert.alert('Error', 'Password must be exactly 6 digits');
+      Alert.alert(t("error"), t("error_pin_length"));
       return;
     }
   
@@ -52,10 +54,10 @@ const RegisterScreen = () => {
     });
   
     if (res.success) {
-      Alert.alert('Success', res.message || 'Registered successfully');
+      Alert.alert(t("success"), t("success_register"));
       navigation.navigate('Login');
     } else {
-      Alert.alert('Error', res.error);
+      Alert.alert(t("error"), res.error || t("error_register"));
     }
   };
   
@@ -67,7 +69,7 @@ const RegisterScreen = () => {
             <RegImg width={300} height={300} style={{ transform: [{ rotate: '-5deg' }] }} />
           </View>
 
-          <Text style={styles.headerText}>Register</Text>
+          <Text style={styles.headerText}>{t("register_title")}</Text>
 
           <View style={styles.inputWrapper}>
 
@@ -76,8 +78,8 @@ const RegisterScreen = () => {
               <MaterialIcons name='phone' size={20} color='#666' style={styles.icon} />
               <Text style={{ fontSize: 16, color: '#000', paddingRight: 5 }}>+90</Text>
               <TextInput
-                placeholder='5XXXXXXXXX'
-                style={styles.input}
+  placeholder={t("phone_placeholder")}
+  style={styles.input}
                 keyboardType='phone-pad'
                 value={phoneNumber}
                 onChangeText={(text) => {
@@ -91,7 +93,7 @@ const RegisterScreen = () => {
             <View style={styles.inputContainer}>
               <MaterialIcons name='person' size={20} color='#666' style={styles.icon} />
               <TextInput
-                placeholder='Username'
+                placeholder={t("username_placeholder")}
                 style={styles.input}
                 value={username}
                 onChangeText={setUsername}
@@ -100,19 +102,19 @@ const RegisterScreen = () => {
 
             {/* Gender Selector */}
             <View style={styles.genderContainer}>
-              <Text style={styles.genderLabel}>Select Gender:</Text>
+              <Text style={styles.genderLabel}>{t("select_gender")}</Text>
               <View style={styles.genderOptions}>
                 <TouchableOpacity
                   style={[styles.genderButton, gender === 'male' && styles.selectedGender]}
                   onPress={() => setGender('male')}
                 >
-                  <Text style={[styles.genderText, gender === 'male' && { color: '#fff' }]}>Male</Text>
+                  <Text style={[styles.genderText, gender === 'male' && { color: '#fff' }]}>{t("male")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.genderButton, gender === 'female' && styles.selectedGender]}
                   onPress={() => setGender('female')}
                 >
-                  <Text style={[styles.genderText, gender === 'female' && { color: '#fff' }]}>Female</Text>
+                  <Text style={[styles.genderText, gender === 'female' && { color: '#fff' }]}>{t("female")}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -121,7 +123,7 @@ const RegisterScreen = () => {
             <View style={styles.inputContainer}>
               <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
               <TextInput
-                placeholder='Enter 6-digit PIN'
+                placeholder={t("enter_pin")}
                 style={styles.input}
                 secureTextEntry
                 keyboardType='number-pad'
@@ -135,7 +137,7 @@ const RegisterScreen = () => {
             <View style={styles.inputContainer}>
               <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
               <TextInput
-                placeholder='Confirm PIN'
+                placeholder={t("confirm_pin")}
                 style={styles.input}
                 secureTextEntry
                 keyboardType='number-pad'
@@ -147,13 +149,13 @@ const RegisterScreen = () => {
 
             {/* Register Button */}
             <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-              <Text style={styles.registerButtonText}>Register</Text>
+              <Text style={styles.registerButtonText}>{t("register_button")}</Text>
             </TouchableOpacity>
 
             {/* OR Divider */}
             <View style={styles.orContainer}>
               <View style={styles.line} />
-              <Text style={styles.orText}>Or, sign up with...</Text>
+              <Text style={styles.orText}>{t("or_signup_with")}</Text>
               <View style={styles.line} />
             </View>
 
@@ -171,9 +173,9 @@ const RegisterScreen = () => {
             </View>
 
             <View style={styles.loginContainer}>
-              <Text>Already have an account?</Text>
+              <Text>{t("already_have_account")}</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.loginText}> Login</Text>
+                <Text style={styles.loginText}> {t("login_link")}</Text>
               </TouchableOpacity>
             </View>
           </View>

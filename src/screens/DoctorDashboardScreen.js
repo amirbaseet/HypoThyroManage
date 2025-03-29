@@ -59,8 +59,6 @@ const DoctorDashboardScreen = ({ route, navigation }) => {
         switch (selectedTab) {
             case "symptom":
                 return <ReportsScreen patientId={selectedPatient} />;
-            case "submission":
-                return <SubmissionHistoryScreen patientId={selectedPatient} />;
             case "progress":
                 return <ProgressScreen patientId={selectedPatient} />;
             default:
@@ -143,15 +141,6 @@ const DoctorDashboardScreen = ({ route, navigation }) => {
                             <Text style={styles.tabText}>📝 {t("weekly_symptoms")}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={[
-                                styles.tabButton,
-                                selectedTab === "submission" && styles.activeTab
-                            ]}
-                            onPress={() => setSelectedTab("submission")}
-                        >
-                            <Text style={styles.tabText}>📄 {t("form_submissions")}</Text>
-                        </TouchableOpacity>
 
                         <TouchableOpacity
                             style={[

@@ -18,17 +18,14 @@ const PatientStack = () => {
 
     return (
         <Stack.Navigator initialRouteName="PatientVideosScreen">
-<Stack.Screen name="PatientVideosScreen" component={PatientVideosScreen} options={{ headerShown: false }} />
-<Stack.Screen 
-    name="HypothyroidInfo" 
-    component={HypothyroidInfoScreen} 
-    options={{ title: t('hypothyroid_info') }} 
+            <Stack.Screen name="PatientVideosScreen" component={PatientVideosScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Nutrition"       component={NutritionScreen} options={{ title: t('nutrition') }} />
+            <Stack.Screen name="Exercise"        component={ExerciseScreen} options={{ title: t('exercise') }} />
+            <Stack.Screen name="Stress"          component={StressScreen} options={{ title: t('stress') }} />
+            <Stack.Screen name="Dermatological"  component={DermatologicalScreen} options={{ title: t('dermatological') }} />
+            <Stack.Screen name="Brain"           component={BrainScreen} options={{ title: t('brain') }} />
+            <Stack.Screen name="HypothyroidInfo" component={HypothyroidInfoScreen} options={{ title: t('hypothyroid_info') }} 
 />
-<Stack.Screen name="Nutrition" component={NutritionScreen} options={{ title: t('nutrition') }} />
-            <Stack.Screen name="Exercise" component={ExerciseScreen} options={{ title: t('exercise') }} />
-            <Stack.Screen name="Stress" component={StressScreen} options={{ title: t('stress') }} />
-            <Stack.Screen name="Dermatological" component={DermatologicalScreen} options={{ title: t('dermatological') }} />
-            <Stack.Screen name="Brain" component={BrainScreen} options={{ title: t('brain') }} />
             
         </Stack.Navigator>
     );

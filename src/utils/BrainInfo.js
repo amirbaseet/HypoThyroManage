@@ -89,14 +89,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAF9F6',
   },
   header: {
-    backgroundColor: '#C6A477',
+    backgroundColor: '#B08968',
     padding: 12,
     marginVertical: 6,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#C6A477',
+    borderColor: '#B08968',
   },
-  headerText: {
+    headerText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FAF9F6',

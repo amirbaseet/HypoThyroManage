@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -11,9 +11,11 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { getDoctorChatListAPI, getMissedMedicineUsers } from "../services/doctorService";
+import { useTranslation } from "react-i18next";
 
 const DoctorChatListScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
+  const { t } = useTranslation();
   const [chats, setChats] = useState([]);
   const [missedUsers, setMissedUsers] = useState([]);
   const [filteredChats, setFilteredChats] = useState([]);
@@ -68,7 +70,7 @@ const DoctorChatListScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput
-        placeholder="Search by patient name..."
+        placeholder={t("search_by_name")}
         value={searchQuery}
         onChangeText={handleSearch}
         style={styles.searchInput}
@@ -80,19 +82,19 @@ const DoctorChatListScreen = ({ navigation }) => {
           style={[styles.toggleButton, !missedOnly && styles.activeToggle]}
           onPress={() => toggleFilter(false)}
         >
-          <Text style={styles.toggleText}>All Patients</Text>
+          <Text style={styles.toggleText}>{t("all_patients")}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.toggleButton, missedOnly && styles.activeToggle]}
           onPress={() => toggleFilter(true)}
         >
-          <Text style={styles.toggleText}>Missed Only</Text>
+          <Text style={styles.toggleText}>{t("missed_patients")}</Text>
         </TouchableOpacity>
       </View>
 
       {filteredChats.length === 0 ? (
-        <Text style={styles.noChats}>No chats found</Text>
+        <Text style={styles.noChats}>{t("no_chats")}</Text>
       ) : (
         <FlatList
           data={filteredChats}
@@ -114,7 +116,7 @@ const DoctorChatListScreen = ({ navigation }) => {
                     ? item.lastMessage.length > 30
                       ? item.lastMessage.substring(0, 30) + "..."
                       : item.lastMessage
-                    : "No messages yet"}
+                    : t("no_messages")}
                 </Text>
               </View>
               {item.unreadCount > 0 && (

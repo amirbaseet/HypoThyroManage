@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     button: {
-        backgroundColor: '#C6A477',
+        backgroundColor: '#4DA8DA', // Sky Blue
         paddingVertical: 12,
         borderRadius: 25,
         alignItems: 'center',

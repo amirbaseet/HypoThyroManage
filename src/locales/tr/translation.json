@@ -36,7 +36,7 @@
   "take_medicine": "İlaç İçme Zamanı",
   "available_forms": "Ölçeklerimiz",
   "submission_history": "Gönderim Geçmişi",
-  "report": "Rapor",
+  "report": "Haftalık Raporu",
   "reports": "Geçmiş Raporları",
   "nutrition": "Beslenme Önerileri",
   "exercise": "Egzersiz Tavsileri",
@@ -134,7 +134,42 @@
   "patient_home_title": "Hasta Ana Sayfası",
   "videos": "Videolar ve Eğitim",
   "hypothyroid_info": "Hipotiroidi Bilgilendirmesi",
-  "about_us": "Hakkımızda"
+  "about_us": "Hakkımızda",
+  "search_by_name": "Hasta adına göre ara...",
+  "all_patients": "Tüm Hastalar",
+  "missed_patients": "İlacı Almayanlar",
+  "no_chats": "Sohbet bulunamadı",
+  "no_messages": "Henüz mesaj yok",
+  "login_title": "Giriş Yap",
+  "login_success": "Giriş başarılı",
+  "login_error": "Giriş başarısız",
+  "pin_placeholder": "6 haneli şifrenizi girin",
+  "login_button": "Giriş Yap",
+  "new_user_prompt": "Yeni misiniz?",
+  "register_link": "Kayıt Ol",
+  "search_phone": "Telefon numarasıyla ara",
+  "google_login": "Google ile Giriş",
+  "facebook_login": "Facebook ile Giriş",
+  "apple_login": "Apple ile Giriş",
+  "register_title": "Kayıt Ol",
+  "username_placeholder": "Kullanıcı Adı",
+  "select_gender": "Cinsiyet Seçin:",
+  "male": "Erkek",
+  "female": "Kadın",
+  "enter_pin": "6 Haneli Şifre Girin",
+  "confirm_pin": "Şifreyi Onayla",
+  "register_button": "Kayıt Ol",
+  "or_signup_with": "Ya da şununla kayıt ol...",
+  "already_have_account": "Zaten hesabınız var mı?",
+  "login_link": "Giriş Yap",
+  "error_fill_fields": "Lütfen tüm alanları doldurun",
+  "error_password_match": "Şifreler eşleşmiyor",
+  "error_pin_length": "Şifre tam olarak 6 haneli olmalıdır",
+  "success_register": "Başarıyla kayıt olundu",
+  "error_register": "Kayıt başarısız"
+
+
+
 
 
 

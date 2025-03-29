@@ -97,9 +97,6 @@ const HomeScreen = () => {
             <Text style={styles.buttonText}>{t("export_weekly_reports")}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, styles.exportButton]} onPress={() => handleExport("specified")}>
-            <Text style={styles.buttonText}>{t("export_specified_week_reports")}</Text>
-          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
@@ -161,7 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   langButton: {
-    backgroundColor: "#C6A477",
+    backgroundColor: "#4DA8DA",
     flex: 0.45,
   },
   exportButton: {
