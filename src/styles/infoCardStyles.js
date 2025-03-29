@@ -29,6 +29,8 @@ const infoCardStyles = StyleSheet.create({
     fontWeight: '700',
     color: '#ffffff',
     textAlign: 'flex-start',
+    fontFamily: 'SourceSans3-Regular', 
+
   },
   card: {
     backgroundColor: '#F1FAEE',
@@ -38,6 +40,7 @@ const infoCardStyles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#A8DADC',
     elevation: 4,
+    
   },
   contentText: {
     fontSize: 15,
@@ -45,6 +48,8 @@ const infoCardStyles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
     lineHeight: 22,
+    fontFamily: 'SourceSans3-Regular', 
+
   },
 });
 

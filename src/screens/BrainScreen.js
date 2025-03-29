@@ -78,7 +78,6 @@ const BrainScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
         backgroundColor: '#FAF9F6',
     },
     sectionTitle: {

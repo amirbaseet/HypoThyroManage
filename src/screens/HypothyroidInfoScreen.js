@@ -9,6 +9,7 @@ const HypothyroidInfoScreen = () => {
         <SafeAreaView style={styles.safeArea}>
             <ScrollView contentContainerStyle={styles.container}>
                 <Text style={styles.title}>{t('hypothyroid_info')}</Text>
+
                 <Text style={styles.paragraph}>
                     Hipotiroidi, tiroid bezinin yeterince çalışmaması durumudur. Tiroid bezi, boynumuzda bulunan ve
                     vücudun enerji dengesini, metabolizmasını kontrol eden bir bezdir. Bu bez az çalıştığında,
@@ -40,17 +41,19 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     title: {
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#444',
+        color: '#222',
         textAlign: 'center',
     },
     paragraph: {
         fontSize: 16,
+        fontFamily: 'SourceSans3-Regular', 
         color: '#333',
         marginBottom: 20,
-        lineHeight: 24,
+        lineHeight: 26,
+        textAlign: 'justify', // ✔️ iki yana yaslı
     },
 });
 

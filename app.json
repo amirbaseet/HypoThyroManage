@@ -63,7 +63,8 @@
           "mode": "production"
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-font"
     ],
     "owner": "amrobaseet",
     "extra": {

@@ -7,6 +7,7 @@ import {
   StyleSheet
 } from 'react-native';
 import Collapsible from 'react-native-collapsible';
+import infoCardStyles from '../styles/infoCardStyles'; // ✅ Shared style
 
 const BrainInfo = () => {
   const [activeSection, setActiveSection] = useState(null);
@@ -16,20 +17,20 @@ const BrainInfo = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={infoCardStyles.container}>
       {sections.map((section) => (
         <View key={section.id}>
           <TouchableOpacity
-            style={styles.header}
+            style={infoCardStyles.header}
             onPress={() => toggleSection(section.id)}
           >
-            <Text style={styles.headerText}>{section.title}</Text>
+            <Text style={infoCardStyles.headerText}>{section.title}</Text>
           </TouchableOpacity>
           <Collapsible collapsed={activeSection !== section.id}>
-            <View style={styles.card}>
-              {section.content.map((text, index) => (
-                <Text key={index} style={styles.contentText}>
-                  {text}
+            <View style={infoCardStyles.card}>
+              {section.content.map((line, idx) => (
+                <Text key={idx} style={infoCardStyles.contentText}>
+                  {line}
                 </Text>
               ))}
             </View>
@@ -39,7 +40,6 @@ const BrainInfo = () => {
     </ScrollView>
   );
 };
-
 const sections = [
   {
     id: 1,
