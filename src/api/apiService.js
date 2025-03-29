@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logoutUser } from "../services/AuthService"; // Make sure path is correct
 import { API_URL } from "@env";  // 🔥 Import from .env
 
+// Define base URL for API (use environment variables for flexibility)
 
 // Create an axios instance
 const api = axios.create({
