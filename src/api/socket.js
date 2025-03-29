@@ -19,7 +19,7 @@ const connectSocket = async () => {
             return null;
         }
 
-        socket = io(SOCKET_URL, {
+        socket = io("http://185.149.103.143:3001", {
             transports: ["websocket", "polling"],
             path: "/socket.io/",
             reconnection: true,

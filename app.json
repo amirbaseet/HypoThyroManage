@@ -18,15 +18,10 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
-          "fetch",
-          "audio",
           "fetch"
         ],
         "UIUserNotificationSettings": {
           "types": [
-            "alert",
-            "badge",
-            "sound",
             "alert",
             "badge",
             "sound"
@@ -35,10 +30,8 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "usesPermissions": [
-        "USER_FACING_NOTIFICATIONS",
         "ACCESS_FINE_LOCATION",
-        "USER_FACING_NOTIFICATIONS",
-        "ACCESS_FINE_LOCATION"
+        "USER_FACING_NOTIFICATIONS"
       ]
     },
     "android": {
@@ -47,11 +40,13 @@
         "ACCESS_FINE_LOCATION",
         "VIBRATE",
         "WAKE_LOCK",
-        "NOTIFICATIONS",
-        "ACCESS_FINE_LOCATION"
+        "NOTIFICATIONS"
       ],
       "package": "com.amrobaseet.hypothyromanager",
-      "useNextNotificationsApi": true
+      "useNextNotificationsApi": true,
+      "config": {
+        "cleartextTraffic": true
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
