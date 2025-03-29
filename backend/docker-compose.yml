@@ -4,9 +4,12 @@ services:
   app:
     build: .
     ports:
-      - "3001:3001"
+      - "443:443"     # 🔐 HTTPS exposed to outside
+      - "3001:3001"   # Optional internal app port if needed
+    volumes:
+      - ./cert:/app/cert
     environment:
-      - PORT=3001
+      - PORT=443
       - Conn_Strng=mongodb://mongo:27017/hypothyroiddb
       - ADMIN_SECRET=supersecureadminkey123
       - CLIENT_URL=*
@@ -17,7 +20,7 @@ services:
   mongo:
     image: mongo:6
     ports:
-      - "27017:27017"    
+      - "27017:27017"
     volumes:
       - mongo-data:/data/db
 
