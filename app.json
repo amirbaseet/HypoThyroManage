@@ -18,17 +18,25 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
+          "fetch",
+          "audio",
           "fetch"
         ],
         "UIUserNotificationSettings": {
           "types": [
             "alert",
             "badge",
+            "sound",
+            "alert",
+            "badge",
             "sound"
           ]
-        }
+        },
+        "ITSAppUsesNonExemptEncryption": false
       },
       "usesPermissions": [
+        "USER_FACING_NOTIFICATIONS",
+        "ACCESS_FINE_LOCATION",
         "USER_FACING_NOTIFICATIONS",
         "ACCESS_FINE_LOCATION"
       ]
