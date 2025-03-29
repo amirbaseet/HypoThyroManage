@@ -16,7 +16,7 @@ i18n
     compatibilityJSON: 'v3',
     resources,
     // lng: Localization.locale.split('-')[0], // e.g. 'en-US' → 'en'
-    lng: Localization.locale.split('-')[1], // e.g. 'en-US' → 'en'
+    lng: Localization.locale.split('-')[1] || 'tr',
     fallbackLng: 'tr',
     interpolation: {
       escapeValue: false,

@@ -11,7 +11,7 @@ import { markMedicineAsTaken, getWeeklyProgress } from "../services/medicineServ
 import { format } from "date-fns";
 import { AuthContext } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Ionicons } from "@expo/vector-icons"; // Optional: Expo icons
+import { Ionicons } from "@expo/vector-icons";
 
 const TakeMedicineScreen = () => {
     const { user } = useContext(AuthContext);
@@ -54,13 +54,13 @@ const TakeMedicineScreen = () => {
         checkTodayStatus();
     }, []);
 
-    const handleTakeMedicine = async () => {
+    const handleTakeMedicine = async (takenValue) => {
         setLoading(true);
         try {
-            const res = await markMedicineAsTaken();
+            const res = await markMedicineAsTaken(takenValue);
             if (!res.error) {
-                Alert.alert(t("done"), t("mark_success"));
-                setTodayTaken(true);
+                Alert.alert(t("done"), takenValue ? t("mark_success") : t("mark_missed"));
+                setTodayTaken(takenValue);
             } else {
                 Alert.alert(t("error"), res.error);
             }
@@ -76,28 +76,44 @@ const TakeMedicineScreen = () => {
             <Text style={styles.header}>💊 {t("daily_medicine_title")}</Text>
 
             {checking ? (
-                <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />
-            ) : todayTaken ? (
-                <View style={styles.messageBox}>
-                    <Ionicons name="checkmark-circle" size={48} color="#4CAF50" />
-                    <Text style={styles.successMessage}>{t("medicine_taken_msg")}</Text>
-                </View>
-            ) : (
-                <View style={styles.actionBox}>
-                    <Text style={styles.promptText}>{t("medicine_not_taken")}</Text>
-                    <TouchableOpacity
-                        style={[styles.button, loading && styles.disabledButton]}
-                        onPress={handleTakeMedicine}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <ActivityIndicator color="#fff" />
-                        ) : (
-                            <Text style={styles.buttonText}>{t("take_medicine_btn")}</Text>
-                        )}
-                    </TouchableOpacity>
-                </View>
-            )}
+    <ActivityIndicator size="large" color="#C6A477" style={styles.loading} />
+) : (
+    <View style={styles.actionBox}>
+        {todayTaken === true && (
+            <Text style={styles.statusLabel}>{t("you_marked_taken")}</Text>
+        )}
+        {todayTaken === false && (
+            <Text style={styles.statusLabel}>{t("you_marked_missed")}</Text>
+        )}
+        {todayTaken === null && (
+            <Text style={styles.promptText}>{t("medicine_not_taken")}</Text>
+        )}
+
+        <TouchableOpacity
+            style={[
+                styles.button,
+                todayTaken === true && styles.selectedButton,
+                loading && styles.disabledButton,
+            ]}
+            onPress={() => handleTakeMedicine(true)}
+            disabled={loading}
+        >
+            <Text style={styles.buttonText}>{t("take_medicine_btn")}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+            style={[
+                styles.missedButton,
+                todayTaken === false && styles.selectedButton,
+                loading && styles.disabledButton,
+            ]}
+            onPress={() => handleTakeMedicine(false)}
+            disabled={loading}
+        >
+            <Text style={styles.buttonText}>{t("missed_medicine_btn")}</Text>
+        </TouchableOpacity>
+    </View>
+)}
         </View>
     );
 };
@@ -170,6 +186,27 @@ const styles = StyleSheet.create({
     disabledButton: {
         opacity: 0.6,
     },
+    missedButton: {
+        marginTop: 15,
+        backgroundColor: "#EF9A9A",
+        paddingVertical: 14,
+        paddingHorizontal: 40,
+        borderRadius: 30,
+        alignItems: "center",
+        elevation: 3,
+    },
+    selectedButton: {
+        borderWidth: 2,
+        borderColor: "#4CAF50", // or a highlight color
+    },
+    
+    statusLabel: {
+        fontSize: 14,
+        color: "#4CAF50",
+        marginBottom: 10,
+        fontWeight: "500",
+    },
+    
 });
 
 export default TakeMedicineScreen;

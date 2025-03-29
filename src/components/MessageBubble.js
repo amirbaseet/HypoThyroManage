@@ -1,10 +1,25 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet, Linking } from "react-native";
+import ParsedText from "react-native-parsed-text";
 
 const MessageBubble = ({ message, isSender }) => {
+    const handleUrlPress = (url) => {
+        Linking.openURL(url).catch((err) => {
+            console.error("Failed to open URL:", err);
+        });
+    };
+
     return (
         <View style={isSender ? styles.patientMessage : styles.doctorMessage}>
-            <Text style={styles.messageText}>{message}</Text>
+            <ParsedText
+                style={styles.messageText}
+                parse={[
+                    { type: "url", style: styles.link, onPress: handleUrlPress }
+                ]}
+                childrenProps={{ allowFontScaling: false }}
+            >
+                {message}
+            </ParsedText>
         </View>
     );
 };
@@ -33,6 +48,10 @@ const styles = StyleSheet.create({
     messageText: {
         fontSize: 16,
         color: "#444444",
+    },
+    link: {
+        color: "blue",
+        textDecorationLine: "underline",
     },
 });
 

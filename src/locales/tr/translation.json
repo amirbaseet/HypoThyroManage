@@ -166,12 +166,13 @@
   "error_password_match": "Şifreler eşleşmiyor",
   "error_pin_length": "Şifre tam olarak 6 haneli olmalıdır",
   "success_register": "Başarıyla kayıt olundu",
-  "error_register": "Kayıt başarısız"
-
-
-
-
-
+  "error_register": "Kayıt başarısız",
+  "chat_placeholder": "Bir mesaj yazın...",
+  "chat_send": "Gönder",
+  "missed_medicine_btn": "Kaçırdım",
+  "mark_missed": "Bugünü ilaç alınmadı olarak işaretlediniz. Yarın unutmayın!",
+  "you_marked_taken": "Bugün ilacınızı aldınız olarak işaretlediniz ✅",
+  "you_marked_missed": "Bugünü ilacı almadım olarak işaretlediniz ❌",
 
 }
 
