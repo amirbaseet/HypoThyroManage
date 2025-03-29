@@ -165,7 +165,15 @@
   "error_password_match": "Passwords do not match",
   "error_pin_length": "Password must be exactly 6 digits",
   "success_register": "Registered successfully",
-  "error_register": "Registration failed"
+  "error_register": "Registration failed",
+  "chat_placeholder": "Type a message...",
+  "chat_send": "Send",
+  "missed_medicine_btn": "I missed it",
+  "mark_missed": "You’ve marked today as missed. Don’t forget tomorrow!",
+  "you_marked_taken": "You marked today as taken ✅",
+  "you_marked_missed": "You marked today as missed ❌",
+
+
 
 
   

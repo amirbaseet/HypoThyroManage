@@ -8,18 +8,19 @@ exports.takeMedicine = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const taken = req.body.taken ?? true; // default true
     const day = today.getDate();
-    const month = today.getMonth()+1;
+    const month = today.getMonth() + 1;
     const year = today.getFullYear();
     const { weekStart, weekEnd } = getCurrentWeek();
 
     const log = await MedicineLog.findOneAndUpdate(
       { userId, date: today },
-      { taken: true, day, month, year, weekStart, weekEnd },
+      { taken, day, month, year, weekStart, weekEnd },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    res.status(200).json({ message: "Medicine marked as taken", log });
+    res.status(200).json({ message: "Medicine log updated", log });
   } catch (error) {
     console.error("❌ Error taking medicine:", error);
     res.status(500).json({ message: "Error updating medicine log" });

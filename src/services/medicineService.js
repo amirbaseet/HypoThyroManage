@@ -2,16 +2,15 @@ import api from "../api/apiService";
 const fileName = `IN medicineService`;
 
 // ✅ Mark today's medicine as taken
-export const markMedicineAsTaken = async () => {
+export const markMedicineAsTaken = async (taken = true) => {
     try {
-        const response = await api.post("/medicine/take");
-        return response.data;
+        const res = await api.post("/medicine/take", { taken });
+        return res.data;
     } catch (error) {
-        console.error(fileName,"❌ Error taking medicine:", error.response?.data || error);
-        return { error: error.response?.data?.message || "Failed to mark as taken" };
+        console.error("❌ markMedicineAsTaken error:", error.response?.data);
+        return { error: error.response?.data?.message || "Something went wrong" };
     }
 };
-
 // ✅ Get medicine progress
 export const getWeeklyProgress = async (userId = null) => {
     try {
