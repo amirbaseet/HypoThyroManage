@@ -1,5 +1,5 @@
 const { Server } = require("socket.io");
-const http = require("http");
+const https = require("https");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 // const {sendPushNotification} = require("./utils/pushNotifications")
@@ -11,12 +11,18 @@ const cron = require("node-cron");
 const MedicineLog = require("./models/MedicineLog"); // Adjust path if needed
 
 const app = express();
-const server = http.createServer(app);
+// 🔐 Load SSL certificate
+const credentials = {
+    key: fs.readFileSync("cert/private.key", "utf8"),
+    cert: fs.readFileSync("cert/certificate.crt", "utf8"),
+  };
+  
+  const server = https.createServer(credentials, app);
 
-const io = new Server(server, {
-    cors: { origin: process.env.CLIENT_URL }, // Allow requests from frontend
-});
-
+  const io = new Server(server, {
+    cors: { origin: process.env.CLIENT_URL || "*" },
+  });
+  
 // Store online users with socket IDs
 const users = new Map();
 const activeChats = new Map(); // Tracks which user is actively viewing which chat
