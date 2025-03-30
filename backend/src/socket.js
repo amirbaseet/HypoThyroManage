@@ -10,13 +10,14 @@ const Message  = require("./models/Message");
 const cron = require("node-cron");
 const MedicineLog = require("./models/MedicineLog"); // Adjust path if needed
 const fs = require("fs");
+const path = require('path');
 
 const app = express();
 // 🔐 Load SSL certificate
 const credentials = {
-    key: fs.readFileSync("cert/private.key", "utf8"),
-    cert: fs.readFileSync("cert/certificate.crt", "utf8"),
-  };
+    key: fs.readFileSync(path.join(__dirname, 'cert/private.key'), 'utf8'),
+    cert: fs.readFileSync(path.join(__dirname, 'cert/certificate.crt'), 'utf8'),
+    };
   
   const server = https.createServer(credentials, app);
 
