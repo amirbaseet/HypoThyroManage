@@ -3,26 +3,36 @@ version: '3.8'
 services:
   app:
     build: .
+    container_name: backend-app
     ports:
-      - "443:443"     # 🔐 HTTPS exposed to outside
-      - "3001:3001"   # Optional internal app port if needed
-    volumes:
-      - ./cert:/app/cert
+      - "443:443"
+      - "3001:3001"
     environment:
       - PORT=443
       - Conn_Strng=mongodb://mongo:27017/hypothyroiddb
       - ADMIN_SECRET=supersecureadminkey123
-      - CLIENT_URL=*
+      - CLIENT_URL=https://localhost
       - JWT_SEC=AXZ!@#
-    depends_on:
-      - mongo
 
   mongo:
     image: mongo:6
+    container_name: backend-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+
+  ngrok:
+    image: wernight/ngrok
+    container_name: backend-ngrok
+    depends_on:
+      - app
+    environment:
+      - NGROK_AUTHTOKEN=2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe  # 🔐 REQUIRED!
+      - NGROK_REGION=eu
+    command: http https://app:443
+    ports:
+      - "4040:4040"  # Optional: to view ngrok dashboard
 
 volumes:
   mongo-data:
