@@ -24,14 +24,5 @@ services:
     volumes:
       - mongo-data:/data/db
 
-  ngrok:
-    image: ngrok/ngrok:latest
-    restart: unless-stopped
-    command: http --host-header=rewrite app:3001
-    environment:
-      NGROK_AUTHTOKEN: 2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe
-    depends_on:
-      - app
-
 volumes:
   mongo-data:
