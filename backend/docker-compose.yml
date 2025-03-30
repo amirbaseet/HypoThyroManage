@@ -30,8 +30,11 @@ services:
     command: http app:443
     environment:
       - NGROK_AUTHTOKEN=2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe
+      - NGROK_REGION=eu
+    command: ["ngrok", "http", "app:443"]
     ports:
       - "4040:4040"  # Optional: dashboard access
+      - "4040:4040"  # Optional ngrok dashboard
 
 volumes:
   mongo-data:
