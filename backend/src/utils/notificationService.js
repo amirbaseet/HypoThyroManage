@@ -58,9 +58,19 @@ exports.sendNotificationToAllUsers = async (title, message) =>{
         let chunks = expo.chunkPushNotifications(messages);
 
         for (let chunk of chunks) {
-            await expo.sendPushNotificationsAsync(chunk);
+            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            console.log("📬 Batch Ticket Response:", ticketChunk);
+        
+            for (let ticket of ticketChunk) {
+                if (ticket.status === "error") {
+                    console.warn("⚠️ Push Error:", ticket.message);
+                    if (ticket.details?.error) {
+                        console.warn("🔍 Details:", ticket.details.error);
+                    }
+                }
+            }
         }
-
+        
         console.log(`✅ Notification sent to ${users.length} users.`);
     } catch (error) {
         console.error("❌ Error sending notifications to all users:", error);
@@ -68,8 +78,9 @@ exports.sendNotificationToAllUsers = async (title, message) =>{
 };
 exports.sendPushNotificationByToken = async (pushToken, title, message) => {
     try {
+        // ✅ Check if the token is valid
         if (!Expo.isExpoPushToken(pushToken)) {
-            console.log("Invalid Expo Push Token.");
+            console.log("❌ Invalid Expo Push Token:", pushToken);
             return;
         }
 
@@ -77,19 +88,32 @@ exports.sendPushNotificationByToken = async (pushToken, title, message) => {
             {
                 to: pushToken,
                 sound: "default",
-                title: title,
+                title,
                 body: message,
+                data: { customData: "example" }, // Optional custom data
             },
         ];
 
-        let chunks = expo.chunkPushNotifications(messages);
+        const chunks = expo.chunkPushNotifications(messages);
 
         for (let chunk of chunks) {
-            await expo.sendPushNotificationsAsync(chunk);
+            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            console.log("📬 Push Ticket Response:", ticketChunk);
+
+            // Check for errors in the ticket
+            for (let ticket of ticketChunk) {
+                if (ticket.status === "error") {
+                    console.warn("⚠️ Push Error:", ticket.message);
+                    if (ticket.details?.error) {
+                        console.warn("🔍 Details:", ticket.details.error);
+                    }
+                }
+            }
         }
 
-        console.log(`✅ Push notification sent: ${title} - ${message}`);
+        console.log(`✅ Push notification sent to token: ${pushToken}`);
     } catch (error) {
         console.error("❌ Error sending push notification:", error);
     }
 };
+
