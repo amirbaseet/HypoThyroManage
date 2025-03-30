@@ -25,11 +25,16 @@ services:
     container_name: backend-ngrok
     depends_on:
       - app
-    command: ["ngrok", "http", "app:443"]
-    environment:
-      - NGROK_AUTHTOKEN=2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe
+    command:
+      - "ngrok"
+      - "http"
+      - "--authtoken"
+      - "2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe"
+      - "--scheme"
+      - "https"
+      - "app:443"
     ports:
       - "4040:4040"
-      
+
 volumes:
   mongo-data:
