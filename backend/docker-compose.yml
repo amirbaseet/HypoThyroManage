@@ -29,7 +29,7 @@ services:
     environment:
       - NGROK_AUTHTOKEN=2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe
     ports:
-      - "4040:4040"  # Optional: web dashboard
-
+      - "4040:4040"
+      
 volumes:
   mongo-data:
