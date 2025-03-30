@@ -125,25 +125,25 @@ const PatientHomeScreen = () => {
                 </View>
 
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#6D676E' }]}
-                    onPress={() => navigation.navigate('Patient', { screen: 'PatientVideosScreen' })}
-                >
-                    <Text style={styles.buttonText}>{t('videos')}</Text>
-                </TouchableOpacity>
+    style={[styles.button, { backgroundColor: '#6D676E' }]}
+    onPress={() => navigation.navigate('PatientVideosScreen')}
+>
+    <Text style={styles.buttonText}>{t('videos')}</Text>
+</TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#7BB661' }]}
-                    onPress={() => navigation.navigate('Patient', { screen: 'HypothyroidInfo' })}
-                >
-                    <Text style={styles.buttonText}>{t('hypothyroid_info')}</Text>
-                </TouchableOpacity>
+<TouchableOpacity
+    style={[styles.button, { backgroundColor: '#7BB661' }]}
+    onPress={() => navigation.navigate('HypothyroidInfo')}
+>
+    <Text style={styles.buttonText}>{t('hypothyroid_info')}</Text>
+</TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#F4A259' }]}
-                    onPress={() => navigation.navigate('Reports', { screen: 'ReportsMenuScreen' })}
-                >
-                    <Text style={styles.buttonText}>{t('reports_menu')}</Text>
-                </TouchableOpacity>
+<TouchableOpacity
+    style={[styles.button, { backgroundColor: '#F4A259' }]}
+    onPress={() => navigation.navigate('ReportsMenuScreen')}
+>
+    <Text style={styles.buttonText}>{t('reports_menu')}</Text>
+</TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );

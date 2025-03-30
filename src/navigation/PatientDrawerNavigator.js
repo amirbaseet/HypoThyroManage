@@ -5,13 +5,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "../context/AuthContext";
 
-import PatientStack from "./PatientStack"; // ✅ Use the full stack
+import PatientHomeStack from "./PatientHomeStack"; // ✅ Use the full stack
 import PatientChatScreen from "../screens/PatientChatScreen ";
-import ReportsStack from "./ReportsStack";
-import PatientHomeScreen from '../screens/PatientHomeScreen';
 import HakkimizdaScreen from '../screens/HakkimizdaScreen';
 import useUnreadMessages from "../hooks/useUnreadMessages";
 import SymptomTableScreen from "../screens/SymptomTableScreen";
+import KullanimRehberiScreen from '../screens/KullanimRehberiScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -30,16 +29,16 @@ const PatientDrawerNavigator = () => {
                 ),
             }}
         >
-            <Drawer.Screen
-                name="PatientHomeScreen"
-                component={PatientHomeScreen} // ✅ Use the stack that includes PatientVideosScreen + others
-                options={{
-                    title: t("home"), // Optional: change this to whatever label you want
-                    drawerIcon: ({ color, size }) => (
-                        <Ionicons name="home-outline" size={size} color={color} />
-                    ),
-                }}
-            />
+<Drawer.Screen
+  name="PatientHomeStack"
+  component={PatientHomeStack}
+  options={{
+    title: t("home"),
+    drawerIcon: ({ color, size }) => (
+      <Ionicons name="home-outline" size={size} color={color} />
+    ),
+  }}
+/>
 
             <Drawer.Screen
                 name="PatientChat"
@@ -67,19 +66,7 @@ const PatientDrawerNavigator = () => {
                 }}
             />
 
-            <Drawer.Screen
-                name="Reports"
-                component={ReportsStack}
-                options={{
-                    title: t("Tabreports"),
-                    drawerIcon: ({ color, size }) => (
-                        <Ionicons name="document-text-outline" size={size} color={color} />
-                    ),
-                    drawerItemStyle: { display: 'none' }, // 👈 hides it from the drawer menu
-
-                }}
-            />
-
+    
 <Drawer.Screen
     name="SymptomTable"
     component={SymptomTableScreen}
@@ -91,6 +78,16 @@ const PatientDrawerNavigator = () => {
     }}
 />
 <Drawer.Screen
+  name="KullanimRehberi"
+  component={KullanimRehberiScreen}
+  options={{
+    title: t('kullanim_rehberi'),
+    drawerIcon: ({ color, size }) => (
+      <Ionicons name="book-outline" size={size} color={color} />
+    ),
+  }}
+/>
+<Drawer.Screen
     name="Hakkimizda"
     component={HakkimizdaScreen}
     options={{
@@ -100,14 +97,8 @@ const PatientDrawerNavigator = () => {
         ),
     }}
 />
-<Drawer.Screen
-    name="Patient"
-    component={PatientStack}
-    options={{
-        title: t("videos"), // or "Hasta Tavsiyeleri"
-        drawerItemStyle: { display: 'none' }, // 👈 hides it from the drawer menu
-    }}
-/>
+
+
         </Drawer.Navigator>
         
     );

@@ -35,10 +35,8 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "usesPermissions": [
-        "USER_FACING_NOTIFICATIONS",
         "ACCESS_FINE_LOCATION",
-        "USER_FACING_NOTIFICATIONS",
-        "ACCESS_FINE_LOCATION"
+        "USER_FACING_NOTIFICATIONS"
       ]
     },
     "android": {

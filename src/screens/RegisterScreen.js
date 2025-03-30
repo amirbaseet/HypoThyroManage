@@ -45,21 +45,28 @@ const RegisterScreen = () => {
       return;
     }
   
-    const res = await registerUser({
-      phoneNumber: `+90${phoneNumber}`,
-      username,
-      password,
-      gender,
-      role,
-    });
-  
-    if (res.success) {
-      Alert.alert(t("success"), t("success_register"));
-      navigation.navigate('Login');
-    } else {
-      Alert.alert(t("error"), res.error || t("error_register"));
+    try {
+      const res = await registerUser({
+        phoneNumber: `+90${phoneNumber}`,
+        username,
+        password,
+        gender,
+        role,
+      });
+    
+      console.log("✅ Register response:", res);
+    
+      if (res.success) {
+        Alert.alert(t("success"), t("success_register"));
+        navigation.navigate('Login');
+      } else {
+        Alert.alert(t("error"), res.error || t("error_register"));
+      }
+    } catch (e) {
+      console.error("❌ Unexpected error during registration:", e);
+      Alert.alert(t("error"), e?.message || t("error_register"));
     }
-  };
+      };
   
   return (
     <SafeAreaView style={styles.container}>
