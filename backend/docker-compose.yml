@@ -3,33 +3,23 @@ version: '3.8'
 services:
   app:
     build: .
-    container_name: backend-app
     ports:
-      - "443:443"
       - "3001:3001"
     environment:
-      - PORT=443
+      - PORT=3001
       - Conn_Strng=mongodb://mongo:27017/hypothyroiddb
       - ADMIN_SECRET=supersecureadminkey123
-      - CLIENT_URL=https://localhost
+      - CLIENT_URL=*
       - JWT_SEC=AXZ!@#
+    depends_on:
+      - mongo
 
   mongo:
     image: mongo:6
-    container_name: backend-mongo
     ports:
-      - "27017:27017"
+      - "27017:27017"    
     volumes:
       - mongo-data:/data/db
-
-  ngrok:
-    image: ngrok/ngrok:latest
-    container_name: backend-ngrok
-    depends_on:
-      - app
-    environment:
-      NGROK_AUTHTOKEN: 2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe
-    command: http app:443
 
 volumes:
   mongo-data:
