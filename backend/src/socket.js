@@ -15,9 +15,10 @@ const path = require('path');
 const app = express();
 // 🔐 Load SSL certificate
 const credentials = {
-    key: fs.readFileSync(path.join(__dirname, 'cert/private.key'), 'utf8'),
-    cert: fs.readFileSync(path.join(__dirname, 'cert/certificate.crt'), 'utf8'),
-    };
+    key: fs.readFileSync(path.join(__dirname, '../cert/private.key'), 'utf8'),
+    cert: fs.readFileSync(path.join(__dirname, '../cert/certificate.crt'), 'utf8'),
+  };
+  
   
   const server = https.createServer(credentials, app);
 

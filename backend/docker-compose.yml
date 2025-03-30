@@ -6,7 +6,8 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./cert:/app/cert
+      - ./cert:/app/src/cert
+
 
     environment:
       - PORT=3001
