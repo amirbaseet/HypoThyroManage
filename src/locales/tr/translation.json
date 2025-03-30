@@ -36,14 +36,14 @@
   "take_medicine": "İlaç İçme Zamanı",
   "available_forms": "Ölçeklerimiz",
   "submission_history": "Gönderim Geçmişi",
-  "report": "Haftalık Raporu",
+  "report": "Haftalık Semptom Bildirimi",
   "reports": "Geçmiş Raporları",
   "nutrition": "Beslenme Önerileri",
   "exercise": "Egzersiz Tavsileri",
   "stress": "Stress Yönetimi",
   "dermatological": "Dermatolojik Tavsiyeler",
   "brain": "Beyin egzersizleri", 
-  "no_active_forms": "Aktif form bulunmamaktadır",
+  "no_active_forms": "ilgili form daha sonra paylaşılacaktır.",
   "form_submitted": "Form başarıyla gönderildi!",
   "form_load_failed": "Form verileri yüklenemedi.",
   "submit_form": "Formu Gönder",
@@ -84,9 +84,9 @@
   "weekly_medicine_progress": "Haftalık İlaç Takibi",
   "progress_fetch_error": "İlaç takibi alınamadı.",
   "progress_fetch_fallback": "İlaç takibi yüklenirken bir hata oluştu.",
-  "daily_medicine_title": "Günlük İlaç Takibi",
-  "medicine_taken_msg": "Bugün ilacınızı zaten aldınız!",
-  "medicine_not_taken": "Bugün ilacınızı almadınız.",
+  "daily_medicine_title": "Günlük Tiroid İlaç Takibi",
+  "medicine_taken_msg": "Bugün Tiroid ilacınızı zaten aldınız!",
+  "medicine_not_taken": "Bugün Tiroid ilacınızı almadınız.",
   "take_medicine_btn": "İlacımı Aldım",
   "marking_btn": "İşleniyor...",
   "done": "Tamamlandı",
@@ -174,7 +174,43 @@
   "you_marked_taken": "Bugün ilacınızı aldınız olarak işaretlediniz ✅",
   "you_marked_missed": "Bugünü ilacı almadım olarak işaretlediniz ❌",
   "Videoların_semptomlarla_ilişkisi":"Videoların semptomlarla ilişkisi" ,
-  "Tavsiye_İlgili_Semptomlar":"Symptomların videoları"
+  "Tavsiye_İlgili_Semptomlar":"Symptomların videoları",
+  "kullanim_rehberi": "Kullanım Rehberi",
+"guide_step1": "Mobil Uygulamayı (HypoThyroManage) ilk kullanmaya başlandığında tüm videoların izlenip ilgili tavsiyelere uymanız beklenir. Bu videolara ana sayfadaki “Videolar ve Eğitim” butonundan ulaşabilirsiniz.",
+"guide_step2": "Günlük tiroid ilacını alma durumunuzu ana sayfada bulunan “Günlük İlaç Takibi” kısmından bildirmelisiniz.",
+"guide_step3": "Haftada bir gün o hafta hissettiğiniz semptomları “Raporlar” butonundaki “Haftalık Rapor” kısmından girmelisiniz.",
+"guide_step4": "Ve bu semptomlarla ilgili videoları tekrar izlemeniz tavsiye edilmektedir. Buna dair bilgiyi ise yan sekmedeki “Semptomların Videoları” kısmından ulaşabilirsiniz.",
+"guide_step5": "İstediğiniz zaman yan sekmedeki “Sağlık Profesyoneline Sor” kısmından soru sorabilirsiniz.",
+"guide_step6": "Haftalık girdiğiniz semptomları ve ilaç bildirimlerini ana sayfadaki “Raporlar” kısmından toplu bir şekilde görebilirsiniz."
+,
+"guide_title": "📘 Kullanım Rehberi",
+"steps": [
+  {
+    "title": "Eğitim Videolarını İzleyin",
+    "desc": "İlk kullanımda tüm videoları izleyip tavsiyelere uymanız beklenir. “Videolar ve Eğitim” butonundan ulaşabilirsiniz."
+  },
+  {
+    "title": "İlaç Alımını Bildirin",
+    "desc": "Günlük tiroid ilacı alımınızı “Günlük İlaç Takibi” bölümünden bildirmelisiniz."
+  },
+  {
+    "title": "Semptom Raporu Girin",
+    "desc": "Haftada bir semptomlarınızı “Raporlar > Haftalık Rapor” bölümüne girin."
+  },
+  {
+    "title": "Semptom Videolarını Tekrar İzleyin",
+    "desc": "Semptomlarınızla ilgili videoları tekrar izlemeniz önerilir."
+  },
+  {
+    "title": "Soru Sorun",
+    "desc": "“Sağlık Profesyoneline Sor” bölümünden istediğiniz zaman soru sorabilirsiniz."
+  },
+  {
+    "title": "Genel Görünüm",
+    "desc": "Tüm bildirimlerinizi “Raporlar” kısmında toplu olarak görüntüleyebilirsiniz."
+  }
+]
+
 
 }
 
