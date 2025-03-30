@@ -23,15 +23,15 @@ services:
       - mongo-data:/data/db
 
   ngrok:
-    image: ngrok/ngrok:latest  # ✅ Use official ngrok image
+    image: ngrok/ngrok:latest
     container_name: backend-ngrok
     depends_on:
       - app
-    command: http app:443
+    command: ["ngrok", "http", "app:443"]
     environment:
-      - NGROK_AUTHTOKEN=2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe
+      NGROK_AUTHTOKEN: 2v0o7UvaFhU0VVj5kkAd93jgOfb_57rVityEGqzP8r9sWUvwe
     ports:
-      - "4040:4040"  # Optional: dashboard access
+      - "4040:4040"  # Optional: for ngrok web dashboard
 
 volumes:
   mongo-data:
