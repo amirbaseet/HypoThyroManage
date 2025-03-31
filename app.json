@@ -49,7 +49,7 @@
         "NOTIFICATIONS",
         "ACCESS_FINE_LOCATION"
       ],
-      "package": "com.myapp.healthtracker",
+      "package": "com.amrobaseet.hypothyromanager",
       "useNextNotificationsApi": true
     },
     "web": {
