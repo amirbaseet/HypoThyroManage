@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "290759403441",
-    "project_id": "fir-66e5f",
-    "storage_bucket": "fir-66e5f.firebasestorage.app"
+    "project_number": "648986054873",
+    "project_id": "hypothyromanager",
+    "storage_bucket": "hypothyromanager.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:290759403441:android:38352afed8d93437e2bf90",
+        "mobilesdk_app_id": "1:648986054873:android:736e2382315bcd859c6ec8",
         "android_client_info": {
-          "package_name": "com.myapp.healthtracker"
+          "package_name": "com.amrobaseet.hypothyromanager"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDu9N3hzigDdI6niSECHuioIuQkru_-fc4"
+          "current_key": "AIzaSyAKbiIUzaxw23gYvmTnxdn6mYbkEm5iPWI"
         }
       ],
       "services": {
