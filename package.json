@@ -27,7 +27,7 @@
     "expo-file-system": "^18.0.12",
     "expo-font": "~13.0.4",
     "expo-localization": "~16.0.1",
-    "expo-notifications": "^0.29.14",
+    "expo-notifications": "~0.29.14",
     "expo-sharing": "^13.0.1",
     "expo-splash-screen": "~0.29.22",
     "expo-sqlite": "^15.1.2",
