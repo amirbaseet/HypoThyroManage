@@ -6,23 +6,14 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "env": {
-        "ENV_FILE": ".env.development"
-      }
+      "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal",
-      "env": {
-        "ENV_FILE": ".env.preview"
-      }
-    },
+      "distribution": "internal"
+        },
     "production": {
       "autoIncrement": true,
-      "credentialsSource": "remote", 
-      "env": {
-        "ENV_FILE": ".env.production"
-      }
+      "credentialsSource": "remote"
     }
   },
   "submit": {

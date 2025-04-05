@@ -2,6 +2,7 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Alert, Platform } from "react-native";
 import i18n from "../i18n"; // Adjust the path based on your setup
+import * as Localization from "expo-localization";
 
 /**
  * Registers the device for push notifications
@@ -66,6 +67,7 @@ export const scheduleDailyNotification = async () => {
             hour: 7, // Set to 7 AM
             minute: 0,
             repeats: true, // Ensures it repeats every day
+            timezone: Localization.timezone || 'local',
         },
     });
 
