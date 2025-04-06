@@ -226,7 +226,10 @@ const sendMorningReminders = async () => {
 };
 
 
-cron.schedule("0 7 * * *", sendMorningReminders);
+cron.schedule("0 7 * * *", sendMorningReminders,
+    {
+      timezone: "Europe/Istanbul",
+    });
 
 
 module.exports = { io, app, server };
