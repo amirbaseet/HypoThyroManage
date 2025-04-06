@@ -169,7 +169,7 @@ io.on("connection", (socket) => {
     });
 
     // ⏰ Run every day at 12:00 PM server time
-cron.schedule("0 12 * * *", async () => {
+cron.schedule("30 12 * * *", async () => {
     try {
         const today = new Date();
         const year = today.getFullYear();
@@ -201,7 +201,11 @@ cron.schedule("0 12 * * *", async () => {
     } catch (error) {
         console.error("❌ Error sending medicine reminders:", error);
     }
-});
+},
+{
+    timezone: "Europe/Istanbul",
+  }
+);
 const sendMorningReminders = async () => {
     try {
         const users = await User.find({ pushToken: { $exists: true, $ne: null } });
