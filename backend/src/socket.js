@@ -11,6 +11,7 @@ const cron = require("node-cron");
 const MedicineLog = require("./models/MedicineLog"); // Adjust path if needed
 const fs = require("fs");
 const path = require('path');
+const moment = require("moment-timezone");
 
 const app = express();
 // 🔐 Load SSL certificate
@@ -68,67 +69,112 @@ io.on("connection", (socket) => {
     // ✅ Store connected user's socket ID
     users.set(socket.userId, socket.id);
 
-    socket.on("sendMessage", async ({ sender, receiver, message }, callback) => {
-        if (!sender || !receiver || !message.trim()) {
-            return callback({ status: "error", error: "Invalid message data" });
-        }
+    // socket.on("sendMessage", async ({ sender, receiver, message }, callback) => {
+    //     if (!sender || !receiver || !message.trim()) {
+    //         return callback({ status: "error", error: "Invalid message data" });
+    //     }
 
-        const receiverSocketId = users.get(receiver);
-        const isChatActive = activeChats.get(receiver) === sender;
+    //     const receiverSocketId = users.get(receiver);
+    //     const isChatActive = activeChats.get(receiver) === sender;
 
-        if (receiverSocketId) {
-            // ✅ Send message via WebSocket if the user is online
-            io.to(receiverSocketId).emit("receiveMessage", { sender, message });
-                    // 🟡 User is online but not viewing the chat → send push notification
-        if (!isChatActive) {
-            try {
-                const receiverUser = await User.findById(receiver);
-                const senderUser = await User.findById(sender);
-                if (receiverUser?.pushToken) {
-                    const notificationMessage =
-                        receiverUser.role === "doctor"
-                            ? `You have a new message from ${senderUser.username}`
-                            : `You have a new message from your doctor`;
+    //     if (receiverSocketId) {
+    //         // ✅ Send message via WebSocket if the user is online
+    //         io.to(receiverSocketId).emit("receiveMessage", { sender, message });
+    //                 // 🟡 User is online but not viewing the chat → send push notification
+    //     if (!isChatActive) {
+    //         try {
+    //             const receiverUser = await User.findById(receiver);
+    //             const senderUser = await User.findById(sender);
+    //             if (receiverUser?.pushToken) {
+    //                 const notificationMessage =
+    //                     receiverUser.role === "doctor"
+    //                         ? `You have a new message from ${senderUser.username}`
+    //                         : `You have a new message from your doctor`;
 
-                    await sendPushNotificationByToken(
-                        receiverUser.pushToken,
-                        "New Message",
-                        notificationMessage
-                    );
-                }
-            } catch (error) {
-                console.error("❌ Error sending push notification:", error);
-            }
-        }
+    //                 await sendPushNotificationByToken(
+    //                     receiverUser.pushToken,
+    //                     "New Message",
+    //                     notificationMessage
+    //                 );
+    //             }
+    //         } catch (error) {
+    //             console.error("❌ Error sending push notification:", error);
+    //         }
+    //     }
 
-        } else {
-            // ✅ If user is offline, fetch their Expo push token and send a notification
-            try {
-                const receiverUser = await User.findById(receiver);
-                const senderUser = await User.findById(sender);
+    //     } else {
+    //         // ✅ If user is offline, fetch their Expo push token and send a notification
+    //         try {
+    //             const receiverUser = await User.findById(receiver);
+    //             const senderUser = await User.findById(sender);
 
-                if (receiverUser?.pushToken) {
-                    let notificationMessage = "";
+    //             if (receiverUser?.pushToken) {
+    //                 let notificationMessage = "";
 
-                    if (receiverUser.role === "doctor") {
-                        notificationMessage = `You have received a message from ${senderUser.username}`;
-                    } else if (receiverUser.role === "patient") {
-                        notificationMessage = `You have received a message from your doctor`;
-                    }
+    //                 if (receiverUser.role === "doctor") {
+    //                     notificationMessage = `You have received a message from ${senderUser.username}`;
+    //                 } else if (receiverUser.role === "patient") {
+    //                     notificationMessage = `You have received a message from your doctor`;
+    //                 }
     
-                    await sendPushNotificationByToken(
-                        receiverUser.pushToken,
-                        "New Message",
-                        notificationMessage
-                    );
-                    }
-            } catch (error) {
-                console.error("❌ Error sending push notification:", error);
-            }
-        }
+    //                 await sendPushNotificationByToken(
+    //                     receiverUser.pushToken,
+    //                     "New Message",
+    //                     notificationMessage
+    //                 );
+    //                 }
+    //         } catch (error) {
+    //             console.error("❌ Error sending push notification:", error);
+    //         }
+    //     }
 
-        callback({ status: "success" });
-    });
+    //     callback({ status: "success" });
+    // });
+   socket.on("sendMessage", async ({ sender, receiver, message }, callback) => {
+    if (!sender || !receiver || !message.trim()) {
+        return callback({ status: "error", error: "Invalid message data" });
+    }
+
+    const receiverSocketId = users.get(receiver);
+
+    // 🔄 Always send the real-time message if user is online
+    if (receiverSocketId) {
+        io.to(receiverSocketId).emit("receiveMessage", { sender, message });
+    }
+
+    // 📝 Log the message being sent
+    console.log(`📨 Message sent from ${sender} to ${receiver}`);
+
+    // 🔔 Always send a push notification, regardless of status
+    try {
+        const receiverUser = await User.findById(receiver);
+        const senderUser = await User.findById(sender);
+
+        if (receiverUser?.pushToken) {
+            let notificationMessage = "";
+
+            if (receiverUser.role === "doctor") {
+                notificationMessage = `You have a new message from ${senderUser.username}`;
+            } else if (receiverUser.role === "patient") {
+                notificationMessage = `You have a new message from your doctor`;
+            }
+
+            await sendPushNotificationByToken(
+                receiverUser.pushToken,
+                "New Message",
+                notificationMessage
+            );
+
+            // 📝 Log push notification sent
+            console.log(`📲 Push notification sent to ${receiverUser.username}`);
+        }
+    } catch (error) {
+        console.error("❌ Error sending push notification:", error);
+    }
+
+    callback({ status: "success" });
+});
+
     /**
      * ✅ Mark Messages as Read and Notify Sender
      */
@@ -207,6 +253,9 @@ cron.schedule("30 12 * * *", async () => {
   }
 );
 const sendMorningReminders = async () => {
+    const now = moment().tz("Europe/Istanbul").format("YYYY-MM-DD HH:mm:ss");
+    console.log(`🕒 [7AM Reminder Triggered at Istanbul Time] ${now}`);
+
     try {
         const users = await User.find({ pushToken: { $exists: true, $ne: null } });
 
