@@ -130,25 +130,29 @@ io.on("connection", (socket) => {
 
     //     callback({ status: "success" });
     // });
-   socket.on("sendMessage", async ({ sender, receiver, message }, callback) => {
+ socket.on("sendMessage", async ({ sender, receiver, message }, callback) => {
     if (!sender || !receiver || !message.trim()) {
         return callback({ status: "error", error: "Invalid message data" });
     }
 
     const receiverSocketId = users.get(receiver);
 
-    // 🔄 Always send the real-time message if user is online
     if (receiverSocketId) {
         io.to(receiverSocketId).emit("receiveMessage", { sender, message });
     }
 
-    // 📝 Log the message being sent
-    console.log(`📨 Message sent from ${sender} to ${receiver}`);
+   // console.log(`📨 Message sent from ${sender} to ${receiver}`);
 
-    // 🔔 Always send a push notification, regardless of status
     try {
         const receiverUser = await User.findById(receiver);
         const senderUser = await User.findById(sender);
+
+        if (!receiverUser) {
+            console.log(`❌ Receiver not found in DB: ${receiver}`);
+        } else {
+     //       console.log(`🔍 Receiver: ${receiverUser.username}, Role: ${receiverUser.role}`);
+       //     console.log(`📱 PushToken: ${receiverUser.pushToken}`);
+        }
 
         if (receiverUser?.pushToken) {
             let notificationMessage = "";
@@ -159,14 +163,16 @@ io.on("connection", (socket) => {
                 notificationMessage = `You have a new message from your doctor`;
             }
 
-            await sendPushNotificationByToken(
+            const result = await sendPushNotificationByToken(
                 receiverUser.pushToken,
                 "New Message",
                 notificationMessage
             );
 
-            // 📝 Log push notification sent
-            console.log(`📲 Push notification sent to ${receiverUser.username}`);
+         //   console.log("📬 Push Ticket Response:", result);
+           // console.log(`📲 Push notification sent to ${receiverUser.username}`);
+        } else {
+            console.warn(`⚠️ Push token missing for user ${receiver}`);
         }
     } catch (error) {
         console.error("❌ Error sending push notification:", error);
@@ -215,43 +221,39 @@ io.on("connection", (socket) => {
     });
 
     // ⏰ Run every day at 12:00 PM server time
-cron.schedule("30 12 * * *", async () => {
-    try {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth(); // 0-11
-        const day = today.getDate();
+cron.schedule("0 12 * * *", async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-        // 🔍 Find all logs for today where `taken` is false
-        const missingLogs = await MedicineLog.find({
-            year,
-            month,
-            day,
-            taken: false,
-        }).populate("userId");
+    // Get all patients
+    const patients = await User.find({ role: "patient", pushToken: { $exists: true } });
 
-        for (const log of missingLogs) {
-            const user = log.userId;
+    // Get logs created for today
+    const todayLogs = await MedicineLog.find({ date: today }).select("userId");
+    const loggedUserIds = new Set(todayLogs.map(log => log.userId.toString()));
 
-            if (user?.pushToken) {
-                await sendPushNotificationByToken(
-                    user.pushToken,
-                    "💊 İlaç Hatırlatıcısı",
-                    "Bugün ilacınızı almadınız. Lütfen unutmayın!"
-                                    );
-                console.log(`📤 Reminder sent to ${user.username}`);
-            }
-        }
+    // Patients who haven't logged anything today
+    const patientsWithoutLogs = patients.filter(
+      patient => !loggedUserIds.has(patient._id.toString())
+    );
 
-        console.log(`✅ Medicine reminders sent at 12:00PM`);
-    } catch (error) {
-        console.error("❌ Error sending medicine reminders:", error);
+    for (const user of patientsWithoutLogs) {
+      await sendPushNotificationByToken(
+        user.pushToken,
+        "💊 İlaç Hatırlatıcısı",
+        "Bugün henüz ilaç kaydınız yapılmadı. Lütfen unutmayın!"
+      );
+      console.log(`📤 Reminder sent to ${user.username}`);
     }
-},
-{
-    timezone: "Europe/Istanbul",
+
+    console.log(`✅ Reminders sent to users with no log entry for today`);
+
+  } catch (error) {
+    console.error("❌ Error sending reminders:", error);
   }
-);
+});
+
 const sendMorningReminders = async () => {
     const now = moment().tz("Europe/Istanbul").format("YYYY-MM-DD HH:mm:ss");
     console.log(`🕒 [7AM Reminder Triggered at Istanbul Time] ${now}`);
@@ -275,10 +277,7 @@ const sendMorningReminders = async () => {
 };
 
 
-cron.schedule("0 7 * * *", sendMorningReminders,
-    {
-      timezone: "Europe/Istanbul",
-    });
+cron.schedule("0 7 * * *", sendMorningReminders);
 
 
 module.exports = { io, app, server };
