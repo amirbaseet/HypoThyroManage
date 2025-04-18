@@ -44,18 +44,22 @@ exports.getLatestReportByUser = async (req, res) => {
     try {
         const userId = req.params.userId;
 
-        // Find the most recent report by sorting in descending order
-        const latestReport = await WeeklyReport.findOne({ userId })
-            .sort({ weekStart: -1 })
-            .populate('symptoms.symptomId', 'name');
+        const { weekStart, weekEnd } = getCurrentWeek();
 
-        if (!latestReport) {
-            return res.status(404).json({ message: "No weekly report found for this user." });
+        // Find the report for the current week
+        const currentWeekReport = await WeeklyReport.findOne({
+            userId,
+            weekStart: { $eq: weekStart },
+            weekEnd: { $eq: weekEnd },
+        }).populate('symptoms.symptomId', 'name');
+
+        if (!currentWeekReport) {
+            return res.status(404).json({ message: "No report found for the current week." });
         }
 
-        res.json(latestReport);
+        res.json(currentWeekReport);
     } catch (error) {
-        console.error("❌ Error fetching latest report:", error.message);
+        console.error("❌ Error fetching current week report:", error.message);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
