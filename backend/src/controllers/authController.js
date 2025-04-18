@@ -64,6 +64,7 @@ const register = async (req, res) => {
        await newUser.save();
         // console.log("NewUser", newUser)
        res.status(201).json({ message: `User registered as ${role}`});
+       console.log(`new user registered as ${role} with userName =${username}`)
     } catch (err) {
        console.error(" Error registering user:",err);
        res.status(500).json({ message: "Something went wrong" });
@@ -73,7 +74,8 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { phoneNumber, password } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
+
         // Check if user exists
         const user = await User.findOne({ phoneNumber });
 
@@ -105,6 +107,8 @@ const login = async (req, res) => {
         // 🔹 Send login notification
         await sendPushNotification(user._id, "Welcome Back!", `Hello ${user.username}, you are now logged in!`);
         // res.status(200).json({ token, refreshToken  });
+        console.log(`${user.username} Logged in UserId = ${user._id}`);
+
         res.status(200).json({ token});
 
     } catch (err) {
@@ -134,7 +138,7 @@ const updatePushToken  = async (req, res) =>{
 const removePushToken = async (req, res) => {
     try {
         const { userId } = req.body;
-        console.log("userId",userId)
+        console.log("user Logged Out userId",userId)
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
         }

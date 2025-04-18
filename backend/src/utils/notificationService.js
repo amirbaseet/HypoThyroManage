@@ -98,7 +98,7 @@ exports.sendPushNotificationByToken = async (pushToken, title, message) => {
 
         for (let chunk of chunks) {
             const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-            console.log("📬 Push Ticket Response:", ticketChunk);
+          //  console.log("📬 Push Ticket Response:", ticketChunk);
 
             // Check for errors in the ticket
             for (let ticket of ticketChunk) {
@@ -111,7 +111,7 @@ exports.sendPushNotificationByToken = async (pushToken, title, message) => {
             }
         }
 
-        console.log(`✅ Push notification sent to token: ${pushToken}`);
+        // console.log(`✅ Push notification sent to token: ${pushToken}`);
     } catch (error) {
         console.error("❌ Error sending push notification:", error);
     }
