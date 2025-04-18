@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 // const {sendPushNotification} = require("./utils/pushNotifications")
 const {sendPushNotificationByToken} = require("../src/utils/notificationService")
 require("dotenv").config();
-const User = require("../src/models/userModels");
+const User = require("./src/models/userModels");
 const Message  = require("./models/Message");
 const cron = require("node-cron");
 const MedicineLog = require("./models/MedicineLog"); // Adjust path if needed
