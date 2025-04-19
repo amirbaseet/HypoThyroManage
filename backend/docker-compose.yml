@@ -11,17 +11,22 @@ services:
 
     environment:
       - PORT=3001
-      - Conn_Strng=mongodb://mongo:27017/hypothyroiddb
+      # - Conn_Strng=mongodb://mongo:27017/hypothyroiddb
+      - Conn_Strng=mongodb://admin:***REMOVED***@mongo:27017/hypothyroiddb?authSource=admin
       - ADMIN_SECRET=supersecureadminkey123
       - CLIENT_URL=*
       - JWT_SEC=AXZ!@#
+
     depends_on:
       - mongo
 
   mongo:
     image: mongo:6
-    ports:
-      - "27017:27017"    
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=ASDasd123456789***
+    # ports:
+      # - "27017:27017"    
     volumes:
       - mongo-data:/data/db
 
