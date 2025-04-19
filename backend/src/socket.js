@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 // const {sendPushNotification} = require("./utils/pushNotifications")
 const {sendPushNotificationByToken} = require("../src/utils/notificationService")
 require("dotenv").config();
-const User = require("./src/models/userModels");
+const User = require("./models/userModels");
 const Message  = require("./models/Message");
 const cron = require("node-cron");
 const MedicineLog = require("./models/MedicineLog"); // Adjust path if needed
@@ -20,7 +20,7 @@ const {
 const {
   getAllUsers,
   getPatientsWithoutLogs
-} = require("../utils/userNotificationHelper"); // Adjust path if needed
+} = require("./utils/userNotificationHelper"); // Adjust path if needed
 
 const app = express();
 // 🔐 Load SSL certificate
