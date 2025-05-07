@@ -143,8 +143,8 @@ const removePushToken = async (req, res) => {
             return res.status(400).json({ message: "User ID is required" });
         }
 
-        // ✅ Remove the push token from the database
-        await User.findByIdAndUpdate(userId, { $unset: { pushToken: 1 } });
+        // // ✅ Remove the push token from the database
+        // await User.findByIdAndUpdate(userId, { $unset: { pushToken: 1 } });
 
         return res.status(200).json({ message: "Push token removed successfully" });
     } catch (error) {
