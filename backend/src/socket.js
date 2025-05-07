@@ -171,7 +171,9 @@ io.on("connection", (socket) => {
                 notificationMessage = `You have a new message from ${senderUser.username}`;
             } else if (receiverUser.role === "patient") {
                 notificationMessage = `You have a new message from your doctor`;
-            }
+            }else {
+              notificationMessage = `You have a new message`;
+          }
 
             const result = await sendPushNotificationByToken(
                 receiverUser.pushToken,
