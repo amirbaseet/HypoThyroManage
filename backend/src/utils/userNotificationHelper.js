@@ -19,8 +19,13 @@ const getPatientsWithoutLogs = async (today) => {
 
   return patientsWithoutLogs;
 };
+// ✅ Get all users with doctor role
+const getDoctors = async () => {
+  return await User.find({ role: "doctor" });
+};
 
 module.exports = {
   getAllUsers,
-  getPatientsWithoutLogs
+  getPatientsWithoutLogs,
+  getDoctors
 };

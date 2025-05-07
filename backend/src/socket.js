@@ -19,7 +19,8 @@ const {
 } = require("./utils/NotificationText"); // adjust path as needed
 const {
   getAllUsers,
-  getPatientsWithoutLogs
+  getPatientsWithoutLogs,
+  getDoctors
 } = require("./utils/userNotificationHelper"); // Adjust path if needed
 
 const app = express();
@@ -256,12 +257,12 @@ const sendNotificationto = async (users, notificationText) => {
       
         try {
           const users = await getAllUsers();
-      
+          const Doctors = await getDoctors();
           // 7AM Reminder
           if (hour === 7) {
       
             await sendNotificationto(users, dailyNotificationText);
-
+            
             console.log(`🕒 [Reminder Triggered - ${now.format("dddd")} @ ${formattedTime}]`);
             console.log(`✅ Sent ${users.length} 7AM reminders.`);
           }
@@ -281,6 +282,7 @@ const sendNotificationto = async (users, notificationText) => {
       
             const patientsWithoutLogs = await getPatientsWithoutLogs(today);
             await sendNotificationto(patientsWithoutLogs, dayilyRemRemindernotificationText);
+            await sendNotificationto(Doctors, dayilyRemRemindernotificationText);
             console.log(`🕒 [Reminder Triggered - ${now.format("dddd")} @ ${formattedTime}]`);
             console.log(`[12PM Reminder] ✅ Sent to ${patientsWithoutLogs.length} patients without logs`);
           }
