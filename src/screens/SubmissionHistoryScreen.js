@@ -7,9 +7,9 @@ import {
     ActivityIndicator,
     ScrollView
 } from "react-native";
-import { getFormSubmissions } from '../services/patientService'; // or wherever you put it
+import { getFormSubmissions } from 'services/patientService'; // or wherever you put it
 
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 

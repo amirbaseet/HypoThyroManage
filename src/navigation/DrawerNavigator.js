@@ -2,14 +2,14 @@
 import React, { useContext } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Text, TouchableOpacity } from "react-native";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import { useTranslation } from "react-i18next";
 
-import HomeScreen from '../screens/HomeScreen';
-import AdminDashboardScreen from "../screens/AdminDashboardScreen";
-import CreateFormWindowScreen from "../screens/CreateFormWindowScreen";
-import ManageFormWindowsScreen from "../screens/ManageFormWindowsScreen";
-import AdminResetPasswordScreen from "../screens/AdminResetPasswordScreen";
+import HomeScreen from 'screens/HomeScreen';
+import AdminDashboardScreen from "screens/AdminDashboardScreen";
+import CreateFormWindowScreen from "screens/CreateFormWindowScreen";
+import ManageFormWindowsScreen from "screens/ManageFormWindowsScreen";
+import AdminResetPasswordScreen from "screens/AdminResetPasswordScreen";
 import PatientStack from './PatientStack'; // instead of only importing PatientVideosScreen
 
 const Drawer = createDrawerNavigator();

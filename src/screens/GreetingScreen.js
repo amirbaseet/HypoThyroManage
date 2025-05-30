@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { View, Image, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from 'context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const GreetingScreen = () => {
@@ -25,7 +25,7 @@ const GreetingScreen = () => {
 
     return (
         <View style={styles.container}>
-    <Image source={require('../../assets/app-logo.png')} style={styles.logo} />
+    <Image source={require('assets/app-logo.png')} style={styles.logo} />
 
             <Text style={styles.appName}>HypoThyroManage</Text>
             <Text style={styles.welcome}>

@@ -9,11 +9,11 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import RegImg from '../../assets/img/misc/registration.svg';
-import GoogleSVG from '../../assets/img/misc/google.svg';
+import RegImg from 'assets/img/misc/registration.svg';
+import GoogleSVG from 'assets/img/misc/google.svg';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { registerUser } from '../services/AuthService'; // or '../api/authApi'
+import { registerUser } from 'services/AuthService'; // or 'api/authApi'
 
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";

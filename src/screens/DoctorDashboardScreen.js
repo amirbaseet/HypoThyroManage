@@ -14,8 +14,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { AuthContext } from "../context/AuthContext";
-import { getDoctorPatientsReports } from "../services/doctorService";
+import { AuthContext } from "context/AuthContext";
+import { getDoctorPatientsReports } from "services/doctorService";
 
 import ReportsScreen from "./ReportsScreen";
 import SubmissionHistoryScreen from "./SubmissionHistoryScreen";

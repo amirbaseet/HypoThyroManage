@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import api from "../api/apiService";
+import api from "api/apiService";
 import * as Notifications from "expo-notifications";
 
 const fileName = `IN AuthService`;

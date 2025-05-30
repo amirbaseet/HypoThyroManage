@@ -4,9 +4,9 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import DoctorChatListScreen from "../screens/DoctorChatListScreen";
-import DoctorChatScreen from "../screens/DoctorChatScreen";
-import DoctorDashboardScreen from "../screens/DoctorDashboardScreen";
+import DoctorChatListScreen from "screens/DoctorChatListScreen";
+import DoctorChatScreen from "screens/DoctorChatScreen";
+import DoctorDashboardScreen from "screens/DoctorDashboardScreen";
 
 const Stack = createStackNavigator();
 

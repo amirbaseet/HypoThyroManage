@@ -4,9 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import DoctorDashboardScreen from '../screens/DoctorDashboardScreen';
+import DoctorDashboardScreen from 'screens/DoctorDashboardScreen';
 import DoctorChatStack from './DoctorChatStack'; 
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from 'screens/HomeScreen';
 
 const Tab = createBottomTabNavigator();
 

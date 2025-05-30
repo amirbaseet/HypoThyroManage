@@ -10,7 +10,7 @@ import {
     ScrollView,
     SafeAreaView
 } from "react-native";
-import { sendToAllNotifications } from "../services/adminService";
+import { sendToAllNotifications } from "services/adminService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 

@@ -9,7 +9,7 @@ import {
   UIManager,
 } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import infoCardStyles from '../styles/infoCardStyles'; // ✅ import shared styles
+import infoCardStyles from 'styles/infoCardStyles'; // ✅ import shared styles
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental &&

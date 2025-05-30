@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getPatientUnreadMessageCount } from '../services/patientService';
+import { getPatientUnreadMessageCount } from 'services/patientService';
 
 const useUnreadMessages = (patientId) => {
   const [unreadCount, setUnreadCount] = useState(0);

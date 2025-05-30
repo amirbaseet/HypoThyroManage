@@ -3,14 +3,14 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "context/AuthContext";
 
 import PatientHomeStack from "./PatientHomeStack"; // ✅ Use the full stack
-import PatientChatScreen from "../screens/PatientChatScreen ";
-import HakkimizdaScreen from '../screens/HakkimizdaScreen';
-import useUnreadMessages from "../hooks/useUnreadMessages";
-import SymptomTableScreen from "../screens/SymptomTableScreen";
-import KullanimRehberiScreen from '../screens/KullanimRehberiScreen';
+import PatientChatScreen from "screens/PatientChatScreen ";
+import HakkimizdaScreen from 'screens/patient/HakkimizdaScreen';
+import useUnreadMessages from "hooks/useUnreadMessages";
+import SymptomTableScreen from "screens/SymptomTableScreen";
+import KullanimRehberiScreen from 'screens/patient/KullanimRehberiScreen';
 
 const Drawer = createDrawerNavigator();
 

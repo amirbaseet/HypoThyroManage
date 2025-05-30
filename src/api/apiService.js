@@ -1,6 +1,6 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { logoutUser } from "../services/AuthService"; // Make sure path is correct
+import { logoutUser } from "services/AuthService"; // Make sure path is correct
 import { API_URL } from "@env";  // 🔥 Import from .env
 
 // Define base URL for API (use environment variables for flexibility)
@@ -35,9 +35,4 @@ api.interceptors.request.use(
       return Promise.reject(error);
     }
   );
-      
-
-
-
-
 export default api;

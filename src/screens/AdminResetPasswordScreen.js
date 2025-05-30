@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { AuthContext } from "../context/AuthContext";
-import { resetUserPassword } from "../services/adminService";
+import { AuthContext } from "context/AuthContext";
+import { resetUserPassword } from "services/adminService";
 import { useTranslation } from 'react-i18next';
 
 const AdminResetPasswordScreen = () => {

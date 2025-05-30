@@ -5,24 +5,24 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 // Screens
-import PatientHomeScreen from '../screens/PatientHomeScreen';
-import PatientVideosScreen from '../screens/PatientVideosScreen';
-import HypothyroidInfoScreen from '../screens/HypothyroidInfoScreen';
-import ReportsMenuScreen from '../screens/ReportsMenuScreen';
-import BrainScreen from '../screens/BrainScreen'; // ✅ Import Brain screen
+import PatientHomeScreen from 'screens/patient/PatientHomeScreen';
+import PatientVideosScreen from 'screens/patient/PatientVideosScreen';
+import HypothyroidInfoScreen from 'screens/patient/HypothyroidInfoScreen';
+import ReportsMenuScreen from 'screens/patient/ReportsMenuScreen';
+import BrainScreen from 'screens/patient/BrainScreen'; // ✅ Import Brain screen
 
 
-import NutritionScreen from '../screens/NutritionScreen';
-import ExerciseScreen from '../screens/ExerciseScreen';
-import StressScreen from '../screens/StressScreen';
-import DermatologicalScreen from '../screens/DermatologicalScreen';
+import NutritionScreen from 'screens/patient/NutritionScreen';
+import ExerciseScreen from 'screens/patient/ExerciseScreen';
+import StressScreen from 'screens/patient/StressScreen';
+import DermatologicalScreen from 'screens/patient/DermatologicalScreen';
 
 
-import CombinedReportsScreen from '../screens/CombinedReportsScreen';
-import TakeMedicineScreen from '../screens/TakeMedicineScreen';
-import AvailableFormsScreen from '../screens/AvailableFormsScreen';
-import ReportScreen from '../screens/ReportScreen';
-import SymptomFormScreen from "../screens/SymptomFormScreen";
+import CombinedReportsScreen from 'screens/patient/CombinedReportsScreen';
+import TakeMedicineScreen from 'screens/patient/TakeMedicineScreen';
+import AvailableFormsScreen from 'screens/patient/AvailableFormsScreen';
+import ReportScreen from 'screens/patient/ReportScreen';
+import SymptomFormScreen from "screens/patient/SymptomFormScreen";
 
 const Stack = createStackNavigator();
 

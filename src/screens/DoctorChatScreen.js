@@ -3,12 +3,12 @@ import {
     Text as RNText,  ActivityIndicator, StyleSheet, KeyboardAvoidingView,
      Platform, Keyboard, TouchableWithoutFeedback, AppState, View, TouchableOpacity,
 } from "react-native";
-import { AuthContext } from "../context/AuthContext";
-import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "../services/chatService";
-import { getSocket } from "../api/socket";
+import { AuthContext } from "context/AuthContext";
+import { sendMessageAPI, getChatHistoryAPI, markMessagesAsReadAPI } from "services/chatService";
+import { getSocket } from "api/socket";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
-import ChatInput from "../components/ChatInput";
-import ChatList from "../components/ChatList";
+import ChatInput from "components/ChatInput";
+import ChatList from "components/ChatList";
 import { useTranslation } from "react-i18next"; // ✅ Import i18n
 
 const DoctorChatScreen = ({ route, navigation  }) => {

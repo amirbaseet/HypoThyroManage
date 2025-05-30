@@ -74,7 +74,7 @@ const insertSymptoms = async () => {
         console.error("❌ Error inserting symptoms:", error);
     }
 };
-app.get('/', (req, res) => {
+app.get('/api/test', (req, res) => {
     res.send('HypoThyroid API is working ✅');
   });
   
