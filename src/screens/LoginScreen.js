@@ -1,12 +1,12 @@
 import React,{useContext,useState} from 'react';
 import { View, SafeAreaView, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import LogImg from '../../assets/img/misc/login.svg'; 
-import GoogleSVG from '../../assets/img/misc/google.svg'; 
+import LogImg from 'assets/img/misc/login.svg'; 
+import GoogleSVG from 'assets/img/misc/google.svg'; 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loginUser } from "../services/AuthService";
-import { AuthContext } from "../context/AuthContext"; // Import AuthContext
+import { loginUser } from "services/AuthService";
+import { AuthContext } from "context/AuthContext"; // Import AuthContext
 import { useTranslation } from "react-i18next";
 
 const LoginScreen = ({ navigation }) => {

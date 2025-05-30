@@ -6,8 +6,8 @@ import {
     StyleSheet,
     ActivityIndicator
 } from 'react-native';
-import { getUserReports } from '../services/patientService';
-import { AuthContext } from '../context/AuthContext';
+import { getUserReports } from 'services/patientService';
+import { AuthContext } from 'context/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'; // ✅ Import i18n
 

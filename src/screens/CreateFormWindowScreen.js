@@ -9,7 +9,7 @@ import {
     SafeAreaView,
     ScrollView,
 } from 'react-native';
-import { createFormWindow } from '../services/adminService';
+import { createFormWindow } from 'services/adminService';
 import { useTranslation } from 'react-i18next';
 
 const CreateFormWindowScreen = () => {

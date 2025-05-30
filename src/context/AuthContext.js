@@ -1,8 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loginUser, logoutUser } from "../services/AuthService";
-import { getSocket } from "../api/socket";
+import { loginUser, logoutUser } from "services/AuthService";
+import { getSocket } from "api/socket";
 
 const fileName = `IN AuthContext`;
 

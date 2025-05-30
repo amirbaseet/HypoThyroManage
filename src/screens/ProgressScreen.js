@@ -7,10 +7,10 @@ import {
     ActivityIndicator,
     Alert
 } from "react-native";
-import { getWeeklyProgress } from "../services/medicineService";
-import { AuthContext } from "../context/AuthContext";
+import { getWeeklyProgress } from "services/medicineService";
+import { AuthContext } from "context/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
-import { getFormattedDate, getWeekday } from "../utils/date";
+import { getFormattedDate, getWeekday } from "utils/date";
 import { useTranslation } from "react-i18next";
 
 const ProgressScreen = ({ patientId = null }) => {

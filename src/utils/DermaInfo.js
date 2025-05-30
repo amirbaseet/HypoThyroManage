@@ -6,7 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import infoCardStyles from '../styles/infoCardStyles'; // ✅ Shared style
+import infoCardStyles from 'styles/infoCardStyles'; // ✅ Shared style
 
 const DermaInfo = () => {
   const [activeSection, setActiveSection] = useState(null);

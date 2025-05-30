@@ -11,7 +11,7 @@ import {
 import {
   getAllFormWindows,
   toggleFormWindowStatus,
-} from '../services/adminService';
+} from 'services/adminService';
 import { useTranslation } from 'react-i18next';
 
 const ManageFormWindowsScreen = () => {

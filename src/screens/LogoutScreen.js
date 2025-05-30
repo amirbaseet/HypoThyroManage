@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, Text, Button } from "react-native";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 
 const LogoutScreen = () => {

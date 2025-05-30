@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
@@ -19,7 +19,7 @@ import {
   exportAllMedicineLogs,
   exportWeeklyReports,
   exportSpecifiedWeekReports,
-} from "../services/ExportService";
+} from "services/ExportService";
 import { Buffer } from "buffer";
 
 const HomeScreen = () => {

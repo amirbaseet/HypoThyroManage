@@ -151,7 +151,7 @@ io.on("connection", (socket) => {
         io.to(receiverSocketId).emit("receiveMessage", { sender, message });
     }
 
-   // console.log(`📨 Message sent from ${sender} to ${receiver}`);
+   console.log(`📨 Message sent from ${sender} to ${receiver}`);
 
     try {
         const receiverUser = await User.findById(receiver);
@@ -160,11 +160,12 @@ io.on("connection", (socket) => {
         if (!receiverUser) {
             console.log(`❌ Receiver not found in DB: ${receiver}`);
         } else {
-     //       console.log(`🔍 Receiver: ${receiverUser.username}, Role: ${receiverUser.role}`);
-       //     console.log(`📱 PushToken: ${receiverUser.pushToken}`);
+           console.log(`🔍 Receiver: ${receiverUser.username}, Role: ${receiverUser.role}`);
+           console.log(`📱 PushToken: ${receiverUser.pushToken}`);
         }
 
         if (receiverUser?.pushToken) {
+          console.log("🔔 Sending push notification...");
             let notificationMessage = "";
 
             if (receiverUser.role === "doctor") {
@@ -174,6 +175,7 @@ io.on("connection", (socket) => {
             }else {
               notificationMessage = `You have a new message`;
           }
+          console.log("🔔 notificationMessage",notificationMessage);
 
             const result = await sendPushNotificationByToken(
                 receiverUser.pushToken,
@@ -181,8 +183,8 @@ io.on("connection", (socket) => {
                 notificationMessage
             );
 
-         //   console.log("📬 Push Ticket Response:", result);
-           // console.log(`📲 Push notification sent to ${receiverUser.username}`);
+           console.log("📬 Push Ticket Response:", result);
+           console.log(`📲 Push notification sent to ${receiverUser.username}`);
         } else {
             console.warn(`⚠️ Push token missing for user ${receiver}`);
         }

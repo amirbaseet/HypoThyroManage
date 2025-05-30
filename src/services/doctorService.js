@@ -1,4 +1,4 @@
-import api from "../api/apiService";
+import api from "api/apiService";
 const fileName = `IN doctorService`;
 
 export const getDoctorPatientsReports = async (doctorId) => {
@@ -13,7 +13,7 @@ export const getDoctorPatientsReports = async (doctorId) => {
 
 export const getDoctorChatListAPI = async () => {
     try {
-        const response = await api.get(`/messages/doctor-chats`); // ✅ Ensure the correct endpoint
+        const response = await api.get(`/messages/doctor-chats`); 
         return response.data;
     } catch (error) {
         console.error(fileName,"❌ Error fetching chat list:", error.response?.data || error);

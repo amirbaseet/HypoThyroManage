@@ -1,4 +1,4 @@
-import api from "../api/apiService"; // assuming your axios instance is in api.js
+import api from "api/apiService"; // assuming your axios instance is in api.js
 
 export const exportAllMedicineLogs = async () => {
   return await api.get("/exportToExcel/export-all-medicine-logs", {

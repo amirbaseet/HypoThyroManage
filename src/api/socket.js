@@ -13,13 +13,13 @@ const connectSocket = async () => {
     try {
         const token = await AsyncStorage.getItem("token");
         // console.log("🔑 Retrieved Token:", token);
-
+        console.log("🔑 Retrieved Token:", token);
         if (!token) {
             console.error("❌ No token found. WebSocket connection not established.");
             return null;
         }
 
-        socket = io(SOCKET_URL, {
+        socket = io("https://api.hypothyroidapi.com", {
             transports: ["websocket", "polling"],
             path: "/socket.io/",
             reconnection: true,

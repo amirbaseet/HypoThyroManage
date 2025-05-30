@@ -6,7 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import infoCardStyles from '../styles/infoCardStyles'; // ✅ import shared styles
+import infoCardStyles from 'styles/infoCardStyles'; // ✅ import shared styles
 
 const ExcersiseInfo = () => {
   const [activeSection, setActiveSection] = useState(null);

@@ -3,13 +3,13 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 
-import PatientVideosScreen from '../screens/PatientVideosScreen';
-import NutritionScreen from '../screens/NutritionScreen';
-import ExerciseScreen from '../screens/ExerciseScreen';
-import StressScreen from '../screens/StressScreen';
-import DermatologicalScreen from '../screens/DermatologicalScreen';
-import BrainScreen from '../screens/BrainScreen';
-import HypothyroidInfoScreen from '../screens/HypothyroidInfoScreen';
+import PatientVideosScreen from 'screens/patient/PatientVideosScreen';
+import NutritionScreen from 'screens/patient/NutritionScreen';
+import ExerciseScreen from 'screens/patient/ExerciseScreen';
+import StressScreen from 'screens/patient/StressScreen';
+import DermatologicalScreen from 'screens/patient/DermatologicalScreen';
+import BrainScreen from 'screens/patient/BrainScreen';
+import HypothyroidInfoScreen from 'screens/patient/HypothyroidInfoScreen';
 
 const Stack = createStackNavigator();
 

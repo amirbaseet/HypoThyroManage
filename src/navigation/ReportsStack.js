@@ -3,12 +3,12 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 
-import ReportsMenuScreen from '../screens/ReportsMenuScreen';
-import CombinedReportsScreen from '../screens/CombinedReportsScreen';
-import TakeMedicineScreen from '../screens/TakeMedicineScreen';
-import AvailableFormsScreen from '../screens/AvailableFormsScreen';
-import ReportScreen from '../screens/ReportScreen';
-import SymptomFormScreen from "../screens/SymptomFormScreen";
+import ReportsMenuScreen from 'screens/patient/ReportsMenuScreen';
+import CombinedReportsScreen from 'screens/patient/CombinedReportsScreen';
+import TakeMedicineScreen from 'screens/patient/TakeMedicineScreen';
+import AvailableFormsScreen from 'screens/patient/AvailableFormsScreen';
+import ReportScreen from 'screens/patient/ReportScreen';
+import SymptomFormScreen from "screens/patient/SymptomFormScreen";
 
 const Stack = createStackNavigator();
 

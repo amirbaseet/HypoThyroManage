@@ -8,12 +8,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import useUnreadMessages from '../hooks/useUnreadMessages';
+import useUnreadMessages from 'hooks/useUnreadMessages';
 import PatientStack from './PatientStack';
 import ReportsStack from './ReportsStack';
-import PatientChatScreen from '../screens/PatientChatScreen ';
+import PatientChatScreen from 'screens/PatientChatScreen ';
 
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from 'context/AuthContext';
 
 const Tab = createBottomTabNavigator();
 

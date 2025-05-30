@@ -9,8 +9,8 @@ import {
   TextInput,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
-import { getDoctorChatListAPI, getMissedMedicineUsers } from "../services/doctorService";
+import { AuthContext } from "context/AuthContext";
+import { getDoctorChatListAPI, getMissedMedicineUsers } from "services/doctorService";
 import { useTranslation } from "react-i18next";
 
 const DoctorChatListScreen = ({ navigation }) => {
