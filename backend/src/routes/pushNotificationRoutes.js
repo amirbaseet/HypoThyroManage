@@ -13,45 +13,7 @@ const userTokens = {
     "2": "ExponentPushToken[2-3VMKFIAiJ9OnthuY4FQV]",  // Example user ID and token
     "3": "ExponentPushToken[UsYdgFB8Y5v5AArRcWTn9k]",  // Example user ID and token
 };
-/**
- * @swagger
- * tags:
- *   name: Notifications
- *   description: Manage push notifications
- */
 
-/**
- * @swagger
- * /api/notifications/send:
- *   post:
- *     summary: Send a push notification to a specific user (test endpoint)
- *     tags: [Notifications]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: string
- *                 description: The user's ID
- *               title:
- *                 type: string
- *                 description: Notification title
- *               message:
- *                 type: string
- *                 description: Notification body
- *     responses:
- *       200:
- *         description: Notification sent successfully
- *       400:
- *         description: Invalid Expo push token
- *       404:
- *         description: User push token not found
- *       500:
- *         description: Failed to send notification
- */
 router.post("/send", async (req, res) => {
     const { userId, title, message } = req.body;
 
@@ -87,33 +49,6 @@ router.post("/send", async (req, res) => {
         return res.status(500).json({ error: "Failed to send notification", details: error });
     }
 });
-/**
- * @swagger
- * /api/notifications/send-to-all:
- *   post:
- *     summary: Send a push notification to all users (admin only)
- *     tags: [Notifications]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 description: Notification title
- *               message:
- *                 type: string
- *                 description: Notification body
- *     responses:
- *       200:
- *         description: Notifications sent successfully to all users
- *       500:
- *         description: Internal server error
- */
 // ✅ Admin sends notifications to all users
 router.post("/send-to-all",verifyToken,authorizeRoles("admin"), notificationController.sendNotificationToAll);
 

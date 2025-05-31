@@ -7,19 +7,15 @@ const { server, app } = require("./socket"); // Import server and app from socke
 const Symptom = require("./models/Symptom");
 const Message = require("./models/Message");
 
-const setupSwaggerDocs = require('./swagger');
-
 dotenv.config();
 const port = process.env.PORT || 3001;
 
 // Middleware
-
 app.use(express.json());
 app.use(cors({
     origin: '*',
   }));
-  setupSwaggerDocs(app);
-
+  
 // Routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
