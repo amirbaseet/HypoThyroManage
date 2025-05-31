@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Dimensions } from 'react-native';
 import { Video, Audio } from 'expo-av';
-import { urlTable } from 'navigation/urlTable';
+import { urlTable } from 'constants/urlTable';
 const { width, height } = Dimensions.get('window');
 export const goHome =() => navigation.navigate('Home');
 

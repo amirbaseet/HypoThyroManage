@@ -19,7 +19,7 @@ const connectSocket = async () => {
             return null;
         }
 
-        socket = io("https://api.hypothyroidapi.com", {
+        socket = io("http://10.7.87.204:3001", {
             transports: ["websocket", "polling"],
             path: "/socket.io/",
             reconnection: true,

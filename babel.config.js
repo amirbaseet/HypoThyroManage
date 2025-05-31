@@ -32,6 +32,7 @@ module.exports = function (api) {
             utils: './src/utils',
             context: './src/context',
             assets: './assets',
+            constants:'./src/constants',
           },
         },
       ],

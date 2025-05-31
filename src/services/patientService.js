@@ -1,5 +1,6 @@
 import api from "api/apiService";
 const fileName = `IN patientService`;
+import { API_ROUTES } from 'constants/apiRoutes';
 
 // ✅ Submit Weekly Report
 export const submitWeeklyReport = async (userId, symptoms) => {
@@ -11,7 +12,8 @@ export const submitWeeklyReport = async (userId, symptoms) => {
         }
 
         // Send POST request to backend
-        const response = await api.patch(`/reports/submit-report`, { userId, symptoms });
+        // const response = await api.patch(`/reports/submit-report`, { userId, symptoms });
+        const response = await api.patch(API_ROUTES.SUBMIT_WEEKLY_REPORT, { userId, symptoms });
         return response.data;
     } catch (error) {
         console.error("❌ Error submitting weekly report:", error.response?.data || error);
@@ -22,7 +24,8 @@ export const submitWeeklyReport = async (userId, symptoms) => {
 // ✅ Get All Reports for a User
 export const getUserReports = async (userId) => {
     try {
-        const response = await api.get(`/reports/${userId}`);
+        // const response = await api.get(`/reports/${userId}`);
+        const response = await api.get(API_ROUTES.GET_USER_REPORTS(userId));
         return response.data;
     } catch (error) {
         console.error(fileName,"❌ Error fetching reports:", error);
@@ -34,7 +37,8 @@ export const getUserReports = async (userId) => {
 
 export const getLatestWeeklyReport = async (userId) => {
     try {
-        const response = await api.get(`/reports/latest-report/${userId}`);
+        // const response = await api.get(`/reports/latest-report/${userId}`);
+        const response = await api.get(API_ROUTES.GET_LATEST_WEEKLY_REPORT(userId));
         return response.data; // Return only the data
     } catch (error) {
         console.error(fileName,"Error fetching latest report:", error.response?.data || error.message);
@@ -45,7 +49,8 @@ export const getLatestWeeklyReport = async (userId) => {
 // ✅ Get previous submission (for this form)
 export const getLatestSymptomForm = async (userId, formWindowId) => {
     try {
-        const res = await api.get(`/patient/form-submissions/latest`, {
+        // const res = await api.get(`/patient/form-submissions/latest`, {
+        const res = await api.get(API_ROUTES.GET_LATEST_SYMPTOM_FORM, {
             params: { userId, formWindowId }
         });
         return res.data;
@@ -56,7 +61,8 @@ export const getLatestSymptomForm = async (userId, formWindowId) => {
 // ✅ Submit or update the form
 export const submitSymptomForm = async (formWindowId, symptoms, copingResponses) => {
     try {
-        const res = await api.patch(`/patient/form-submissions`, {
+        // const res = await api.patch(`/patient/form-submissions`, {
+        const res = await api.patch(API_ROUTES.SUBMIT_SYMPTOM_FORM, {
             formWindowId,
             symptoms,
             copingResponses
@@ -69,7 +75,8 @@ export const submitSymptomForm = async (formWindowId, symptoms, copingResponses)
 };
 export const getLatestCopingForm = async (userId, formWindowId) => {
     try {
-        const res = await api.get(`/patient/coping`, {
+        // const res = await api.get(`/patient/coping`, {
+        const res = await api.get(API_ROUTES.GET_LATEST_COPING_FORM, {
             params: { userId, formWindowId }
         });
         return res.data; // ✅ CORRECT
@@ -79,14 +86,16 @@ export const getLatestCopingForm = async (userId, formWindowId) => {
     }
 };
 export const getPatientUnreadMessageCount = async (patientId) => {
-    const response = await api.get(`/messages/unread-count?userId=${patientId}`);
+    // const response = await api.get(`/messages/unread-count?userId=${patientId}`);
+    const response = await api.get(API_ROUTES.GET_UNREAD_MESSAGE_COUNT(patientId));
     return response.data;
   };
 
   // Get active form windows (for patients)
 export const getActiveFormWindows = async () => {
     try {
-        const response = await api.get("/patient/form-windows/active");
+        // const response = await api.get("/patient/form-windows/active");
+        const response = await api.get(API_ROUTES.GET_ACTIVE_FORM_WINDOWS);
         return response.data;
     } catch (error) {
         console.error("❌ Error fetching active windows:", error);
@@ -96,7 +105,8 @@ export const getActiveFormWindows = async () => {
 // Get form submissions for a specific user
 export const getFormSubmissions = async (userId) => {
     try {
-      const response = await api.get('/patient/form-submissions', {
+    //   const response = await api.get('/patient/form-submissions', {
+      const response = await api.get(API_ROUTES.GET_FORM_SUBMISSIONS, {
         params: { userId },
       });
       return { success: true, data: response.data };

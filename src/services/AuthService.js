@@ -2,15 +2,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import api from "api/apiService";
 import * as Notifications from "expo-notifications";
-
+import {updatePushToken, removePushToken} from "services/pushTokenService"
 const fileName = `IN AuthService`;
+import { API_ROUTES } from 'constants/apiRoutes';
 
 /**
  * Log in user using phoneNumber and password
  */
 export const loginUser = async (phoneNumber, password) => {
   try {
-      const res = await api.post(`/auth/login`, { phoneNumber, password });
+      // const res = await api.post(`/auth/login`, { phoneNumber, password });
+      const res = await api.post(API_ROUTES.LOGIN, { phoneNumber, password });
 
       const token = res.data.token;
       const decoded = jwtDecode(token);
@@ -82,7 +84,8 @@ export const registerUser = async ({ phoneNumber, username, password, gender, ro
         role,
       };
   
-      const response = await api.post('/auth/register', payload);
+      // const response = await api.post('/auth/register', payload);
+      const response = await api.post(API_ROUTES.REGISTER, payload);
       return { success: true, message: response.data.message };
     } catch (err) {
       const error = err?.response?.data?.message || 'Registration failed';
@@ -119,33 +122,3 @@ export const registerUser = async ({ phoneNumber, username, password, gender, ro
 //         return null;
 //     }
 // };
-export const updatePushToken = async (userId, pushToken) => {
-    try{
-        if(!pushToken){
-            console.log("❌ Error: Push token is Missing");
-            return { error: "Push token is required" };
-        }
-
-        const response = await api.post(`/auth/update-push-token`, { userId, pushToken });
-        return response.data;
-    }catch(error){
-        console.error("❌ Error updating push token:", error.response?.data || error);
-        return { error: error.response?.data?.message || "Failed to update push token" };
-    }
-};
-
-// ✅ Remove Push Token (when logging out)
-export const removePushToken = async (userId) => {
-    try {
-        if (!userId) {
-            console.log("❌ Error: User ID is required to remove push token");
-            return { error: "User ID is required" };
-        }
-
-        const response = await api.post(`/auth/remove-push-token`, { userId });
-        return response.data;
-    } catch (error) {
-        console.error("❌ Error removing push token:", error.response?.data || error);
-        return { error: error.response?.data?.message || "Failed to remove push token" };
-    }
-};
