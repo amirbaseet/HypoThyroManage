@@ -187,7 +187,6 @@ io.on("connection", (socket) => {
 
 
 
-      cron.schedule("* * * * *",  sendAllReminders, { timezone: "Europe/Istanbul" });
       cron.schedule("0 7 * * *",  sendAllReminders, { timezone: "Europe/Istanbul" });
       cron.schedule("0 12 * * *", sendAllReminders, { timezone: "Europe/Istanbul" });
       cron.schedule("0 19 * * *", sendAllReminders, { timezone: "Europe/Istanbul" });
