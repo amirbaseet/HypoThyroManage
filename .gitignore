@@ -137,3 +137,17 @@ dist
 
 .env
 google-services.json
+# Firebase & API keys
+google-services.json
+
+# Expo Configs
+app.config.js
+app.config.local.json
+
+# Environment Variables
+.env
+.env.local
+
+# Certificates
+*.crt
+*.key
