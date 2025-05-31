@@ -202,7 +202,8 @@ frontend/.env
 *.crt
 *.key
 google-services.json
-
+exclude.txt
+trufflehog_results.json
 # Environment Variables
 .env
 .env.local
