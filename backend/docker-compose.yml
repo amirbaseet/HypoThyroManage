@@ -1,0 +1,34 @@
+
+services:
+  app:
+    build: .
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./cert:/app/src/cert
+      - ./swagger-output:/app/swagger-output
+
+
+    environment:
+       - PORT=${PORT}
+       - Conn_Strng=${Conn_Strng}
+       - ADMIN_SECRET=${ADMIN_SECRET}
+       - CLIENT_URL=${CLIENT_URL}
+       - JWT_SEC=${JWT_SEC}
+       - USE_HTTPS=${USE_HTTPS}
+
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    # ports:
+    #   - "27017:27017"    
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

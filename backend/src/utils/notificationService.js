@@ -83,7 +83,7 @@ exports.sendPushNotificationByToken = async (pushToken, title, message) => {
             console.log("❌ Invalid Expo Push Token:", pushToken);
             return;
         }
-
+        console.log("sendPushNotificationByToken")
         const messages = [
             {
                 to: pushToken,
@@ -117,3 +117,13 @@ exports.sendPushNotificationByToken = async (pushToken, title, message) => {
     }
 };
 
+// ✅ Helper: Send notification to list of users
+ exports.sendNotificationto = async (users, notificationText) => {
+  for (const user of users) {
+    await this.sendPushNotificationByToken(
+      user.pushToken,
+      notificationText.title,
+      notificationText.body
+    );
+  }
+};
