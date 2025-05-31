@@ -6,16 +6,15 @@ services:
       - "3001:3001"
     volumes:
       - ./cert:/app/src/cert
-      - ./swagger-output:/app/swagger-output
 
 
     environment:
-       - PORT=${PORT}
-       - Conn_Strng=${Conn_Strng}
-       - ADMIN_SECRET=${ADMIN_SECRET}
-       - CLIENT_URL=${CLIENT_URL}
-       - JWT_SEC=${JWT_SEC}
-       - USE_HTTPS=${USE_HTTPS}
+      - PORT=3001
+      # - Conn_Strng=mongodb://mongo:27017/hypothyroiddb
+      - Conn_Strng=mongodb://admin:***REMOVED***@mongo:27017/hypothyroiddb?authSource=admin
+      - ADMIN_SECRET=supersecureadminkey123
+      - CLIENT_URL=*
+      - JWT_SEC=AXZ!@#
 
     depends_on:
       - mongo
@@ -23,8 +22,8 @@ services:
   mongo:
     image: mongo:6
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=ASDasd123456789***
     # ports:
     #   - "27017:27017"    
     volumes:
