@@ -4,14 +4,14 @@ const http = require("http");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 // const {sendPushNotification} = require("./utils/pushNotifications")
-const {sendPushNotificationByToken} = require("../src/utils/notificationService")
+const {sendPushNotificationByToken} = require("./notificationService")
 require("dotenv").config();
-const User = require("./models/userModels");
-const Message  = require("./models/Message");
+const User = require("../models/userModels");
+const Message  = require("../models/Message");
 const cron = require("node-cron");
 const fs = require("fs");
 const path = require('path');
-const { sendAllReminders } = require("./scheduler/reminders");
+const { sendAllReminders } = require("../scheduler/reminders");
 
 const app = express();
 // 🔐 Load SSL certificate

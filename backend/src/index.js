@@ -3,11 +3,11 @@ const dbConnect = require("./config/dbConnect");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
-const { server, app } = require("./socket"); // Import server and app from socket.js
+const { server, app } = require("./utils/socket"); // Import server and app from socket.js
 const Symptom = require("./models/Symptom");
 const Message = require("./models/Message");
 
-const setupSwaggerDocs = require('./swagger');
+const setupSwaggerDocs = require('./utils/swagger');
 
 dotenv.config();
 const port = process.env.PORT || 3001;

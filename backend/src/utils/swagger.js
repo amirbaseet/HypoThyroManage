@@ -33,12 +33,12 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 // 📦 Export Swagger JSON
-const jsonOutputPath = path.join(__dirname, '../swagger-output/swagger-output.json');
+const jsonOutputPath = path.join(__dirname, '../../swagger-output/swagger-output.json');
 fs.writeFileSync(jsonOutputPath, JSON.stringify(swaggerSpec, null, 2), 'utf-8');
 console.log(`✅ Swagger JSON exported to: ${jsonOutputPath}`);
 
 // 📦 Export Swagger YAML
-const yamlOutputPath = path.join(__dirname, '../swagger-output/swagger-output.yaml');
+const yamlOutputPath = path.join(__dirname, '../../swagger-output/swagger-output.yaml');
 fs.writeFileSync(yamlOutputPath, yaml.dump(swaggerSpec), 'utf-8');
 console.log(`✅ Swagger YAML exported to: ${yamlOutputPath}`);
 
