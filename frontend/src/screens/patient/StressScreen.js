@@ -23,7 +23,7 @@ const StressScreen = ({ navigation }) => {
           
           <View style={styles.container}>
               {/** Video Player */}
-              <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
+              <VideoPlayer videoType={title} isPlaying={isVideoPlaying} />
   
           <StressInfo/>
   

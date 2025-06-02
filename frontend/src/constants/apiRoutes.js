@@ -46,6 +46,9 @@ export const API_ROUTES = {
   // Symptoms
   GET_SYMPTOMS: "/symptoms",
 
+  //Videos
+  GET_VIDEO_URL: '/videos/get-video-url',
+  
   // Exports
   EXPORT_ALL_MEDICINE_LOGS: "/exportToExcel/export-all-medicine-logs",
   EXPORT_WEEKLY_REPORTS: "/exportToExcel/export-weekly-reports",

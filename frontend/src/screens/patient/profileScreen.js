@@ -20,7 +20,7 @@ const ProfileScreen = ({ navigation }) => {
         
         <View style={styles.container}>
             {/** Video Player */}
-            <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
+            <VideoPlayer videoType={title} isPlaying={isVideoPlaying} />
 
     <ScrollView style={styles.Textcontainer}>
 

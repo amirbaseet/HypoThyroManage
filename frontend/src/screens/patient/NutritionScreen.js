@@ -19,7 +19,7 @@ const NutritionScreen = ({ navigation }) => {
     
     return (
         <View style={styles.container}>
-                      <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
+                      <VideoPlayer videoType={title} isPlaying={isVideoPlaying} />
 
         <NutritionInfo/>
             

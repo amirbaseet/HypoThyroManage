@@ -32,6 +32,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const medicineRoutes = require("./routes/medicineRoutes");
 const exportToExcelRoutes = require("./routes/exportToExcelRoutes");
+const videoRoutes = require("./routes/videoRoutes");
 
 
 app.use("/api/auth", authRoutes);
@@ -40,6 +41,7 @@ app.use("/api/symptoms", symptomRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", pushNotificationRoutes);  
+app.use("/api/videos", videoRoutes);  
 app.use("/api/admin", adminRoutes);
 app.use("/api/patient", patientRoutes);
 app.use("/api/medicine", medicineRoutes);

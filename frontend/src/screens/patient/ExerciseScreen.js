@@ -21,7 +21,7 @@ const ExerciseScreen = ({navigation}) => {
           
           <View style={styles.container}>
               {/** Video Player */}
-              <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
+              <VideoPlayer videoType={title} isPlaying={isVideoPlaying} />
               <ExcersiseInfo/>
   
           </View>

@@ -55,7 +55,7 @@ const BrainScreen = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <VideoPlayer videoUrl={title} isPlaying={isVideoPlaying} />
+            <VideoPlayer videoType={title} isPlaying={isVideoPlaying} />
             <BrainInfo />
 
             <Text style={styles.sectionTitle}>🧠 {`Zihin Egzersizleri`}</Text>
