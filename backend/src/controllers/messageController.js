@@ -16,19 +16,40 @@ const { ObjectId } = mongoose.Types;
 exports.sendMessage = async (req, res) => {
     try {
         const { senderId, receiverId, message } = req.body;
+        const authenticatedUserId = req.user.id;
+        const authenticatedUserRole = req.user.role;
 
         if (!senderId || !receiverId || !message.trim()) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        const sender = await User.findById(senderId).select("privateKey");
-        const receiver = await User.findById(receiverId).select("publicKey");
+        // Check that the authenticated user is the sender (avoid spoofing)
+        if (authenticatedUserId !== senderId) {
+            return res.status(403).json({ message: "Unauthorized: Sender ID does not match authenticated user" });
+        }
+
+        // Fetch sender and receiver with required fields
+        const sender = await User.findById(senderId).select("privateKey role doctorId");
+        const receiver = await User.findById(receiverId).select("publicKey role doctorId");
 
         if (!sender || !receiver) {
             console.error("❌ User not found: Sender or Receiver is missing");
             return res.status(404).json({ message: "User not found" });
         }
 
+        // Validate doctor-patient relationship
+        let isValidPair = false;
+        if (sender.role === "doctor" && receiver.role === "patient" && receiver.doctorId?.toString() === sender._id.toString()) {
+            isValidPair = true;
+        } else if (sender.role === "patient" && receiver.role === "doctor" && sender.doctorId?.toString() === receiver._id.toString()) {
+            isValidPair = true;
+        }
+
+        if (!isValidPair) {
+            return res.status(403).json({ message: "Unauthorized: Can only send messages between doctor and assigned patient" });
+        }
+
+        // Encryption process
         const aesKey = generateAESKey();
         const encryptedAESKey = encryptAESKeyWithRSA(aesKey, receiver.publicKey);
         const encryptedMessage = encryptMessageAES(message, aesKey);
@@ -57,14 +78,42 @@ exports.sendMessage = async (req, res) => {
 exports.getChatHistory = async (req, res) => {
     try {
         const { user1, user2 } = req.body;
+        const authenticatedUserId = req.user.id;
+        const authenticatedUserRole = req.user.role;
 
-        const userOne = await User.findById(user1).select("privateKey");
-        const userTwo = await User.findById(user2).select("privateKey");
+        if (!user1 || !user2) {
+            return res.status(400).json({ message: "Missing user IDs" });
+        }
+
+        // Fetch user data: role + doctorId + privateKey
+        const userOne = await User.findById(user1).select("privateKey role doctorId");
+        const userTwo = await User.findById(user2).select("privateKey role doctorId");
 
         if (!userOne || !userTwo) {
             return res.status(400).json({ message: "One or both users not found" });
         }
 
+        // Determine doctor and patient
+        let doctor = null, patient = null;
+
+        if (userOne.role === "doctor" && userTwo.role === "patient" && userTwo.doctorId?.toString() === userOne._id.toString()) {
+            doctor = userOne; patient = userTwo;
+        } else if (userTwo.role === "doctor" && userOne.role === "patient" && userOne.doctorId?.toString() === userTwo._id.toString()) {
+            doctor = userTwo; patient = userOne;
+        } else {
+            return res.status(403).json({ message: "Invalid chat participants: must be between doctor and assigned patient" });
+        }
+
+        // 🛡️ Authorization: Check if authenticated user is part of this conversation
+        if (authenticatedUserRole === "doctor" && authenticatedUserId !== doctor._id.toString()) {
+            return res.status(403).json({ message: "Unauthorized: Doctor can only access their own patient chats" });
+        }
+
+        if (authenticatedUserRole === "patient" && authenticatedUserId !== patient._id.toString()) {
+            return res.status(403).json({ message: "Unauthorized: Patient can only access their own chats" });
+        }
+
+        // Fetch messages
         const messages = await Message.find({
             $or: [
                 { senderId: user1, receiverId: user2 },
@@ -74,7 +123,7 @@ exports.getChatHistory = async (req, res) => {
 
         const decryptedMessages = messages.map(msg => {
             try {
-                const recipient = msg.receiverId.toString() === user1 ? userOne : userTwo;
+                const recipient = msg.receiverId.toString() === authenticatedUserId ? userOne : userTwo;
 
                 if (!recipient.privateKey) {
                     console.error(`❌ Missing private key for recipient: ${recipient._id}`);
@@ -102,8 +151,9 @@ exports.getChatHistory = async (req, res) => {
             }
         });
 
+        // Mark messages as read for the authenticated user
         await Message.updateMany(
-            { receiverId: user1, read: false },
+            { receiverId: authenticatedUserId, read: false },
             { $set: { read: true } }
         );
 
@@ -120,14 +170,55 @@ exports.getChatHistory = async (req, res) => {
 exports.markMessagesAsRead = async (req, res) => {
     try {
         const { senderId, receiverId } = req.body;
+        const authenticatedUserId = req.user.id;
+        const authenticatedUserRole = req.user.role;
 
-        await Message.updateMany(
+        if (!senderId || !receiverId) {
+            return res.status(400).json({ message: "Missing sender or receiver ID" });
+        }
+
+        const sender = await User.findById(senderId).select("role doctorId");
+        const receiver = await User.findById(receiverId).select("role doctorId");
+
+        if (!sender || !receiver) {
+            return res.status(404).json({ message: "Sender or receiver not found" });
+        }
+
+        // 🔒 Validate doctor-patient relationship
+        let isValidPair = false;
+
+        if (sender.role === "doctor" && receiver.role === "patient" && receiver.doctorId?.toString() === sender._id.toString()) {
+            isValidPair = true;
+        } else if (sender.role === "patient" && receiver.role === "doctor" && sender.doctorId?.toString() === receiver._id.toString()) {
+            isValidPair = true;
+        }
+
+        if (!isValidPair) {
+            return res.status(403).json({ message: "Unauthorized: Can only mark messages in doctor-patient chats" });
+        }
+
+        // 🔒 Enforce role-specific access:
+        if (authenticatedUserRole === "doctor") {
+            if (authenticatedUserId !== receiver._id.toString() && authenticatedUserId !== sender._id.toString()) {
+                return res.status(403).json({ message: "Unauthorized: Doctor can only mark messages for their own patients" });
+            }
+        } else if (authenticatedUserRole === "patient") {
+            if (authenticatedUserId !== receiver._id.toString()) {
+                return res.status(403).json({ message: "Unauthorized: Patient can only mark their own received messages" });
+            }
+        } else {
+            return res.status(403).json({ message: "Unauthorized: Invalid role" });
+        }
+
+        // ✅ Update messages
+        const result = await Message.updateMany(
             { senderId, receiverId, read: false },
             { $set: { read: true } }
         );
 
-        res.status(200).json({ message: "Messages marked as read" });
+        res.status(200).json({ message: "Messages marked as read", modifiedCount: result.modifiedCount });
     } catch (error) {
+        console.error("❌ Error marking messages as read:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
