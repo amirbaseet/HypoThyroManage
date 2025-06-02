@@ -12,6 +12,7 @@ import DoctorTabs from "./src/navigation/DoctorTabs";
 import PatientDrawerNavigator from "./src/navigation/PatientDrawerNavigator"; // 👈 New import
 import GreetingScreen from "./src/screens/GreetingScreen"; // 👈 Add this line
 import * as Font from 'expo-font';
+import { navigationRef } from "./src/navigation/navigationRef"; // Adjust the path
 
 // ✅ Import push notification functions
 import {
@@ -21,7 +22,14 @@ import {
 // ✅ Import i18n and translation provider
 import i18n from "./src/i18n";
 import { I18nextProvider } from "react-i18next";
-
+// ✅ Set notification handler at the global level (outside any component)
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 const Stack = createStackNavigator();
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -43,10 +51,15 @@ const AppNavigator = () => {
             });
 
         // ✅ Handle notification interactions
-        responseListener.current =
-            Notifications.addNotificationResponseReceivedListener(response => {
-                console.log("🔔 Notification Clicked:", response);
-            });
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+          console.log("🔔 Notification Clicked:", response);
+        
+          const data = response.notification.request.content.data;
+          if (data?.screen) {
+            // Navigate to the screen specified in the notification data
+            navigationRef.current?.navigate(data.screen, data.params || {});
+          }
+        });
 
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
@@ -102,7 +115,7 @@ export default function App() {
     return (
         <AuthProvider>
             <I18nextProvider i18n={i18n}>
-                <NavigationContainer>
+                <NavigationContainer ref={navigationRef}>
                     <AppNavigator />
                 </NavigationContainer>
             </I18nextProvider>

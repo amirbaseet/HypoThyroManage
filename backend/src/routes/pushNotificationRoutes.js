@@ -42,6 +42,12 @@ const userTokens = {
  *               message:
  *                 type: string
  *                 description: Notification body
+ *               screen:
+ *                 type: string
+ *                 description: (Optional) Target screen name for navigation (e.g., 'PatientChat' or 'DoctorChat')
+ *               params:
+ *                 type: object
+ *                 description: (Optional) Additional navigation parameters (key-value pairs)
  *     responses:
  *       200:
  *         description: Notification sent successfully
@@ -53,9 +59,7 @@ const userTokens = {
  *         description: Failed to send notification
  */
 router.post("/send", async (req, res) => {
-    const { userId, title, message } = req.body;
-
-    // Get the user's push token from the simulated database
+    const { userId, title, message, screen, params } = req.body;
     const pushToken = userTokens[userId];
 
     if (!pushToken) {
@@ -71,6 +75,10 @@ router.post("/send", async (req, res) => {
         sound: "default",
         title: title,
         body: message,
+        data: {
+            screen: screen || null,
+            params: params || null,
+        },
     }];
 
     try {
@@ -108,12 +116,19 @@ router.post("/send", async (req, res) => {
  *               message:
  *                 type: string
  *                 description: Notification body
+ *               screen:
+ *                 type: string
+ *                 description: (Optional) Target screen name for navigation (e.g., 'PatientChat', 'TakeMedicineScreen')
+ *               params:
+ *                 type: object
+ *                 description: (Optional) Additional navigation parameters (key-value pairs)
  *     responses:
  *       200:
  *         description: Notifications sent successfully to all users
  *       500:
  *         description: Internal server error
  */
+
 // ✅ Admin sends notifications to all users
 router.post("/send-to-all",verifyToken,authorizeRoles("admin"), notificationController.sendNotificationToAll);
 

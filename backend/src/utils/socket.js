@@ -109,21 +109,31 @@ io.on("connection", (socket) => {
         if (receiverUser?.pushToken) {
           console.log("🔔 Sending push notification...");
             let notificationMessage = "";
+            let targetScreen = null;
+            let targetParams = null;
+
 
             if (receiverUser.role === "doctor") {
                 notificationMessage = `You have a new message from ${senderUser.username}`;
+                targetScreen = "DoctorChat";          
+                targetParams = { chatId: sender };    
             } else if (receiverUser.role === "patient") {
-                console.log("doctor sending message")
                 notificationMessage = `You have a new message from your doctor`;
+                targetScreen = "PatientChat";
+                targetParams = { chatId: sender };
             }else {
-              notificationMessage = `You have a new message`;
-          }
+                notificationMessage = `You have a new message`;
+                targetScreen = null;                  // If no screen is defined, null
+                targetParams = null;          }
           console.log("🔔 notificationMessage",notificationMessage);
             console.log("doctor sending message122")
             const result = await sendPushNotificationByToken(
                 receiverUser.pushToken,
                 "New Message",
-                notificationMessage
+                notificationMessage,
+                targetScreen,
+                targetParams
+
             );
 
            console.log("📬 Push Ticket Response:", result);

@@ -3,18 +3,18 @@ const User = require("../models/userModels");
 
 const expo = new Expo();
 
-exports.sendPushNotification = async (userId, title, message) => {
+// ✅ Send push notification to a specific user by userId
+exports.sendPushNotification = async (userId, title, message, screen = null, params = null) => {
     try {
         const user = await User.findById(userId);
 
         if (!user || !user.pushToken) {
-            console.log("User not found or push token missing.");
+            console.log("❌ User not found or push token missing.");
             return;
         }
 
-        // ✅ Corrected: Use `Expo.isExpoPushToken()` instead of `expo.isExpoPushToken()`
         if (!Expo.isExpoPushToken(user.pushToken)) {
-            console.log("Invalid Expo Push Token.");
+            console.log("❌ Invalid Expo Push Token.");
             return;
         }
 
@@ -22,13 +22,13 @@ exports.sendPushNotification = async (userId, title, message) => {
             {
                 to: user.pushToken,
                 sound: "default",
-                title: title,
+                title,
                 body: message,
+                data: { screen, params },
             },
         ];
 
         let chunks = expo.chunkPushNotifications(messages);
-
         for (let chunk of chunks) {
             let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
             console.log("✅ Push notification response:", ticketChunk);
@@ -39,68 +39,58 @@ exports.sendPushNotification = async (userId, title, message) => {
         console.error("❌ Error sending push notification:", error);
     }
 };
-exports.sendNotificationToAllUsers = async (title, message) =>{
+
+// ✅ Send push notification to all users (Admin function)
+exports.sendNotificationToAllUsers = async (title, message, screen = null, params = null) => {
     try {
-        const users = await User.find({ role: "patient", pushToken: { $ne: null } });
+        const users = await User.find({ pushToken: { $exists: true } });
 
-        if (users.length === 0) {
-            console.log("No users found with push tokens.");
-            return;
-        }
-
-        let messages = users.map((user) => ({
+        const messages = users.map(user => ({
             to: user.pushToken,
             sound: "default",
-            title: title,
+            title,
             body: message,
+            data: { screen, params },
         }));
 
         let chunks = expo.chunkPushNotifications(messages);
+        let tickets = [];
 
         for (let chunk of chunks) {
-            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-            console.log("📬 Batch Ticket Response:", ticketChunk);
-        
-            for (let ticket of ticketChunk) {
-                if (ticket.status === "error") {
-                    console.warn("⚠️ Push Error:", ticket.message);
-                    if (ticket.details?.error) {
-                        console.warn("🔍 Details:", ticket.details.error);
-                    }
-                }
-            }
+            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            tickets.push(...ticketChunk);
         }
-        
-        console.log(`✅ Notification sent to ${users.length} users.`);
+
+        console.log(`✅ Notifications sent to ${users.length} users.`);
+        return tickets;
     } catch (error) {
         console.error("❌ Error sending notifications to all users:", error);
+        throw error;
     }
 };
-exports.sendPushNotificationByToken = async (pushToken, title, message) => {
+
+// ✅ Send push notification by Expo Push Token directly
+exports.sendPushNotificationByToken = async (pushToken, title, message, screen = null, params = null) => {
     try {
-        // ✅ Check if the token is valid
         if (!Expo.isExpoPushToken(pushToken)) {
             console.log("❌ Invalid Expo Push Token:", pushToken);
             return;
         }
-        console.log("sendPushNotificationByToken")
+
         const messages = [
             {
                 to: pushToken,
                 sound: "default",
                 title,
                 body: message,
-                data: { customData: "example" }, // Optional custom data
+                data: { screen, params },
             },
         ];
 
-        const chunks = expo.chunkPushNotifications(messages);
-
+        let chunks = expo.chunkPushNotifications(messages);
         for (let chunk of chunks) {
             const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-          //  console.log("📬 Push Ticket Response:", ticketChunk);
 
-            // Check for errors in the ticket
             for (let ticket of ticketChunk) {
                 if (ticket.status === "error") {
                     console.warn("⚠️ Push Error:", ticket.message);
@@ -111,19 +101,21 @@ exports.sendPushNotificationByToken = async (pushToken, title, message) => {
             }
         }
 
-        // console.log(`✅ Push notification sent to token: ${pushToken}`);
+        console.log(`✅ Push notification sent to token: ${pushToken}`);
     } catch (error) {
-        console.error("❌ Error sending push notification:", error);
+        console.error("❌ Error sending push notification by token:", error);
     }
 };
 
-// ✅ Helper: Send notification to list of users
- exports.sendNotificationto = async (users, notificationText) => {
-  for (const user of users) {
-    await this.sendPushNotificationByToken(
-      user.pushToken,
-      notificationText.title,
-      notificationText.body
-    );
-  }
+// ✅ Helper: Send notification to a list of users (array of user objects)
+exports.sendNotificationto = async (users, notificationText, screen = null, params = null) => {
+    for (const user of users) {
+        await this.sendPushNotificationByToken(
+            user.pushToken,
+            notificationText.title,
+            notificationText.body,
+            screen,
+            params
+        );
+    }
 };

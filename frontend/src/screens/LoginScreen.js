@@ -16,6 +16,10 @@ const LoginScreen = ({ navigation }) => {
     const { t } = useTranslation();
 
     const handleLogin = async () => {
+        if (!phoneNumber || !password) {
+            Alert.alert(t("error"), t("error_fill_fields"));
+            return;}
+        // ✅ Call loginUser service
         const res = await loginUser(`+90${phoneNumber}`, password);
 
         if (res.error) {
