@@ -1,4 +1,9 @@
-
+![Node.js](https://img.shields.io/badge/Node.js-18.x-brightgreen)
+![Express](https://img.shields.io/badge/Express.js-4.x-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-6.x-green)
+![React Native](https://img.shields.io/badge/React_Native-0.73-blueviolet)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 # HypoThyroManage
 
 HypoThyroManage is a comprehensive mobile health management system designed for patients with hypothyroidism. It allows patients to track their symptoms, medication intake, and communicate with healthcare professionals in real-time. This project was developed as part of a graduation thesis and supported by the TÜBİTAK 2209-A program.
@@ -14,12 +19,25 @@ HypoThyroManage is a comprehensive mobile health management system designed for 
 
 ## Technologies
 
-- **Frontend**: React Native (Expo), Axios, JWT Authentication
-- **Backend**: Node.js, Express.js, MongoDB, Mongoose, Socket.IO
-- **Infrastructure**: Docker, Nginx, Let's Encrypt SSL
-- **Security**: JWT, RSA & AES encryption
-- **Version Control**: Git & GitHub
+🖥️ **Frontend**  
+- ⚛️ React Native (Expo)  
+- 🔐 JWT Authentication  
+- 📡 Axios
 
+🛠️ **Backend**  
+- 🟩 Node.js  
+- 🚀 Express.js  
+- 🗄️ MongoDB + Mongoose  
+- 🔗 Socket.IO
+
+🔒 **Security**  
+- 🛡️ JWT Authentication  
+- 🔐 RSA & AES Encryption
+
+🚢 **Infrastructure**  
+- 🐳 Docker  
+- 🌐 Nginx  
+- 🔒 Let's Encrypt SSL
 ## Directory Structure
 
 ```
