@@ -1,3 +1,14 @@
+/**
+ * Message Controller
+ * 
+ * Handles secure messaging between doctors and patients.
+ * Includes:
+ * - Sending encrypted messages
+ * - Fetching chat history
+ * - Marking messages as read
+ * - Listing doctor chats
+ * - Counting unread messages for patients
+ */
 const Message = require("../models/Message");
 const User = require("../models/userModels");
 const {
@@ -11,7 +22,11 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
 /**
- * Send Message (Patient ↔ Doctor)
+ * Send a secure, encrypted message between a doctor and a patient.
+ * 
+ * @param {Object} req - Express request object (requires body: senderId, receiverId, message).
+ * @param {Object} res - Express response object.
+ * @returns {Object} JSON response with status and saved message.
  */
 exports.sendMessage = async (req, res) => {
     try {
@@ -73,7 +88,12 @@ exports.sendMessage = async (req, res) => {
 };
 
 /**
- * Get Chat History (Decrypt Messages)
+ * Get chat history between a doctor and a patient.
+ * Decrypts messages for the authenticated user.
+ * 
+ * @param {Object} req - Express request object (requires body: user1, user2).
+ * @param {Object} res - Express response object.
+ * @returns {Array} List of decrypted messages.
  */
 exports.getChatHistory = async (req, res) => {
     try {
@@ -165,8 +185,13 @@ exports.getChatHistory = async (req, res) => {
 };
 
 /**
- * Mark Messages as Read
+ * Mark all messages between a doctor and a patient as read.
+ * 
+ * @param {Object} req - Express request object (requires body: senderId, receiverId).
+ * @param {Object} res - Express response object.
+ * @returns {Object} Status message and count of updated messages.
  */
+
 exports.markMessagesAsRead = async (req, res) => {
     try {
         const { senderId, receiverId } = req.body;
@@ -224,7 +249,11 @@ exports.markMessagesAsRead = async (req, res) => {
 };
 
 /**
- * Doctor Chat List (with decrypted last messages)
+ * Get a list of all doctor-patient chats with the latest message and unread count.
+ * 
+ * @param {Object} req - Express request object (requires authentication).
+ * @param {Object} res - Express response object.
+ * @returns {Array} List of chat summaries for the doctor.
  */
 exports.getDoctorChatList = async (req, res) => {
     try {
@@ -332,8 +361,11 @@ exports.getDoctorChatList = async (req, res) => {
 };
 
 /**
- * Get Unread Message Count for Patient
- * GET /messages/unread-count?userId=...
+ * Get the unread message count for a patient.
+ * 
+ * @param {Object} req - Express request object (query: userId).
+ * @param {Object} res - Express response object.
+ * @returns {number} Unread message count.
  */
 exports.getPatientUnreadMessageCount = async (req, res) => {
     try {

@@ -1,3 +1,10 @@
+/**
+ * Symptom Seeder Script
+ *
+ * Connects to MongoDB and inserts a predefined list of symptoms into the database.
+ * Ensures symptoms are not duplicated by checking existing entries first.
+ * Can be run as a standalone script.
+ */
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Symptom = require('../models/Symptom');
@@ -15,7 +22,10 @@ mongoose.connect(process.env.MONGO_URI, {
     console.error("❌ MongoDB Connection Error:", err);
 });
 
-// Define symptoms list
+
+/**
+ * Predefined list of symptom names to seed into the database.
+ */
 const symptoms = [
     "Kabızlık", "Halsizlik", "Yorgunluk", "Kilo alma",
     "Cilt kuruluğu", "Saç dökülmesi", "Üşüme", "Hareketlerde yavaşlama",
@@ -26,7 +36,14 @@ const symptoms = [
     "Hareket halindeyken nefes darlığı", "Ödem/şişlik"
 ];
 
-// Insert symptoms into MongoDB
+/**
+ * Inserts the symptom list into the MongoDB collection.
+ * Skips insertion if symptoms already exist.
+ *
+ * @async
+ * @function insertSymptoms
+ * @returns {Promise<void>}
+ */
 const insertSymptoms = async () => {
     try {
         // Check if symptoms already exist
@@ -47,5 +64,5 @@ const insertSymptoms = async () => {
     }
 };
 
-// Run the function
+// Run the script
 insertSymptoms();

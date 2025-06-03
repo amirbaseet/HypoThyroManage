@@ -1,3 +1,9 @@
+/**
+ * WebSocket server setup for real-time chat and push notifications.
+ * Uses JWT authentication, handles message events, read receipts, and scheduled reminders.
+ * 
+ * @module socket
+ */
 const { Server } = require("socket.io");
 const https = require("https");
 const http = require("http");
@@ -13,12 +19,13 @@ const fs = require("fs");
 const path = require('path');
 const { sendAllReminders } = require("../scheduler/reminders");
 const {getNotificationMessage}=require("./NotificationText")
+const verifyWSSocketToken = require("../middlewares/authWSMiddleware");
+
 const app = express();
-// 🔐 Load SSL certificate
+// 🔐 HTTPS/HTTP server setup based on environment config
 let server;
 // ✅ Read USE_HTTPS: Default to true if not set
 console.log("🌐 process.env.USE_HTTPS:", process.env.USE_HTTPS);
-
 const USE_HTTPS = (process.env.USE_HTTPS ?? "true").toLowerCase() === "true";
 console.log("🌐 USE_HTTPS:", USE_HTTPS);
 
@@ -37,52 +44,35 @@ const credentials = {
   console.log("🌐 HTTP server initialized.");
 
 }
+
+// Initialize WebSocket server
   const io = new Server(server, {
     cors: { origin: process.env.CLIENT_URL || "*" },
   });
   
-// Store online users with socket IDs
+// Map to store online users and their socket IDs
 const users = new Map();
-const activeChats = new Map(); // Tracks which user is actively viewing which chat
 
-// 🔑 Middleware: Authenticate WebSocket connection using JWT
-io.use((socket, next) => {
-    try {
-        let token = socket.handshake.auth?.token;
-        // console.log("🔑 Received Token in WebSocket:", token);
+// Map to track which users are viewing which chats
+const activeChats = new Map(); 
 
-        if (!token) {
-            return next(new Error("Authentication error: No token provided"));
-        }
-
-        // ✅ Ensure token is correctly handled
-        if (token.startsWith("Bearer ")) {
-            token = token.split(" ")[1];  // Remove "Bearer" if included
-        }
-
-        jwt.verify(token, process.env.JWT_SEC, (err, decoded) => {
-            if (err) {
-                console.error("❌ Token verification failed:", err.message);
-                return next(new Error("Authentication error: Invalid token"));
-            }
-
-            socket.userId = decoded.id;
-            // console.log(`🟢 User ${socket.userId} authenticated`);
-            next();
-        });
-
-    } catch (error) {
-        next(new Error("Authentication error: Token verification failed"));
-    }
-});
-
-
+/**
+ * WebSocket middleware for JWT authentication.
+ * Verifies token and attaches userId to the socket instance.
+ */
+io.use(verifyWSSocketToken);
+/**
+ * WebSocket connection handler.
+ */
 io.on("connection", (socket) => {
     console.log(`🔌 New connection: ${socket.id} (User: ${socket.userId})`);
 
     // ✅ Store connected user's socket ID
     users.set(socket.userId, socket.id);
-
+/**
+   * Handle sending a new message.
+   * Emits message to receiver (if online) and sends a push notification.
+   */
  socket.on("sendMessage", async ({ sender, receiver, message }, callback) => {
     if (!sender || !receiver || !message.trim()) {
         return callback({ status: "error", error: "Invalid message data" });
@@ -111,12 +101,11 @@ io.on("connection", (socket) => {
             
             //getting notification Text depending on role
             const { notificationMessage, targetScreen, targetParams } = getNotificationMessage(receiverUser, senderUser, sender);
-
         //   console.log("🔔 notificationMessage",notificationMessage);
             const result = await sendPushNotificationByToken(
                 receiverUser.pushToken,
-                "New Message",
                 notificationMessage,
+                message,
                 targetScreen,
                 targetParams
 
@@ -140,9 +129,9 @@ io.on("connection", (socket) => {
     callback({ status: "success" });
 });
 
-    /**
-     * ✅ Mark Messages as Read and Notify Sender
-     */
+ /**
+   * Mark messages as read and notify sender.
+   */
     socket.on("markAsRead", async ({ senderId, receiverId }) => {
         try {
             // ✅ Mark messages as read in DB
@@ -162,16 +151,20 @@ io.on("connection", (socket) => {
             console.error("❌ Error marking messages as read:", error);
         }
     });
-    //chat open or closed
-    socket.on("chatOpened", ({ withUserId }) => {
+  /**
+   * Track when a chat is opened.
+   */    socket.on("chatOpened", ({ withUserId }) => {
         activeChats.set(socket.userId, withUserId);
     });
+     /**
+   * Track when a chat is closed.
+   */
     socket.on("chatClosed", () => {javascript:void(0)
         activeChats.delete(socket.userId);
     });
         
-        /**
-     * ✅ Handle User Disconnect
+    /**
+     *  Handle User Disconnect
      */
     socket.on("disconnect", () => {
         console.log(`🔴 User disconnected: ${socket.userId} (Socket: ${socket.id})`);
@@ -180,6 +173,7 @@ io.on("connection", (socket) => {
     });
 
 
+    // Schedule reminders at specific times 
       cron.schedule("0 7 * * *",  sendAllReminders, { timezone: "Europe/Istanbul" });
       cron.schedule("0 12 * * *", sendAllReminders, { timezone: "Europe/Istanbul" });
       cron.schedule("0 19 * * *", sendAllReminders, { timezone: "Europe/Istanbul" });

@@ -1,7 +1,29 @@
+/**
+ * Symptom Controller
+ * 
+ * Handles CRUD operations for Symptom data.
+ * Functions:
+ * - getAllSymptoms: Retrieve all symptoms.
+ * - createSymptom: Create a new symptom.
+ */
 const Symptom  = require("../models/Symptom");
 
 /**
- * Get All Symptoms
+ * Get all symptoms.
+ * 
+ * @route GET /api/symptoms
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * 
+ * @returns {Object[]} Array of symptom documents.
+ * 
+ * @example
+ * Response:
+ * [
+ *   { "_id": "abc123", "name": "Halsizlik" },
+ *   { "_id": "def456", "name": "Kabızlık" },
+ *   ...
+ * ]
  */
 exports.getAllSymptoms = async (req, res) =>{
     try{
@@ -13,10 +35,27 @@ exports.getAllSymptoms = async (req, res) =>{
     }
 };
 
-/** 
- * Create a new symptom
+/**
+ * Create a new symptom.
+ * 
+ * @route POST /api/symptoms
+ * @param {Object} req - Express request object (body should include 'name' of symptom).
+ * @param {Object} res - Express response object.
+ * 
+ * @returns {Object} The created symptom document.
+ * 
+ * @example
+ * Request Body:
+ * {
+ *   "name": "Yorgunluk"
+ * }
+ * 
+ * Response:
+ * {
+ *   "_id": "abc123",
+ *   "name": "Yorgunluk"
+ * }
  */
-
 exports.createSymptom = async (req,res) =>{
     try{
             const newSymptom = new Symptom(req.body);

@@ -1,7 +1,26 @@
+/**
+ * Encryption Utilities Module
+ * 
+ * Provides hybrid encryption functions:
+ * - RSA key generation, AES key generation
+ * - AES encryption/decryption for messages
+ * - RSA encryption/decryption for AES keys
+ * 
+ * Uses:
+ * - AES-256-CBC for symmetric encryption
+ * - RSA 2048-bit keys with OAEP padding for asymmetric encryption
+ */
 const NodeRSA = require("node-rsa");
 const crypto = require("crypto");
 
-//Genarate RSA Key Pair 
+/**
+ * Generates an RSA key pair (2048 bits) using NodeRSA.
+ * 
+ * @returns {Object} An object containing:
+ *   - {string} publicKey: The public key in PEM format.
+ *   - {string} privateKey: The private key in PEM format.
+ */
+
 exports.generateRSAKeys = () =>{
 
     const key = NodeRSA({ b: 2048 });
@@ -11,11 +30,22 @@ exports.generateRSAKeys = () =>{
     };
 };
 
-// Generate AES Key
+/**
+ * Generates a random 256-bit (32-byte) AES key in hexadecimal format.
+ * 
+ * @returns {string} The generated AES key as a hex string.
+ */
 exports.generateAESKey = ()=> {
     return crypto.randomBytes(32).toString("hex");
 }
-// Encrypt Message using AES
+
+/**
+ * Encrypts a plaintext message using AES-256-CBC.
+ * 
+ * @param {string} message - The plaintext message to encrypt.
+ * @param {string} aesKey - The AES key in hex format.
+ * @returns {string} The encrypted message, formatted as "iv:encryptedText" (both in hex).
+ */
 exports.encryptMessageAES = (message, aesKey) => {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(aesKey, "hex"), iv);
@@ -24,7 +54,14 @@ exports.encryptMessageAES = (message, aesKey) => {
     return iv.toString("hex") + ":" + encrypted;
 }
 
-// Decrypt Message using AES
+/**
+ * Decrypts a message encrypted with AES-256-CBC.
+ * 
+ * @param {string} encryptedMessage - The encrypted message in "iv:encryptedText" format (hex).
+ * @param {string} aesKey - The AES key in hex format.
+ * @returns {string} The decrypted plaintext message.
+ */
+
 exports.decryptMessageAES = (encryptedMessage, aesKey) => {
     const [iv, encrypted] = encryptedMessage.split(":");
     const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(aesKey, "hex"), Buffer.from(iv, "hex"));
@@ -33,7 +70,15 @@ exports.decryptMessageAES = (encryptedMessage, aesKey) => {
     return decrypted;
 }
 
-//  Encrypt AES Key using RSA (Ensure OAEP Padding)
+/**
+ * Encrypts an AES key using an RSA public key (with OAEP padding).
+ * 
+ * @param {string} aesKey - The AES key in hex format.
+ * @param {string} publicKey - The RSA public key in PEM format.
+ * @returns {string} The AES key encrypted with the RSA public key (Base64 encoded).
+ * @throws {Error} If encryption fails.
+ */
+
 exports.encryptAESKeyWithRSA = (aesKey, publicKey) => {
     try {
         // console.log("🔹 Encrypting AES Key with RSA...");
@@ -46,7 +91,15 @@ exports.encryptAESKeyWithRSA = (aesKey, publicKey) => {
     }
 };
 
-//  Decrypt AES Key using RSA (Ensure OAEP Padding)
+/**
+ * Decrypts an AES key using an RSA private key (with OAEP padding).
+ * 
+ * @param {string} encryptedAESKey - The AES key encrypted with RSA (Base64 encoded).
+ * @param {string} privateKey - The RSA private key in PEM format.
+ * @returns {string} The decrypted AES key in hex format.
+ * @throws {Error} If decryption fails.
+ */
+
 exports.decryptAESKeyWithRSA = (encryptedAESKey, privateKey) => {
     try {
         // console.log("🔹 Decrypting AES Key with RSA...");

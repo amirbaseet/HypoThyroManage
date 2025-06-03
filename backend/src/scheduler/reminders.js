@@ -1,4 +1,11 @@
-// src/scheduler/reminders.js
+/**
+ * Reminder Scheduler
+ * 
+ * Schedules and sends push notifications to users based on specific times and conditions:
+ * - 07:00: Daily medicine reminder for all users
+ * - 19:00: Weekly report reminder for all users (Sun, Wed, Fri)
+ * - 12:00: Daily check for patients without medicine logs
+ */
 const moment = require("moment-timezone");
 const { sendNotificationto } = require("../utils/notificationService");
 const {
@@ -11,6 +18,20 @@ const {
   getPatientsWithoutLogs,
   getDoctors
 } = require("../utils/userNotificationHelper"); // Adjust path if needed
+
+
+/**
+ * Send scheduled reminders based on the current time and day.
+ * 
+ * - 07:00: Send daily medicine reminder to all users
+ * - 19:00 (Sun, Wed, Fri): Send weekly report reminder to all users
+ * - 12:00: Send reminder to patients without medicine logs, and notify doctors
+ * 
+ * Logs status and errors for each notification batch.
+ * 
+ * @async
+ * @function sendAllReminders
+ */
 
      exports.sendAllReminders = async () => {
         const now = moment().tz("Europe/Istanbul");

@@ -4,7 +4,12 @@ const User = require('../models/userModels');
 const WeeklyReport = require('../models/weeklyReport');
 const Symptom = require("../models/Symptom");
 
-
+/**
+ * Export all patient medicine logs as a weekly breakdown Excel file.
+ * Each row contains patient name, phone, week start/end, date, and medication status.
+ * 
+ * @route GET /api/export/medicine-logs
+ */
 exports.exportAllMedicineLogs = async (req, res) => {
   try {
     const patients = await User.find({ role: "patient" }).select("_id username phoneNumber createdAt");
@@ -109,7 +114,12 @@ exports.exportAllMedicineLogs = async (req, res) => {
   }
 };
 
-
+/**
+ * Export all patients' weekly symptom reports (pivoted) to Excel.
+ * Includes symptom names as dynamic columns.
+ * 
+ * @route GET /api/export/weekly-reports
+ */
 
 exports.exportAllWeeklyReports = async (req, res) => {
   try {

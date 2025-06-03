@@ -1,7 +1,25 @@
+/**
+ * Symptom Form Window Controller
+ * 
+ * Provides endpoints for:
+ * - Creating a weekly symptom form window
+ * - Retrieving all form windows
+ * - Toggling the activation status of a form window
+ */
 const SymptomFormWindow = require('../models/SymptomFormWindow');
 const { getCurrentWeek } = require('../utils/weekUtils');
 
-// CREATE a new symptom form window
+/**
+ * @route POST /api/admin/form-window
+ * @desc Create a new symptom form window for the current week
+ * @access Admin
+ * 
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @body {string} title - Title for the form window
+ * @body {string} symptomSeverityFormLink - Link to symptom severity form
+ * @body {string} copingScaleFormLink - Link to coping scale form
+ */
 exports.createFormWindow = async (req, res) => {
     try {
         const { title, symptomSeverityFormLink, copingScaleFormLink } = req.body;
@@ -27,7 +45,15 @@ exports.createFormWindow = async (req, res) => {
     }
 };
 
-// GET all form windows
+/**
+ * @route GET /api/admin/form-window
+ * @desc Get all symptom form windows (sorted by latest)
+ * @access Admin
+ * 
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ */
+
 exports.getAllFormWindows = async (req, res) => {
     try {
         const windows = await SymptomFormWindow.find().sort({ weekStart: -1 });
@@ -37,7 +63,15 @@ exports.getAllFormWindows = async (req, res) => {
     }
 };
 
-// TOGGLE isActive status
+/**
+ * @route PATCH /api/admin/form-window/:id/toggle
+ * @desc Toggle the isActive status of a form window
+ * @access Admin
+ * 
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @param {string} req.params.id - ID of the form window
+ */
 exports.toggleFormWindowStatus = async (req, res) => {
     try {
         const { id } = req.params;

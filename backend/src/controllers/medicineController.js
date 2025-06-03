@@ -1,7 +1,11 @@
 const MedicineLog = require("../models/MedicineLog");
 const User = require("../models/userModels");
 const { getCurrentWeek } = require("../utils/weekUtils");
-
+/**
+ * @desc Log or update patient's daily medicine intake
+ * @route POST /api/medicine/take
+ * @access Patient (auth required)
+ */
 exports.takeMedicine = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -26,7 +30,11 @@ exports.takeMedicine = async (req, res) => {
     res.status(500).json({ message: "Error updating medicine log" });
   }
 };
-
+/**
+ * @desc Get patient's weekly medicine progress (grouped by weeks)
+ * @route GET /api/medicine/progress?days=60&userId=...
+ * @access Patient/Doctor (restricted)
+ */
 exports.getProgress = async (req, res) => {
   try {
     const userId = req.query.userId || req.user.id;
@@ -114,7 +122,10 @@ exports.getProgress = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch progress" });
   }
 };
-// Keep this utility function for internal use
+/**
+ * Internal helper: Get patients who missed taking their medicine today
+ * @returns Array of patient objects who didn't log their medicine
+ */
 const getPatientsWhoMissedMedicine = async () => {
   try {
     const today = new Date();
@@ -141,7 +152,11 @@ const getPatientsWhoMissedMedicine = async () => {
   }
 };
 
-// This is your Express route controller
+/**
+ * @desc Get a list of patients who haven't logged medicine today
+ * @route GET /api/medicine/missed
+ * @access Admin/Doctor (auth required)
+ */
 exports.getMissedMedicineUsers = async (req, res) => {
   try {
     const missedUsers = await getPatientsWhoMissedMedicine();

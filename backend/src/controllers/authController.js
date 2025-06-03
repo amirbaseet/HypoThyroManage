@@ -1,3 +1,8 @@
+/**
+ * Authentication Controller
+ * 
+ * Handles user registration, login, logout, token management, push token updates, and password resets.
+ */
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModels");
@@ -5,6 +10,17 @@ const User = require("../models/userModels");
 const { generateRSAKeys } = require("../utils/encryptionUtils");
 
 const { sendPushNotification  } = require("../utils/notificationService");
+/**
+ * Register a new user (admin/doctor/patient)
+ * 
+ * @route POST /api/auth/register
+ * @param {string} phoneNumber
+ * @param {string} username
+ * @param {string} password - Must be exactly 6 digits
+ * @param {string} gender
+ * @param {string} role - Must be "admin", "doctor", or "patient"
+ * @param {string} [adminKey] - Required for admin account creation
+ */
 
 const register = async (req, res) => {
    try {
@@ -70,7 +86,13 @@ const register = async (req, res) => {
        res.status(500).json({ message: "Something went wrong" });
    }
 };
-
+/**
+ * Login a user and generate JWT token
+ * 
+ * @route POST /api/auth/login
+ * @param {string} phoneNumber
+ * @param {string} password
+ */
 const login = async (req, res) => {
     try {
         const { phoneNumber, password } = req.body;
@@ -116,7 +138,13 @@ const login = async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 };
-
+/**
+ * Update user's push token (for notifications)
+ * 
+ * @route POST /api/auth/push-token
+ * @param {string} userId
+ * @param {string} pushToken
+ */
 const updatePushToken  = async (req, res) =>{
    
     try{
@@ -134,7 +162,12 @@ const updatePushToken  = async (req, res) =>{
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
-
+/**
+ * Remove user's push token (on logout)
+ * 
+ * @route POST /api/auth/remove-push-token
+ * @param {string} userId
+ */
 const removePushToken = async (req, res) => {
     try {
         const { userId } = req.body;
@@ -152,6 +185,12 @@ const removePushToken = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+/**
+ * Refresh JWT access token (using refresh token)
+ * 
+ * @route POST /api/auth/refresh-token
+ * @param {string} refreshToken
+ */
 const refreshTokenHandler = async (req, res) => {
     const { refreshToken } = req.body;
 
@@ -186,6 +225,11 @@ const refreshTokenHandler = async (req, res) => {
         return res.status(403).json({ message: "Invalid or expired refresh token" });
     }
 };
+/**
+ * Logout the user (clear refresh token)
+ * 
+ * @route POST /api/auth/logout
+ */
 const logout = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -195,6 +239,13 @@ const logout = async (req, res) => {
         res.status(500).json({ message: "Logout failed" });
     }
 };
+/**
+ * Reset user's password
+ * 
+ * @route POST /api/auth/reset-password
+ * @param {string} phoneNumber
+ * @param {string} newPassword - Must be exactly 6 digits
+ */
 const resetUserPassword = async (req, res) => {
     try {
       const { phoneNumber, newPassword } = req.body; // 🛠 fixed name

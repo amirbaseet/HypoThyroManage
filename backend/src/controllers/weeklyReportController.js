@@ -1,9 +1,26 @@
+/**
+ * Weekly Report Controller
+ * 
+ * Handles CRUD operations for weekly symptom reports.
+ * Functions:
+ * - submitReport: Create a new weekly report.
+ * - getReportsByUser: Get all reports for a specific user.
+ * - getLatestReportByUser: Get the latest report for a specific user.
+ * - getReportsByDoctor: Get all reports for patients assigned to a doctor.
+ * - submitOrUpdateReport: Create or update a report for the current week.
+ */
 const WeeklyReport = require('../models/weeklyReport');
 const User = require('../models/userModels');
 const {getCurrentWeek} = require('../utils/weekUtils');
 
 /**
- *  Submit a Weekly Report
+ * Submit a new weekly report.
+ * 
+ * @route POST /api/reports
+ * @param {Object} req - Express request object (body: { userId, symptoms[] }).
+ * @param {Object} res - Express response object.
+ * 
+ * @returns {Object} Success message.
  */
 exports.submitReport = async (req, res) => {
     try{
@@ -19,7 +36,13 @@ exports.submitReport = async (req, res) => {
 };
 
 /**
- * ✅ Get all reports for a specific user
+ * Get all weekly reports for a specific user.
+ * 
+ * @route GET /api/reports/user/:userId
+ * @param {Object} req - Express request object (params: userId).
+ * @param {Object} res - Express response object.
+ * 
+ * @returns {Object[]} Array of reports.
  */
 exports.getReportsByUser = async (req, res) => {
     try {
@@ -38,7 +61,13 @@ exports.getReportsByUser = async (req, res) => {
 };
 
 /**
- * ✅ Get the latest weekly report for a user
+ * Get the current week's report for a user.
+ * 
+ * @route GET /api/reports/user/:userId/latest
+ * @param {Object} req - Express request object (params: userId).
+ * @param {Object} res - Express response object.
+ * 
+ * @returns {Object} Weekly report.
  */
 exports.getLatestReportByUser = async (req, res) => {
     try {
@@ -63,9 +92,14 @@ exports.getLatestReportByUser = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-
 /**
- * ✅ Get all reports for patients assigned to a specific doctor
+ * Get all reports for patients assigned to a specific doctor.
+ * 
+ * @route GET /api/reports/doctor/:doctorId
+ * @param {Object} req - Express request object (params: doctorId).
+ * @param {Object} res - Express response object.
+ * 
+ * @returns {Object} { patients: [], reports: [] }
  */
 exports.getReportsByDoctor = async (req, res) => {
     try {
@@ -91,7 +125,15 @@ exports.getReportsByDoctor = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-
+/**
+ * Submit or update a report for the current week.
+ * 
+ * @route POST /api/reports/submit-or-update
+ * @param {Object} req - Express request object (body: { userId, symptoms[] }).
+ * @param {Object} res - Express response object.
+ * 
+ * @returns {Object} Updated or created report.
+ */
 exports.submitOrUpdateReport = async ( req, res ) =>{
     try{
         const { userId , symptoms } = req.body; 
