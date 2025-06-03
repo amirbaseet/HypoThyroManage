@@ -5,54 +5,31 @@
  * @module socket
  */
 const { Server } = require("socket.io");
-const https = require("https");
-const http = require("http");
 const express = require("express");
-const jwt = require("jsonwebtoken");
-// const {sendPushNotification} = require("./utils/pushNotifications")
-const {sendPushNotificationByToken} = require("./notificationService")
 require("dotenv").config();
-const User = require("../models/userModels");
-const Message  = require("../models/Message");
 const cron = require("node-cron");
-const fs = require("fs");
-const path = require('path');
+
+const User = require("../models/userModels");
+const Message = require("../models/Message");
 const { sendAllReminders } = require("../scheduler/reminders");
-const {getNotificationMessage}=require("./NotificationText")
+const { getNotificationMessage } = require("./NotificationText");
+const { sendPushNotificationByToken } = require("./notificationService");
 const verifyWSSocketToken = require("../middlewares/authWSMiddleware");
+const { createServer } = require("./serverSetup");
 
 const app = express();
 // 🔐 HTTPS/HTTP server setup based on environment config
-let server;
-// ✅ Read USE_HTTPS: Default to true if not set
-console.log("🌐 process.env.USE_HTTPS:", process.env.USE_HTTPS);
-const USE_HTTPS = (process.env.USE_HTTPS ?? "true").toLowerCase() === "true";
-console.log("🌐 USE_HTTPS:", USE_HTTPS);
-
-// 📦 Use HTTPS if USE_HTTPS is true and certs exist
-if (USE_HTTPS ) {
-const credentials = {
-    key: fs.readFileSync(path.join(__dirname, '../cert/private.key'), 'utf8'),
-    cert: fs.readFileSync(path.join(__dirname, '../cert/certificate.crt'), 'utf8'),
-  };
-  
-  
-   server = https.createServer(credentials, app);
-}else{
-
-    server = http.createServer(app);
-  console.log("🌐 HTTP server initialized.");
-
-}
-
+const server = createServer(app);
 // Initialize WebSocket server
   const io = new Server(server, {
     cors: { origin: process.env.CLIENT_URL || "*" },
   });
   
+
+
+
 // Map to store online users and their socket IDs
 const users = new Map();
-
 // Map to track which users are viewing which chats
 const activeChats = new Map(); 
 
