@@ -586,6 +586,16 @@ paths:
                 message:
                   type: string
                   description: Notification body
+                screen:
+                  type: string
+                  description: >-
+                    (Optional) Target screen name for navigation (e.g.,
+                    'PatientChat' or 'DoctorChat')
+                params:
+                  type: object
+                  description: >-
+                    (Optional) Additional navigation parameters (key-value
+                    pairs)
       responses:
         '200':
           description: Notification sent successfully
@@ -615,6 +625,16 @@ paths:
                 message:
                   type: string
                   description: Notification body
+                screen:
+                  type: string
+                  description: >-
+                    (Optional) Target screen name for navigation (e.g.,
+                    'PatientChat', 'TakeMedicineScreen')
+                params:
+                  type: object
+                  description: >-
+                    (Optional) Additional navigation parameters (key-value
+                    pairs)
       responses:
         '200':
           description: Notifications sent successfully to all users

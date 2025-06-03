@@ -12,7 +12,7 @@ const cron = require("node-cron");
 const fs = require("fs");
 const path = require('path');
 const { sendAllReminders } = require("../scheduler/reminders");
-
+const {getNotificationMessage}=require("./NotificationText")
 const app = express();
 // 🔐 Load SSL certificate
 let server;
@@ -103,30 +103,16 @@ io.on("connection", (socket) => {
         if (!receiverUser) {
             console.log(`❌ Receiver not found in DB: ${receiver}`);
         } else {
-           console.log(`🔍 Receiver: ${receiverUser.username}, Role: ${receiverUser.role}`);
-           console.log(`📱 PushToken: ${receiverUser.pushToken}`);
+        //    console.log(`🔍 Receiver: ${receiverUser.username}, Role: ${receiverUser.role}`);
+        //    console.log(`📱 PushToken: ${receiverUser.pushToken}`);
         }
         if (receiverUser?.pushToken) {
-          console.log("🔔 Sending push notification...");
-            let notificationMessage = "";
-            let targetScreen = null;
-            let targetParams = null;
+        //   console.log("🔔 Sending push notification...");
+            
+            //getting notification Text depending on role
+            const { notificationMessage, targetScreen, targetParams } = getNotificationMessage(receiverUser, senderUser, sender);
 
-
-            if (receiverUser.role === "doctor") {
-                notificationMessage = `You have a new message from ${senderUser.username}`;
-                targetScreen = "DoctorChat";          
-                targetParams = { chatId: sender };    
-            } else if (receiverUser.role === "patient") {
-                notificationMessage = `You have a new message from your doctor`;
-                targetScreen = "PatientChat";
-                targetParams = { chatId: sender };
-            }else {
-                notificationMessage = `You have a new message`;
-                targetScreen = null;                  // If no screen is defined, null
-                targetParams = null;          }
-          console.log("🔔 notificationMessage",notificationMessage);
-            console.log("doctor sending message122")
+        //   console.log("🔔 notificationMessage",notificationMessage);
             const result = await sendPushNotificationByToken(
                 receiverUser.pushToken,
                 "New Message",
@@ -137,7 +123,7 @@ io.on("connection", (socket) => {
             );
 
            console.log("📬 Push Ticket Response:", result);
-           console.log(`📲 Push notification sent to ${receiverUser.username}`);
+        //    console.log(`📲 Push notification sent to ${receiverUser.username}`);
         } else {
             console.warn(`⚠️ Push token missing for user ${receiver}`);
         }
@@ -192,9 +178,6 @@ io.on("connection", (socket) => {
         users.delete(socket.userId);
     });
     });
-
-
-
 
 
       cron.schedule("0 7 * * *",  sendAllReminders, { timezone: "Europe/Istanbul" });

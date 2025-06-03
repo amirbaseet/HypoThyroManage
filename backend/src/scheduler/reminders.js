@@ -27,7 +27,7 @@ const {
           if (hour === 7) {
       
             // Patients → TakeMedicineScreen
-            await sendNotificationto(users, dailyNotificationText, "TakeMedicineScreen", {});
+            await sendNotificationto(users, dailyNotificationText, dailyNotificationText.page, {});
 
             
             console.log(`🕒 [Reminder Triggered - ${now.format("dddd")} @ ${formattedTime}]`);
@@ -37,7 +37,7 @@ const {
           // 7PM Weekly Reminder (Sun, Wed, Fri)
           if (hour === 19 && [0, 3, 5].includes(dayOfWeek)) {
          
-            await sendNotificationto(users, weeklyNotificationText,"Report",{});
+            await sendNotificationto(users, weeklyNotificationText,weeklyNotificationText.page,{});
             console.log(`🕒 [Reminder Triggered - ${now.format("dddd")} @ ${formattedTime}]`);
             console.log(`✅ Sent ${users.length} 7PM reminders.`);
           }
@@ -48,7 +48,7 @@ const {
             today.setHours(0, 0, 0, 0);
       
             const patientsWithoutLogs = await getPatientsWithoutLogs(today);
-            await sendNotificationto(patientsWithoutLogs, dayilyRemRemindernotificationText,"TakeMedicineScreen",{});
+            await sendNotificationto(patientsWithoutLogs, dayilyRemRemindernotificationText,dayilyRemRemindernotificationText.page,{});
             await sendNotificationto(Doctors, dayilyRemRemindernotificationText);
             console.log(`🕒 [Reminder Triggered - ${now.format("dddd")} @ ${formattedTime}]`);
             console.log(`[12PM Reminder] ✅ Sent to ${patientsWithoutLogs.length} patients without logs`);
