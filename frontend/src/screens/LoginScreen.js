@@ -14,13 +14,18 @@ const LoginScreen = ({ navigation }) => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
     const { t } = useTranslation();
+    const [loading, setLoading] = useState(false);
+
+    const phoneInvalid = phoneNumber.length !== 10;
+    const pinInvalid = password.length !== 6;
 
     const handleLogin = async () => {
         if (!phoneNumber || !password) {
             Alert.alert(t("error"), t("error_fill_fields"));
             return;}
-        // ✅ Call loginUser service
-        const res = await loginUser(`+90${phoneNumber}`, password);
+            setLoading(true); // 🔄 Show spinner
+            const res = await loginUser(`+90${phoneNumber}`, password);
+            setLoading(false); // ✅ Hide spinner
 
         if (res.error) {
             Alert.alert("Error", res.error);
@@ -66,7 +71,13 @@ const LoginScreen = ({ navigation }) => {
       setPhoneNumber(cleaned);
     }}
   />
+  
 </View>
+{phoneInvalid && phoneNumber.length > 0 && (
+  <Text style={{ color: 'red', fontSize: 12, marginTop: 5, marginLeft: 5 }}>
+    {t("phone_error_message")}
+  </Text>
+)}
            {/* Password Input */}
 <View style={styles.inputContainer}>
   <Ionicons name='lock-closed-outline' size={20} color='#666' style={styles.icon} />
@@ -84,14 +95,26 @@ const LoginScreen = ({ navigation }) => {
     maxLength={6} // This ensures it doesn’t go over 6
   />
 </View>
+{pinInvalid && password.length > 0 && (
+  <Text style={{ color: 'red', fontSize: 12, marginTop: 5, marginLeft: 5 }}>
+    {t("pin_error_message")}
+  </Text>
+)}
+
 
 
                     {/* Login Button */}
-                    <TouchableOpacity style={styles.loginButton}  onPress={handleLogin}>
-                    <Text style={styles.loginButtonText}>{t("login_button")}</Text>
-
-                    </TouchableOpacity>
-
+<TouchableOpacity
+  style={[styles.loginButton, loading && { opacity: 0.6 }]}
+  onPress={handleLogin}
+  disabled={loading}
+>
+  {loading ? (
+    <Text style={styles.loginButtonText}>{t("loading")}...</Text>
+  ) : (
+    <Text style={styles.loginButtonText}>{t("login_button")}</Text>
+  )}
+</TouchableOpacity>
                     {/* OR Divider */}
                     <View style={styles.orContainer}>
                     <View style={styles.line} />

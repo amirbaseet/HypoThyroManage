@@ -5,6 +5,7 @@ import * as Notifications from "expo-notifications";
 import {updatePushToken, removePushToken} from "services/pushTokenService"
 const fileName = `IN AuthService`;
 import { API_ROUTES } from 'constants/apiRoutes';
+import { navigate } from "navigation/navigationRef"; // adjust path
 
 /**
  * Log in user using phoneNumber and password
@@ -68,6 +69,10 @@ export const logoutUser = async () => {
     await AsyncStorage.removeItem("token");
     // await AsyncStorage.removeItem("refreshToken");
     await AsyncStorage.removeItem("user");
+
+    
+    // ✅ Redirect to login screen
+    navigate("Login");
 };
 
 

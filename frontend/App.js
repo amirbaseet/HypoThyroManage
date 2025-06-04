@@ -13,6 +13,7 @@ import PatientDrawerNavigator from "./src/navigation/PatientDrawerNavigator"; //
 import GreetingScreen from "./src/screens/GreetingScreen"; // 👈 Add this line
 import * as Font from 'expo-font';
 import { navigationRef } from "./src/navigation/navigationRef"; // Adjust the path
+import Toast from 'react-native-toast-message';
 
 // ✅ Import push notification functions
 import {
@@ -30,6 +31,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
+
 const Stack = createStackNavigator();
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -117,6 +119,7 @@ export default function App() {
             <I18nextProvider i18n={i18n}>
                 <NavigationContainer ref={navigationRef}>
                     <AppNavigator />
+                          <Toast /> 
                 </NavigationContainer>
             </I18nextProvider>
         </AuthProvider>
