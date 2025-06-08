@@ -1,13 +1,14 @@
 
 services:
   app:
-    build: .
+    build: .  # Build the Node.js app from the Dockerfile in current directory
     ports:
-      - "3001:3001"
+      - "3001:3001" # Expose app port for HTTP/API access
     volumes:
-      - ./cert:/app/src/cert
-      - ./swagger-output:/app/swagger-output
-
+      - ./cert:/app/src/cert # Mount SSL certs (if used)
+      - ./swagger-output:/app/swagger-output # Mount Swagger docs output
+    security_opt:
+      - no-new-privileges:true # Prevent privilege escalation within container
 
     environment:
        - PORT=${PORT}
@@ -15,20 +16,47 @@ services:
        - ADMIN_SECRET=${ADMIN_SECRET}
        - CLIENT_URL=${CLIENT_URL}
        - JWT_SEC=${JWT_SEC}
-       - USE_HTTPS=${USE_HTTPS}
-
+       - USE_HTTPS=${USE_HTTPS} # Control HTTPS behavior
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M  # Limit resource usage for security/performance
     depends_on:
-      - mongo
+      - mongo  # Ensure MongoDB starts before the app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: on-failure:5 # Restart container up to 5 times on failure
 
   mongo:
-    image: mongo:6
+    image: mongo:6 # Use official MongoDB image (version 6)
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    # ports:
-    #   - "27017:27017"    
+      - APP_DB_NAME=${APP_DB_NAME}
+      - APP_DB_USER=${APP_DB_USER}
+      - APP_DB_PASS=${APP_DB_PASS}
+    ports:
+      - "27017:27017"    # Expose MongoDB port for local dev or external tools
     volumes:
-      - mongo-data:/data/db
+      - mongo-data:/data/db # Folder with mongo-init.js script
+      - ./mongo-init:/docker-entrypoint-initdb.d # Folder with mongo-init.js script
 
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh -u \"$MONGO_INITDB_ROOT_USERNAME\" -p \"$MONGO_INITDB_ROOT_PASSWORD\" --eval \"db.adminCommand('ping')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: on-failure:5  
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
 volumes:
-  mongo-data:
+  mongo-data: # Named volume for MongoDB storage

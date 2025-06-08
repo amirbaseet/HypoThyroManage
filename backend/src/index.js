@@ -52,7 +52,9 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.status || 500).json({ message: err.message || "Internal Server Error" });
 });
-
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 // Connect to Database
 dbConnect();
 
