@@ -1,9 +1,11 @@
+
 ![Node.js](https://img.shields.io/badge/Node.js-18.x-brightgreen)
 ![Express](https://img.shields.io/badge/Express.js-4.x-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-6.x-green)
 ![React Native](https://img.shields.io/badge/React_Native-0.73-blueviolet)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 # HypoThyroManage
 
 HypoThyroManage is a comprehensive mobile health management system designed for patients with hypothyroidism. It allows patients to track their symptoms, medication intake, and communicate with healthcare professionals in real-time. This project was developed as part of a graduation thesis and supported by the TÜBİTAK 2209-A program.
@@ -30,14 +32,18 @@ HypoThyroManage is a comprehensive mobile health management system designed for 
 - 🗄️ MongoDB + Mongoose  
 - 🔗 Socket.IO
 
-🔒 **Security**  
-- 🛡️ JWT Authentication  
-- 🔐 RSA & AES Encryption
+🔒 **Security Enhancements**
+- MongoDB user with limited `readWriteNoDrop` role
+- Docker containers run as non-root users
+- Environment secrets handled via `.env` file
+- Healthchecks configured for both app and database containers
+- `docker-bench-security` used for auditing Docker configuration
 
 🚢 **Infrastructure**  
 - 🐳 Docker  
 - 🌐 Nginx  
 - 🔒 Let's Encrypt SSL
+
 ## Directory Structure
 
 ```
@@ -52,11 +58,12 @@ HypoThyroManage is a comprehensive mobile health management system designed for 
   - services/
   - docker-compose.yml
   - Dockerfile
+  - mongo-init/
 ```
 
-## UML Sequence Diagram
+> ✅ MongoDB initialization scripts are placed in `/backend/mongo-init/` with roles and users loaded from environment.
 
-A simplified interaction flow between a patient and a doctor:
+## UML Sequence Diagram
 
 ```plantuml
 @startuml
@@ -77,8 +84,14 @@ Doctor -> App : View Reports / Chat
 
 ## Setup Instructions
 
-### Frontend (React Native)
+### Environment Configuration
 
+Create your `.env` file based on `.env.example`:
+```bash
+cp .env.example .env
+```
+
+### Frontend (React Native)
 ```bash
 cd frontend
 npm install
@@ -86,7 +99,6 @@ npm start
 ```
 
 ### Backend (Node.js)
-
 ```bash
 cd backend
 npm install
@@ -94,10 +106,17 @@ npm run dev
 ```
 
 ### Docker Deployment
-
 ```bash
 docker-compose up --build
 ```
+
+## Docker Best Practices
+
+- Healthchecks in `docker-compose.yml`
+- Non-root users in Dockerfiles
+- Environment-based MongoDB initialization
+- Secrets loaded via `.env`
+- Docker hardening verified via Docker Bench Security
 
 ## Contributors
 
