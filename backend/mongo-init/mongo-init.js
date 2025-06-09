@@ -30,6 +30,7 @@
  * - APP_DB_NAME      : Name of the application database
  * - APP_DB_USER      : Username for the application
  * - APP_DB_PASS      : Password for the application
+ * this will run only one time when initalize the container
  */
 // Switch context to the application DB
 const dbName = process.env.APP_DB_NAME;
