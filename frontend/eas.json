@@ -6,14 +6,26 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "API_URL": "${API_URL}",
+        "SOCKET_URL": "${SOCKET_URL}"
+      }
     },
     "preview": {
-      "distribution": "internal"
-        },
+      "distribution": "internal",
+      "env": {
+        "API_URL": "${API_URL}",
+        "SOCKET_URL": "${SOCKET_URL}"
+      }
+    },
     "production": {
       "autoIncrement": true,
-      "credentialsSource": "remote"
+      "credentialsSource": "remote",
+      "env": {
+        "API_URL": "${API_URL}",
+        "SOCKET_URL": "${SOCKET_URL}"
+      }
     }
   },
   "submit": {
