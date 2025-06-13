@@ -9,14 +9,16 @@
       "distribution": "internal",
       "env": {
         "API_URL": "${API_URL}",
-        "SOCKET_URL": "${SOCKET_URL}"
+        "SOCKET_URL": "${SOCKET_URL}",
+         "GOOGLE_SERVICES_JSON_BASE64": "${GOOGLE_SERVICES_JSON_BASE64}"
       }
     },
     "preview": {
       "distribution": "internal",
       "env": {
         "API_URL": "${API_URL}",
-        "SOCKET_URL": "${SOCKET_URL}"
+        "SOCKET_URL": "${SOCKET_URL}",
+         "GOOGLE_SERVICES_JSON_BASE64": "${GOOGLE_SERVICES_JSON_BASE64}"
       }
     },
     "production": {
@@ -24,7 +26,8 @@
       "credentialsSource": "remote",
       "env": {
         "API_URL": "${API_URL}",
-        "SOCKET_URL": "${SOCKET_URL}"
+        "SOCKET_URL": "${SOCKET_URL}",
+         "GOOGLE_SERVICES_JSON_BASE64": "${GOOGLE_SERVICES_JSON_BASE64}"
       }
     }
   },

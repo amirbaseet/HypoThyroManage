@@ -183,12 +183,10 @@ dist
 .pnp.*
 
 .env
-google-services.json
 # Firebase & API keys
-google-services.json
-
+google-services.base64
 # Expo Configs
-app.config.js
+
 app.config.local.json
 # Node.js / Backend
 backend/node_modules/
@@ -201,7 +199,6 @@ frontend/.env
 
 *.crt
 *.key
-google-services.json
 exclude.txt
 trufflehog_results.json
 # Environment Variables

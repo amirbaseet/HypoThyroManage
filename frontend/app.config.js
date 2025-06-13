@@ -29,7 +29,7 @@ export default ({ config }) => ({
     ]
   },
   android: {
-    googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+    googleServicesFile: "./google-services.json",
     icon: "./assets/app-logo.png",
     versionCode: 2,
     permissions: [
