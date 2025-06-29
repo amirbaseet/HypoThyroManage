@@ -17,13 +17,15 @@ COPY . .
 RUN useradd --user-group --create-home --shell /bin/false appuser
 
 # Change ownership and permissions (optional but recommended)
-RUN chown -R appuser:appuser /app
+# Only fix permissions for internal folders (not host-mounted ones)
+RUN mkdir -p /app/swagger-output && chmod -R 777 /app/swagger-output && \
+    chown -R appuser:appuser /app
 
 # Switch to non-root user
 USER appuser
 
 # Expose the port your app listens on (adjust if needed)
-EXPOSE 443
+EXPOSE 3001
 
 # Define default command
 CMD ["node", "src/index.js"]

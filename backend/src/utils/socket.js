@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
         if (!receiverUser) {
             console.log(`❌ Receiver not found in DB: ${receiver}`);
         } else {
-        //    console.log(`🔍 Receiver: ${receiverUser.username}, Role: ${receiverUser.role}`);
+           console.log(`🔍 Receiver: ${receiverUser.username}, Role: ${receiverUser.role}`);
         //    console.log(`📱 PushToken: ${receiverUser.pushToken}`);
         }
         if (receiverUser?.pushToken) {
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
             
             //getting notification Text depending on role
             const { notificationMessage, targetScreen, targetParams } = getNotificationMessage(receiverUser, senderUser, sender);
-        //   console.log("🔔 notificationMessage",notificationMessage);
+          console.log("🔔 notificationMessage",notificationMessage);
             const result = await sendPushNotificationByToken(
                 receiverUser.pushToken,
                 notificationMessage,
