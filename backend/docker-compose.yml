@@ -39,11 +39,11 @@ services:
       - APP_DB_NAME=${APP_DB_NAME}
       - APP_DB_USER=${APP_DB_USER}
       - APP_DB_PASS=${APP_DB_PASS}
-    ports:
-      - "27017:27017"    # Expose MongoDB port for local dev or external tools
+    # ports:
+      # - "27017:27017"    # Expose MongoDB port for local dev or external tools
     volumes:
       - mongo-data:/data/db # Folder with mongo-init.js script
-      - ./mongo-init:/docker-entrypoint-initdb.d # Folder with mongo-init.js script
+      # - ./mongo-init:/docker-entrypoint-initdb.d # Folder with mongo-init.js script
 
     healthcheck:
       test: ["CMD-SHELL", "mongosh -u \"$MONGO_INITDB_ROOT_USERNAME\" -p \"$MONGO_INITDB_ROOT_PASSWORD\" --eval \"db.adminCommand('ping')\""]

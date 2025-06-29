@@ -5,7 +5,9 @@
   "scripts": {
     "start": "expo start",
     "web": "expo start --web",
-    "eas-build-pre-install": "npm config set legacy-peer-deps true"
+    "eas-build-pre-install": "npm config set legacy-peer-deps true",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo/metro-config": "~0.20.0",
