@@ -36,7 +36,7 @@
     "jwt-decode": "^4.0.0",
     "react": "19.0.0",
     "react-i18next": "^15.4.1",
-    "react-native": "0.79.2",
+    "react-native": "0.87.1",
     "react-native-collapsible": "^1.6.2",
     "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "~2.24.0",
